@@ -33,29 +33,34 @@
       "id": "jauge",
       "nom": "Jauge",
       "phrase": "Garde la batterie du MacBook entre deux niveaux.",
-      "couleur": "#DE0C48",
+      "couleur": "#2FBF4F",
       "icone": "assets/jauge-icon.png",
       "captures": [
         {
-          "src": "jauge/panneau.jpg",
-          "alt": "Le panneau de Jauge dans la barre des menus"
+          "src": "jauge/captures/panneau-clair.jpg",
+          "sombre": "jauge/captures/panneau-sombre.jpg",
+          "alt": "Le panneau de Jauge : charge, limite et réglages"
         },
         {
-          "src": "jauge/historique.jpg",
-          "alt": "L'historique de charge de Jauge"
+          "src": "jauge/captures/watts-clair.jpg",
+          "sombre": "jauge/captures/watts-sombre.jpg",
+          "alt": "Où vont les watts : le schéma de Jauge"
         }
       ],
       "page": "jauge/",
       "depot": "LucasHRCHatReply/jauge-releases",
       "zip": "Jauge.zip",
-      "version": "1.0.7",
-      "source_page": null,
+      "version": "1.1.0",
+      "source_page": "~/Jauge/site",
       "requis": [
         "MacBook à puce Apple (M1 ou plus récent)",
         "macOS 26 ou plus",
         "Quitter AlDente ou toute autre app de limite de charge",
         "Aucun compte, aucun mot de passe administrateur"
-      ]
+      ],
+      "build_page": "python3 build.py",
+      "page_construite": "~/Downloads/Jauge.html",
+      "large": true
     },
     {
       "id": "penombre",
