@@ -68,6 +68,7 @@
         <a class="ico" href="${esc(a.page)}" aria-label="${esc(a.nom)}"><img src="${esc(a.icone)}" alt="" width="96" height="96"></a>
         <h3>${esc(a.nom)}</h3><div class="v" data-v>Version ${esc(a.version)}</div>
         <p class="ph">${esc(a.phrase)}</p>
+        ${a.description ? `<p class="desc">${esc(a.description)}</p>` : ""}
         <div class="boutons">
           <a class="btn p" href="${esc(a.page)}">Découvrir</a>
           <button class="btn" type="button" data-copier>Installer</button>
