@@ -25,7 +25,7 @@ cherche "adresse e-mail" '[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.(co
 # Liens vers un dépôt : seuls les dépôts publics *-releases et ce site sont admis.
 LIENS=$(echo "$FICHIERS" | tr '\n' '\0' | xargs -0 grep -hIoE 'github\.com/LucasHRCHatReply/[A-Za-z0-9._-]+' 2>/dev/null | sort -u)
 for l in $LIENS; do
-  nom=${l##*/}
+  nom=${l##*/}; nom=${nom%.git}
   case "$nom" in
     *-releases|lucashi-apps) ;;
     *) refuse "lien vers un dépôt non public" "$l" ;;
