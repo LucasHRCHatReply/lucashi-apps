@@ -72,12 +72,12 @@ UNIT
 [Unit]
 Description=Mise à jour du site toutes les 2 minutes
 [Timer]
-OnBootSec=1min
-OnUnitActiveSec=2min
+OnCalendar=*:0/2
+Persistent=true
 [Install]
 WantedBy=timers.target
 UNIT
-  systemctl daemon-reload; systemctl enable --now lucashi-apps-maj.timer
+  systemctl daemon-reload; systemctl enable lucashi-apps-maj.timer; systemctl restart lucashi-apps-maj.timer
 }
 
 installer_nginx() {
