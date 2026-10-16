@@ -37,7 +37,17 @@
       function sel() { var r = document.createRange(); r.selectNodeContents(el.querySelector("pre")); var s = getSelection(); s.removeAllRanges(); s.addRange(r); }
     });
   }
-  function tout() { document.querySelectorAll("[data-lucashi-installation]").forEach(monter); }
+  // Arrivée par l'ancre (…/#installer) : le navigateur a calculé sa position avant que le bloc existe, et les images
+  // de la page décalent la mise en page ensuite. On recale la vue sur le bloc après le montage, puis une fois la page chargée.
+  function recaler(el) {
+    var h = decodeURIComponent((location.hash || "").slice(1));
+    if (!h) return;
+    var cible = document.getElementById(h);
+    if (!cible || !(cible === el || cible.contains(el) || el.contains(cible))) return;
+    var aller = function () { cible.scrollIntoView({ block: "start", behavior: "instant" }); };
+    aller(); requestAnimationFrame(aller); addEventListener("load", aller, { once: true });
+  }
+  function tout() { document.querySelectorAll("[data-lucashi-installation]").forEach(function (el) { monter(el); recaler(el); }); }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", tout); else tout();
   window.LucashiInstallation = { monter: monter };
 })();
