@@ -139,7 +139,7 @@
       "id": "tiroir",
       "nom": "Tiroir",
       "phrase": "Des tiroirs flottants en verre, pour déposer vos fichiers.",
-      "couleur": "#4BDCFE",
+      "couleur": "#16A8BC",
       "icone": "assets/tiroir-icon.png",
       "captures": [
         {
