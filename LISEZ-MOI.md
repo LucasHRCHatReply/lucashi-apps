@@ -1,4 +1,4 @@
-# app.lucashi.fr — les apps de Lucas
+# app.lucashi.fr — les apps de Lucas (le « Lucas App Store »)
 
 Site statique (HTML, CSS, un peu de JS) publié par GitHub Pages depuis la branche `main`.
 Adresse définitive : https://app.lucashi.fr — adresse provisoire : https://lucashrchatreply.github.io/lucashi-apps/
@@ -29,8 +29,12 @@ Sans page de vente à recopier (comme Jauge) : écrire `<id>/index.html` à la m
 
 ## `apps.json`
 
-Une entrée par app : `id`, `nom`, `phrase`, `couleur`, `icone`, `captures`, `page`, `depot` (dépôt public des releases),
-`zip` (nom du fichier de la Release), `version` (repli), `source_page`, `build_page`, `page_construite`.
+Une entrée par app : `id`, `nom`, `phrase`, `couleur`, `icone`, `captures` (`src`, `alt`, `sombre`), `page` (la fiche, `fiche/?app=<id>`),
+`page_vente` (page complète `<id>/`, ou `null`), `points` (trois paires titre / phrase), `requis` (configuration requise),
+`depot` (dépôt public des releases), `zip` (nom du fichier de la Release), `version` (repli), `source_page`, `build_page`, `page_construite`.
+La fiche (`fiche/`) est une seule page qui se remplit depuis cette entrée : commande d'installation à copier, captures, configuration, lien des releases.
+
+**Règle** : une app n'entre ici que si elle a un dépôt public `<app>-releases`. Le code reste privé ; « GitHub » pointe toujours vers ce dépôt de releases.
 Au chargement, l'accueil lit la version sur l'API publique des releases ; si elle ne répond pas, il affiche `version`.
 Le bouton « Télécharger » pointe sur `releases/latest/download/<zip>` : il suit toujours la dernière Release.
 
@@ -39,6 +43,10 @@ Le bouton « Télécharger » pointe sur `releases/latest/download/<zip>` : il s
 `scripts/controle.sh` refuse (et bloque le push) s'il trouve dans les fichiers du site : un nom de client, un chemin de
 la machine, un jeton, une adresse e-mail (hors adresses d'exemple), un lien vers un dépôt non public. Il est branché
 comme hook `pre-push` (`git config core.hooksPath scripts/hooks`, déjà fait ; à refaire après un nouveau `git clone`).
+
+## VPS
+
+Le déploiement sur le VPS (Caddy, HTTPS, mise à jour toutes les 2 minutes, pare-feu) est préparé dans `deploiement/`, non lancé : voir `deploiement/LISEZ-MOI.md`.
 
 ## DNS chez IONOS (à faire par Lucas)
 
@@ -75,5 +83,7 @@ Contrôle : `curl -sI https://app.lucashi.fr | head -1` doit répondre `HTTP/2 2
 | `apps.json` | toutes les apps |
 | `pince/` | page de vente de Pince (copie de `~/Pince/site`, ne pas la modifier ici) |
 | `jauge/` | page de vente de Jauge, écrite ici |
+| `fiche/` | la fiche d'une app, remplie depuis `apps.json` |
+| `deploiement/` | `vps.sh` et son mode d'emploi (VPS, non lancé) |
 | `scripts/` | `mettre-a-jour.sh`, `ajouter-app.sh`, `controle.sh`, hook `pre-push` |
 | `CNAME` | `app.lucashi.fr` |

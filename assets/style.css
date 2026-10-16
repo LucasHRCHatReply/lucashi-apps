@@ -113,3 +113,42 @@ pre.cmd{background:#1c1c1e;color:#f5f5f7;padding:18px 20px;border-radius:16px;fo
 @media (prefers-reduced-transparency:reduce){
   .nav,.carte,.vitre{-webkit-backdrop-filter:none;backdrop-filter:none;background:var(--bg)}
 }
+
+/* ───── Lucas App Store ───── */
+.fond i{translate:0 var(--dy,0px)}
+.nav{transition:padding .25s,top .25s}
+.nav.serre{padding-top:7px;padding-bottom:7px}
+.hero .cue{display:inline-block;margin-top:34px;color:rgba(255,255,255,.85);font-size:14px;letter-spacing:.04em;text-decoration:none;animation:cue 2.4s ease-in-out infinite}
+@keyframes cue{50%{transform:translateY(6px)}}
+.grille{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:22px;padding-bottom:70px}
+.tuile{padding:28px 24px 24px;border-radius:32px;text-align:center;display:flex;flex-direction:column;align-items:center;
+  background:var(--glass);border:1px solid var(--glass-edge);-webkit-backdrop-filter:blur(28px) saturate(170%);backdrop-filter:blur(28px) saturate(170%);box-shadow:var(--glass-shadow),inset 0 1px 0 var(--glass-edge);transition:transform .3s,box-shadow .3s}
+.tuile:hover{transform:translateY(-4px)}
+.tuile .ico img{width:96px;height:96px;border-radius:22px;display:block;box-shadow:0 14px 30px -10px rgba(0,0,0,.5)}
+.tuile h3{font-size:26px;letter-spacing:-.02em;margin-top:16px}
+.tuile .v{font-size:13px;color:var(--ink2);font-variant-numeric:tabular-nums;margin-top:2px}
+.tuile .ph{font-size:17px;margin:14px 0 20px;min-height:3em}
+.tuile .boutons{justify-content:center}
+.btn.ok{background:#23CC99;color:#fff;border-color:transparent}
+button.btn{font-family:inherit;cursor:pointer}
+.rv{opacity:0;transform:translateY(28px);transition:opacity .7s ease var(--d,0ms),transform .7s cubic-bezier(.2,.7,.2,1) var(--d,0ms)}
+.rv.vu{opacity:1;transform:none}
+.tuile.rv.vu:hover{transform:translateY(-4px)}
+.bande-zone{overflow:hidden;padding:10px 0 80px}
+.bande{display:flex;gap:22px;width:max-content;padding:0 20px;will-change:transform}
+.vue{position:relative;display:block;height:clamp(220px,34vw,360px);text-decoration:none}
+.vue img{height:100%;width:auto;display:block;border-radius:18px;border:1px solid var(--line);box-shadow:0 24px 60px -24px rgba(0,0,0,.6)}
+.vue picture{display:block;height:100%}
+.vue span{position:absolute;left:14px;bottom:12px;padding:4px 12px;border-radius:999px;font-size:13px;font-weight:600;color:#fff;background:var(--c);}
+.galerie{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;justify-content:safe center;padding-bottom:10px}
+.galerie .vitre{flex:0 0 auto;max-width:min(92%,960px);scroll-snap-align:center}
+.galerie .vitre img{max-height:68vh;width:auto;max-width:100%}
+.cmdbox{display:flex;gap:12px;align-items:stretch;flex-wrap:wrap;margin:20px 0 36px}
+.cmdbox pre.cmd{flex:1 1 420px;margin:0;white-space:pre-wrap;word-break:break-all}
+.sous{font-size:22px;margin:8px 0 4px}
+@media (prefers-reduced-motion:reduce){
+  .rv{opacity:1;transform:none;transition:none}
+  .hero .cue{animation:none}
+  .bande-zone{overflow-x:auto}
+  .tuile,.tuile:hover{transition:none;transform:none}
+}

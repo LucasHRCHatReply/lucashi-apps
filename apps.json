@@ -14,14 +14,34 @@
           "alt": "Le panneau de Pince et ses cartes"
         }
       ],
-      "page": "pince/",
+      "page": "fiche/?app=pince",
       "depot": "LucasHRCHatReply/pince-releases",
       "zip": "Pince.zip",
       "version": "1.1.1",
       "source_page": "~/Pince/site",
       "build_page": "python3 build.py",
       "large": true,
-      "page_construite": "~/Downloads/Pince.html"
+      "page_construite": "~/Downloads/Pince.html",
+      "requis": [
+        "macOS 15 ou plus (Liquid Glass natif sous macOS 26)",
+        "Mac à puce Apple (M1 ou plus récent)",
+        "Aucun compte, aucun mot de passe administrateur"
+      ],
+      "points": [
+        [
+          "Il garde tout.",
+          "Texte, liens, images, fichiers : chaque copie se range sur une carte, retrouvable par app, type ou date."
+        ],
+        [
+          "Il masque ce qu'il faut.",
+          "Les contenus sensibles se floutent et ne se révèlent que d'un clic."
+        ],
+        [
+          "Il colle d'une touche.",
+          "Un raccourci, ⌘1 à ⌘9, et la carte se colle dans l'app active."
+        ]
+      ],
+      "page_vente": "pince/"
     },
     {
       "id": "jauge",
@@ -39,11 +59,66 @@
           "alt": "L'historique de charge de Jauge"
         }
       ],
-      "page": "jauge/",
+      "page": "fiche/?app=jauge",
       "depot": "LucasHRCHatReply/jauge-releases",
       "zip": "Jauge.zip",
       "version": "1.0.7",
-      "source_page": null
+      "source_page": null,
+      "requis": [
+        "MacBook à puce Apple (M1 ou plus récent)",
+        "macOS 26 ou plus",
+        "Quitter AlDente ou toute autre app de limite de charge",
+        "Aucun compte, aucun mot de passe administrateur"
+      ],
+      "points": [
+        [
+          "Une limite, réglable.",
+          "Un curseur, ou des plages horaires : la batterie reste entre deux niveaux quand le Mac est branché."
+        ],
+        [
+          "Où vont les watts.",
+          "Processeur, graphique, mémoire, écran : ce que le Mac consomme, et l'historique de charge."
+        ],
+        [
+          "Le démon travaille seul.",
+          "La limite tient même quand l'app est fermée."
+        ]
+      ],
+      "page_vente": "jauge/"
+    },
+    {
+      "id": "penombre",
+      "nom": "Penombre",
+      "phrase": "Assombrit tout, sauf la fenêtre active.",
+      "couleur": "#644BF5",
+      "icone": "assets/penombre-icon.png",
+      "captures": [],
+      "page": "fiche/?app=penombre",
+      "page_vente": null,
+      "depot": "LucasHRCHatReply/penombre-releases",
+      "zip": "Penombre.zip",
+      "version": "1.1.0",
+      "source_page": null,
+      "requis": [
+        "Mac à puce Apple (M1 ou plus récent)",
+        "macOS 14 ou plus",
+        "Accessibilité (facultative) : le voile suit chaque changement de fenêtre dans une même app",
+        "Aucun compte, aucune licence, aucune télémétrie"
+      ],
+      "points": [
+        [
+          "Le voile suit votre fenêtre.",
+          "Un voile se pose sous la fenêtre active et assombrit le reste, sur chaque écran."
+        ],
+        [
+          "Il ne gêne pas.",
+          "Le voile ne reçoit aucun clic. ⌃⌥D l'active ou le coupe."
+        ],
+        [
+          "Une lune dans la barre des menus.",
+          "Réglages et mises à jour y vivent. Aucune télémétrie."
+        ]
+      ]
     }
   ]
 }
