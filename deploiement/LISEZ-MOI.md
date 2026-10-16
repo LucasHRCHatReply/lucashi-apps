@@ -38,6 +38,18 @@ Il installe Caddy (dépôt officiel), clone ce dépôt dans `/srv/lucashi-apps`,
 `Caddyfile.avant-lucashi`), cache `/.git`, `/scripts`, `/deploiement` et ce fichier, puis active un timer systemd qui
 fait `git pull` toutes les 2 minutes : chaque push est en ligne dans les 2 minutes.
 
+### Variante : nginx tient déjà 80 et 443
+
+`installer` refuse alors de toucher à quoi que ce soit. Sur un VPS qui sert déjà d'autres sites par nginx et Certbot :
+
+```
+bash vps.sh installer-nginx <hôte>
+```
+
+Il ajoute un seul site statique, `/etc/nginx/sites-available/lucashi-apps` (mêmes chemins cachés), demande son certificat
+à Certbot avec redirection HTTP → HTTPS, et active le même timer de mise à jour. Les autres sites ne sont pas modifiés.
+C'est la variante en service sur le VPS Hostinger : `https://apps.srv875929.hstgr.cloud` (16/10/2026).
+
 ## 4. Pare-feu (étape à part)
 
 ```

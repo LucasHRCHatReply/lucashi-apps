@@ -23,6 +23,8 @@ if [ -n "$SRC" ]; then
   else
     rsync -a --exclude 'build*' --exclude '.git' --exclude '.DS_Store' "$SRC"/ "$ID"/
   fi
+  # le retour « Toutes les apps » reste relatif : le site est servi sous plusieurs noms (VPS, puis app.lucashi.fr)
+  sed -i '' 's#href="https://app.lucashi.fr/"#href="../"#g' "$ID/index.html"
 fi
 scripts/controle.sh
 git config core.hooksPath scripts/hooks

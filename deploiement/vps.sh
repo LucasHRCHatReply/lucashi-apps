@@ -2,6 +2,7 @@
 # Prépare le VPS pour servir ce dossier en HTTPS avec Caddy. À lancer SUR le VPS (en root).
 #   vps.sh etat                         état des lieux, en lecture seule (rien n'est modifié)
 #   vps.sh installer <hôte> [<hôte>…]   Caddy + clone + mise à jour toutes les 2 minutes (refuse si 80/443 sont pris)
+#   vps.sh installer-nginx <hôte>      quand nginx tient déjà 80/443 : un site statique de plus + Certbot
 #   vps.sh pare-feu                     ufw : 22 (ou le port ssh réel), 80 et 443 seulement
 # Exemple : vps.sh installer <IP-avec-tirets>.sslip.io app.lucashi.fr
 set -euo pipefail
@@ -53,6 +54,12 @@ CADDY
   [ -f /etc/caddy/Caddyfile ] || touch /etc/caddy/Caddyfile
   grep -q 'import sites/\*' /etc/caddy/Caddyfile || { cp /etc/caddy/Caddyfile /etc/caddy/Caddyfile.avant-lucashi; echo 'import sites/*' >> /etc/caddy/Caddyfile; }
   caddy validate --config /etc/caddy/Caddyfile
+  minuterie_maj
+  systemctl enable caddy; systemctl reload caddy || systemctl restart caddy
+  echo "en ligne : $HOTES (le certificat de chaque hôte s'émet dès que son DNS pointe sur ce VPS)"
+}
+
+minuterie_maj() {
   # mise à jour : un git pull toutes les 2 minutes (timer systemd)
   cat > /etc/systemd/system/lucashi-apps-maj.service <<UNIT
 [Unit]
@@ -70,9 +77,39 @@ OnUnitActiveSec=2min
 [Install]
 WantedBy=timers.target
 UNIT
-  systemctl daemon-reload; systemctl enable --now lucashi-apps-maj.timer; systemctl enable caddy; systemctl reload caddy || systemctl restart caddy
-  echo "en ligne : $HOTES (le certificat de chaque hôte s'émet dès que son DNS pointe sur ce VPS)"
+  systemctl daemon-reload; systemctl enable --now lucashi-apps-maj.timer
 }
+
+installer_nginx() {
+  [ $# -eq 1 ] || { echo "indiquer un seul hôte"; exit 2; }
+  H="$1"; CONF="/etc/nginx/sites-available/lucashi-apps"
+  command -v nginx >/dev/null && command -v certbot >/dev/null || { echo "nginx et certbot requis"; exit 3; }
+  grep -RlE "server_name[^;]*\b$H\b" /etc/nginx/sites-enabled 2>/dev/null | grep -v lucashi-apps && { echo "$H est déjà servi ailleurs : rien n'est installé"; exit 3; }
+  command -v git >/dev/null || { apt-get update -qq; apt-get install -y -qq git; }
+  [ -d "$DOSSIER/.git" ] || git clone --depth 1 "$DEPOT" "$DOSSIER"
+  [ -f "$CONF" ] || cat > "$CONF" <<NGINX
+server {
+    listen 80;
+    listen [::]:80;
+    server_name $H;
+    root $DOSSIER;
+    index index.html;
+    location ~ ^/(\.git|scripts|deploiement)(/|\$) { return 404; }
+    location = /LISEZ-MOI.md { return 404; }
+    location / { try_files \$uri \$uri/ \$uri.html =404; }
+    add_header X-Content-Type-Options nosniff always;
+    add_header Referrer-Policy strict-origin-when-cross-origin always;
+    gzip on; gzip_types text/css application/javascript application/json image/svg+xml;
+}
+NGINX
+  ln -sf "$CONF" /etc/nginx/sites-enabled/lucashi-apps
+  nginx -t && systemctl reload nginx
+  certbot --nginx -d "$H" --non-interactive --redirect --keep-until-expiring
+  nginx -t && systemctl reload nginx
+  minuterie_maj
+  echo "en ligne : https://$H"
+}
+
 
 pare_feu() {
   command -v ufw >/dev/null || apt-get install -y -qq ufw
@@ -85,6 +122,7 @@ pare_feu() {
 case "${1:-}" in
   etat) etat ;;
   installer) shift; installer "$@" ;;
+  installer-nginx) shift; installer_nginx "$@" ;;
   pare-feu) pare_feu ;;
   *) sed -n 2,7p "$0"; exit 2 ;;
 esac
