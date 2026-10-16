@@ -134,6 +134,54 @@
       ],
       "build_page": "python3 build.py",
       "page_construite": "~/Downloads/Penombre.html"
+    },
+    {
+      "id": "tiroir",
+      "nom": "Tiroir",
+      "phrase": "Des tiroirs flottants en verre, pour déposer vos fichiers.",
+      "couleur": "#16A8BC",
+      "icone": "assets/tiroir-icon.png",
+      "captures": [
+        {
+          "src": "tiroir/captures/replie.jpg",
+          "alt": "Deux tiroirs Tiroir : un replié, un déplié avec ses fichiers"
+        },
+        {
+          "src": "tiroir/captures/grille.jpg",
+          "alt": "Un tiroir ouvert : sélection de fichiers en grille"
+        },
+        {
+          "src": "tiroir/captures/menu.jpg",
+          "alt": "Le menu « plus d'actions » d'un tiroir"
+        }
+      ],
+      "page": "fiche/?app=tiroir",
+      "page_vente": "tiroir/",
+      "depot": "LucasHRCHatReply/tiroir-releases",
+      "zip": "Tiroir.zip",
+      "version": "1.0.0",
+      "source_page": "~/Tiroir/site",
+      "build_page": "python3 build.py",
+      "page_construite": "~/Downloads/Tiroir.html",
+      "requis": [
+        "Mac à puce Apple (M1 ou plus récent)",
+        "macOS 15 ou plus (Liquid Glass natif sous macOS 26)",
+        "Aucun compte, aucune télémétrie, aucun mot de passe administrateur"
+      ],
+      "points": [
+        [
+          "Secouez, déposez.",
+          "Secouer un fichier qu'on glisse ouvre un tiroir ; un fichier terminé dans Téléchargements y arrive tout seul."
+        ],
+        [
+          "Un tiroir se range.",
+          "Il se replie en languette sur le bord de l'écran, et se rouvre d'un geste."
+        ],
+        [
+          "Vos originaux ne bougent pas.",
+          "Les fichiers sont copiés ; vider un tiroir met les copies à la corbeille."
+        ]
+      ]
     }
   ]
 }
