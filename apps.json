@@ -92,33 +92,48 @@
       "phrase": "Assombrit tout, sauf la fenêtre active.",
       "couleur": "#644BF5",
       "icone": "assets/penombre-icon.png",
-      "captures": [],
+      "captures": [
+        {
+          "src": "penombre/captures/fenetre.jpg",
+          "alt": "Penombre : la fenêtre active éclairée, les autres sous le voile"
+        },
+        {
+          "src": "penombre/captures/concentration.jpg",
+          "alt": "Penombre en séance de concentration, voile renforcé"
+        },
+        {
+          "src": "penombre/captures/pause.jpg",
+          "alt": "Penombre en pause : aucun voile"
+        }
+      ],
       "page": "fiche/?app=penombre",
-      "page_vente": null,
+      "page_vente": "penombre/",
       "depot": "LucasHRCHatReply/penombre-releases",
       "zip": "Penombre.zip",
-      "version": "1.1.0",
-      "source_page": null,
+      "version": "1.2.0",
+      "source_page": "~/Penombre/site",
       "requis": [
         "Mac à puce Apple (M1 ou plus récent)",
-        "macOS 14 ou plus",
-        "Accessibilité (facultative) : le voile suit chaque changement de fenêtre dans une même app",
-        "Aucun compte, aucune licence, aucune télémétrie"
+        "macOS 14 ou plus (essayée sur macOS 26)",
+        "Accessibilité, facultative : le voile suit chaque changement de fenêtre dans une même app",
+        "Aucun compte, aucune télémétrie, aucun mot de passe"
       ],
       "points": [
         [
-          "Le voile suit votre fenêtre.",
-          "Un voile se pose sous la fenêtre active et assombrit le reste, sur chaque écran."
+          "Une fenêtre éclairée.",
+          "Un voile sous la fenêtre active assombrit le reste, sur chaque écran. Il ne reçoit aucun clic."
         ],
         [
-          "Il ne gêne pas.",
-          "Le voile ne reçoit aucun clic. ⌃⌥D l'active ou le coupe."
+          "Chaque app, son voile.",
+          "Plus léger pour le tableur, plus sombre pour l'éditeur, aucun pour la visio ; pause et séance de concentration de vingt-cinq minutes."
         ],
         [
-          "Une lune dans la barre des menus.",
-          "Réglages et mises à jour y vivent. Aucune télémétrie."
+          "Quatre touches.",
+          "⌃⌥D active, ⌃⌥P met en pause, ⌃⌥I ignore l'app, ⌃⌥↑↓ règle l'intensité."
         ]
-      ]
+      ],
+      "build_page": "python3 build.py",
+      "page_construite": "~/Downloads/Penombre.html"
     }
   ]
 }
