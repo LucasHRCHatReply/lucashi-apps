@@ -1,0 +1,49 @@
+{
+  "auteur": "Lucas Hirschauer",
+  "apps": [
+    {
+      "id": "pince",
+      "nom": "Pince",
+      "phrase": "Le presse-papiers qui garde tout et colle d'une touche.",
+      "couleur": "#009EFF",
+      "icone": "assets/pince-icon.png",
+      "captures": [
+        {
+          "src": "pince/captures/panneau-clair.jpg",
+          "sombre": "pince/captures/panneau-sombre.jpg",
+          "alt": "Le panneau de Pince et ses cartes"
+        }
+      ],
+      "page": "pince/",
+      "depot": "LucasHRCHatReply/pince-releases",
+      "zip": "Pince.zip",
+      "version": "1.1.1",
+      "source_page": "~/Pince/site",
+      "build_page": "python3 build.py",
+      "large": true,
+      "page_construite": "~/Downloads/Pince.html"
+    },
+    {
+      "id": "jauge",
+      "nom": "Jauge",
+      "phrase": "Garde la batterie du MacBook entre deux niveaux.",
+      "couleur": "#DE0C48",
+      "icone": "assets/jauge-icon.png",
+      "captures": [
+        {
+          "src": "jauge/panneau.jpg",
+          "alt": "Le panneau de Jauge dans la barre des menus"
+        },
+        {
+          "src": "jauge/historique.jpg",
+          "alt": "L'historique de charge de Jauge"
+        }
+      ],
+      "page": "jauge/",
+      "depot": "LucasHRCHatReply/jauge-releases",
+      "zip": "Jauge.zip",
+      "version": "1.0.7",
+      "source_page": null
+    }
+  ]
+}

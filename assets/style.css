@@ -1,0 +1,115 @@
+:root{
+  --bg:#fbfbfd; --alt:#f2f2f5; --ink:#1d1d1f; --ink2:#5f5f66; --line:rgba(0,0,0,.1);
+  --glass:rgba(255,255,255,.52); --glass-edge:rgba(255,255,255,.7); --glass-shadow:0 18px 50px -18px rgba(20,30,80,.35);
+  --w-base:#dfe7ff; --w1:#ff4fa8; --w2:#2fb1ff; --w3:#ffa63d; --w4:#7a55ff; --ribbon:.55;
+  --accent:#009EFF;
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#000; --alt:#111114; --ink:#f5f5f7; --ink2:#a1a1a6; --line:rgba(255,255,255,.14);
+  --glass:rgba(30,30,38,.48); --glass-edge:rgba(255,255,255,.18); --glass-shadow:0 18px 50px -18px rgba(0,0,0,.8);
+  --w-base:#070b24; --w1:#d743eb; --w2:#009eff; --w3:#16a8bc; --w4:#644bf5; --ribbon:.75;
+}}
+:root[data-theme="dark"]{
+  --bg:#000; --alt:#111114; --ink:#f5f5f7; --ink2:#a1a1a6; --line:rgba(255,255,255,.14);
+  --glass:rgba(30,30,38,.48); --glass-edge:rgba(255,255,255,.18); --glass-shadow:0 18px 50px -18px rgba(0,0,0,.8);
+  --w-base:#070b24; --w1:#d743eb; --w2:#009eff; --w3:#16a8bc; --w4:#644bf5; --ribbon:.75;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1.45;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:8px}
+
+/* fond riche : quatre taches de couleur floues, fixes */
+.fond{position:fixed;inset:0;z-index:-1;background:var(--w-base);overflow:hidden}
+.fond i{position:absolute;border-radius:50%;filter:blur(90px);opacity:var(--ribbon);animation:drift 26s ease-in-out infinite alternate}
+.fond i:nth-child(1){width:62vw;height:62vw;left:-14vw;top:-16vw;background:var(--w1)}
+.fond i:nth-child(2){width:58vw;height:58vw;right:-16vw;top:6vh;background:var(--w2);animation-delay:-8s}
+.fond i:nth-child(3){width:54vw;height:54vw;left:18vw;bottom:-26vw;background:var(--w3);animation-delay:-15s}
+.fond i:nth-child(4){width:46vw;height:46vw;right:6vw;bottom:-18vw;background:var(--w4);animation-delay:-4s}
+@keyframes drift{from{transform:translate3d(-3%,-2%,0) scale(1)}to{transform:translate3d(4%,5%,0) scale(1.12)}}
+
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+
+/* barre : surface de verre n°1 */
+.nav{position:sticky;top:12px;z-index:10;margin:12px auto 0;width:min(1080px,calc(100% - 32px));display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px 10px 18px;border-radius:999px;
+  background:var(--glass);border:1px solid var(--glass-edge);-webkit-backdrop-filter:blur(26px) saturate(170%);backdrop-filter:blur(26px) saturate(170%);box-shadow:var(--glass-shadow),inset 0 1px 0 var(--glass-edge)}
+.nav b{font-weight:650;letter-spacing:-.01em;text-decoration:none}
+.nav a.m{font-size:14px;text-decoration:none;color:var(--ink2);padding:6px 12px;border-radius:999px}
+.nav a.m:hover{background:var(--line)}
+.nav .liens{display:flex;gap:2px;align-items:center}
+
+.hero{text-align:center;padding:clamp(72px,14vh,150px) 0 clamp(48px,8vh,90px)}
+.hero h1{font-size:clamp(40px,7.4vw,84px);line-height:1.02;letter-spacing:-.035em;font-weight:700;text-wrap:balance;color:#fff;text-shadow:0 2px 30px rgba(0,0,0,.18)}
+.hero p{font-size:clamp(18px,2.2vw,24px);margin:20px auto 0;max-width:36ch;color:rgba(255,255,255,.92);text-shadow:0 1px 18px rgba(0,0,0,.18)}
+
+/* cartes : surface de verre n°2 */
+.cartes{display:grid;gap:22px;padding-bottom:40px}
+.carte{display:grid;grid-template-columns:1fr 1.15fr;gap:28px;align-items:center;padding:28px;border-radius:34px;
+  background:var(--glass);border:1px solid var(--glass-edge);-webkit-backdrop-filter:blur(28px) saturate(170%);backdrop-filter:blur(28px) saturate(170%);box-shadow:var(--glass-shadow),inset 0 1px 0 var(--glass-edge)}
+.carte .tete{display:flex;align-items:center;gap:14px}
+.carte img.ic{width:64px;height:64px;border-radius:15px;box-shadow:0 8px 22px -8px rgba(0,0,0,.45)}
+.carte h2{font-size:30px;letter-spacing:-.02em;line-height:1.1}
+.carte .v{font-size:13px;color:var(--ink2);font-variant-numeric:tabular-nums}
+.carte p.ph{font-size:19px;margin:16px 0 22px;color:var(--ink)}
+.boutons{display:flex;flex-wrap:wrap;gap:10px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:11px 20px;border-radius:999px;font-size:15px;font-weight:600;text-decoration:none;border:1px solid var(--line);background:transparent;color:var(--ink);transition:transform .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn.p{background:var(--c,var(--accent));border-color:transparent;color:#fff}
+.btn.g{background:var(--ink);color:var(--bg);border-color:transparent}
+.carte.large{grid-template-columns:1fr}
+.carte.large .caps img{border-radius:12px}
+.caps picture{display:block}
+.caps{display:grid;gap:10px}
+.caps img{width:100%;height:auto;display:block;border-radius:14px;border:1px solid var(--line);box-shadow:0 14px 40px -18px rgba(0,0,0,.5)}
+.caps.deux{grid-template-columns:.62fr 1fr;align-items:start}
+
+/* le reste est à plat */
+.plat{background:var(--bg);position:relative}
+.plat section{padding:clamp(56px,9vw,110px) 0}
+.plat h2.t{font-size:clamp(28px,4.4vw,48px);letter-spacing:-.03em;line-height:1.08;text-wrap:balance;margin-bottom:18px}
+.plat .lead{font-size:clamp(17px,2vw,21px);color:var(--ink2);max-width:46ch}
+.trois{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:34px}
+.trois div{border-top:2px solid var(--line);padding-top:16px}
+.trois b{display:block;font-size:19px;margin-bottom:6px}
+.trois span{color:var(--ink2);font-size:16px}
+footer{padding:36px 0 56px;color:var(--ink2);font-size:14px;border-top:1px solid var(--line)}
+footer .wrap{display:flex;flex-wrap:wrap;gap:8px 22px;justify-content:space-between}
+
+/* page d'app (Jauge) */
+.app-hero{text-align:center;padding:clamp(56px,10vh,110px) 0 40px;color:#fff}
+.app-hero img.ic{width:104px;height:104px;border-radius:24px;box-shadow:0 18px 40px -12px rgba(0,0,0,.55);margin-bottom:22px}
+.app-hero h1{font-size:clamp(44px,8vw,92px);letter-spacing:-.04em;line-height:1;text-shadow:0 2px 30px rgba(0,0,0,.2)}
+.app-hero p{font-size:clamp(18px,2.4vw,26px);max-width:30ch;margin:18px auto 28px;color:rgba(255,255,255,.93)}
+.app-hero .boutons{justify-content:center}
+.app-hero .btn{border-color:rgba(255,255,255,.55);color:#fff}
+.app-hero .btn.p{background:#fff;color:#111;border-color:transparent}
+.vitre{margin:0 auto;padding:10px;border-radius:30px;background:var(--glass);border:1px solid var(--glass-edge);-webkit-backdrop-filter:blur(28px);backdrop-filter:blur(28px);box-shadow:var(--glass-shadow);max-width:960px}
+.vitre img{width:100%;display:block;border-radius:22px}
+.fonc{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,5vw,64px);align-items:center}
+.fonc.inv .tx{order:2}
+.fonc img{width:100%;border-radius:18px;border:1px solid var(--line);box-shadow:0 22px 60px -26px rgba(0,0,0,.5);display:block}
+.fonc .tx h3{font-size:clamp(26px,3.6vw,40px);letter-spacing:-.025em;line-height:1.1;margin-bottom:12px}
+.fonc .tx p{color:var(--ink2);font-size:18px}
+pre.cmd{background:#1c1c1e;color:#f5f5f7;padding:18px 20px;border-radius:16px;font:14px/1.5 var(--mono);overflow-x:auto;margin:20px 0}
+.note{border-left:3px solid var(--c,var(--accent));padding:4px 0 4px 16px;color:var(--ink2);font-size:16px;max-width:62ch}
+.liste{list-style:none;display:grid;gap:12px;margin-top:20px}
+.liste li{padding-left:26px;position:relative;color:var(--ink2);font-size:17px}
+.liste li::before{content:"";position:absolute;left:0;top:.55em;width:10px;height:10px;border-radius:50%;background:var(--c,var(--accent))}
+
+@media (max-width:820px){
+  .carte{grid-template-columns:1fr;padding:22px;border-radius:28px}
+  .trois,.fonc{grid-template-columns:1fr}
+  .fonc.inv .tx{order:0}
+  .nav a.m.cache{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  .fond i{animation:none}
+  html{scroll-behavior:auto}
+  .btn{transition:none}
+}
+@media (prefers-reduced-transparency:reduce){
+  .nav,.carte,.vitre{-webkit-backdrop-filter:none;backdrop-filter:none;background:var(--bg)}
+}

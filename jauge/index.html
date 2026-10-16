@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jauge — la batterie, entre deux niveaux</title>
+<meta name="description" content="Jauge garde la batterie de votre MacBook entre deux niveaux quand il est branché, pour qu'elle vieillisse moins vite. Dans la barre des menus, gratuite, sans compte.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Jauge — la batterie, entre deux niveaux">
+<meta property="og:description" content="Un limiteur de charge pour MacBook : la batterie vieillit moins vite.">
+<meta property="og:url" content="https://app.lucashi.fr/jauge/">
+<meta property="og:image" content="https://app.lucashi.fr/assets/og.png">
+<link rel="icon" href="../assets/jauge-icon.png">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+:root{--c:#DE0C48;--w1:#ff3d6e;--w2:#ff8a3d;--w3:#ffc23d;--w4:#a8336f;--w-base:#4a0f2a}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--w1:#DE0C48;--w2:#7a1a9c;--w3:#b3401c;--w4:#2a1a6e;--w-base:#12040c}}
+</style>
+</head>
+<body>
+<div class="fond" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+<nav class="nav" aria-label="Navigation">
+  <a href="../" style="text-decoration:none"><b>← Apps de Lucas</b></a>
+  <div class="liens"><a class="m cache" href="#comment">Comment ça marche</a><a class="m" href="#installer">Installer</a></div>
+</nav>
+<main>
+  <header class="app-hero wrap">
+    <img class="ic" src="../assets/jauge-icon.png" alt="" width="104" height="104">
+    <h1>Jauge</h1>
+    <p>La batterie du MacBook, entre deux niveaux.</p>
+    <div class="boutons">
+      <a class="btn p" href="https://github.com/LucasHRCHatReply/jauge-releases/releases/latest/download/Jauge.zip">Télécharger</a>
+      <a class="btn" href="#installer">Installer</a>
+      <a class="btn" href="https://github.com/LucasHRCHatReply/jauge-releases" rel="noopener">GitHub</a>
+    </div>
+  </header>
+  <div class="wrap"><div class="vitre"><img src="panneau.jpg" alt="Le panneau de Jauge dans la barre des menus : 74 %, limite 75 %, où vont les watts" style="max-height:78vh;width:auto;margin:0 auto"></div></div>
+  <div class="plat" style="margin-top:80px">
+    <section id="comment"><div class="wrap">
+      <h2 class="t">Un MacBook branché vieillit sa batterie.</h2>
+      <p class="lead">Rester à 100 % en permanence l'use plus vite. Jauge coupe la charge à la limite choisie, par exemple 75 %, et le Mac tourne sur le secteur sans solliciter la batterie.</p>
+      <ul class="liste">
+        <li><b style="color:var(--ink)">Une limite, réglable.</b> Un curseur, ou des plages horaires : 100 % avant un voyage, 60 % le reste du temps.</li>
+        <li><b style="color:var(--ink)">Pleine charge, décharge, calibrage.</b> Trois boutons dans la barre des menus, quand il le faut.</li>
+        <li><b style="color:var(--ink)">Pause si trop chaud.</b> La charge s'arrête au-delà d'une température choisie.</li>
+        <li><b style="color:var(--ink)">Le démon travaille seul.</b> La limite tient même quand l'app est fermée.</li>
+      </ul>
+    </div></section>
+    <section><div class="wrap fonc">
+      <div class="tx"><h3>Où vont les watts.</h3><p>Processeur, graphique, mémoire, écran : un schéma montre ce que consomme le Mac, depuis le secteur ou la batterie.</p></div>
+      <img src="historique.jpg" alt="L'historique de Jauge : charge, puissance, température" loading="lazy">
+    </div></section>
+    <section><div class="wrap fonc inv">
+      <div class="tx"><h3>Les appareils branchés.</h3><p>iPhone, iPad : la puissance reçue et le niveau de chaque appareil, sans droits administrateur.</p></div>
+      <img src="appareils.jpg" alt="La liste des appareils branchés au Mac" loading="lazy">
+    </div></section>
+    <section id="installer"><div class="wrap">
+      <h2 class="t">Installer.</h2>
+      <p class="lead">Un MacBook à puce Apple, macOS 26 ou plus. Aucun compte, aucun mot de passe administrateur.</p>
+      <pre class="cmd">curl -fsSL https://raw.githubusercontent.com/LucasHRCHatReply/jauge-releases/main/installer.sh | zsh</pre>
+      <p class="note"><b>Jauge n'est pas notarisée par Apple.</b> Elle est signée, mais la notarisation demande un compte développeur payant : macOS la juge non vérifiée au premier lancement. Le script retire ce blocage sur Jauge.app seulement. Il se lit en entier : <a href="https://github.com/LucasHRCHatReply/jauge-releases/blob/main/installer.sh" rel="noopener">installer.sh</a>.</p>
+      <p class="note" style="margin-top:14px">Un geste reste manuel, une fois : Réglages Système › Général › Ouverture et arrière-plan, activer « Jauge ». Quitter AlDente ou toute autre app de limite de charge avant : deux apps qui pilotent la charge se contredisent. Mises à jour ensuite depuis l'app, dans Réglages › Mises à jour.</p>
+    </div></section>
+    <footer><div class="wrap"><a href="../">Toutes les apps</a><span>© Lucas Hirschauer</span></div></footer>
+  </div>
+</main>
+</body>
+</html>
