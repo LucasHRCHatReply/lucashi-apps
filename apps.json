@@ -6,7 +6,7 @@
       "nom": "Pince",
       "phrase": "Le presse-papiers qui garde tout et colle d'une touche.",
       "couleur": "#009EFF",
-      "icone": "assets/pince-icon.png?v=20261016",
+      "icone": "assets/pince-icon.png?v=20261016b",
       "captures": [
         {
           "src": "pince/captures/panneau-clair.jpg",
@@ -17,7 +17,7 @@
       "page": "pince/",
       "depot": "LucasHRCHatReply/pince-releases",
       "zip": "Pince.zip",
-      "version": "1.2.0",
+      "version": "1.3.0",
       "source_page": "~/Pince/site",
       "build_page": "python3 build.py",
       "large": true,
