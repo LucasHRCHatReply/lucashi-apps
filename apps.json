@@ -61,7 +61,7 @@
       "id": "penombre",
       "nom": "Penombre",
       "phrase": "Assombrit tout, sauf la fenêtre active.",
-      "couleur": "#644BF5",
+      "couleur": "#6E56F0",
       "icone": "assets/penombre-icon.png",
       "captures": [
         {
