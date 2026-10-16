@@ -17,7 +17,7 @@
       "page": "fiche/?app=pince",
       "depot": "LucasHRCHatReply/pince-releases",
       "zip": "Pince.zip",
-      "version": "1.1.1",
+      "version": "1.2.0",
       "source_page": "~/Pince/site",
       "build_page": "python3 build.py",
       "large": true,
@@ -41,7 +41,8 @@
           "Un raccourci, ⌘1 à ⌘9, et la carte se colle dans l'app active."
         ]
       ],
-      "page_vente": "pince/"
+      "page_vente": "pince/",
+      "dmg": "Pince.dmg"
     },
     {
       "id": "jauge",

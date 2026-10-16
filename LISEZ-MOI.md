@@ -31,7 +31,7 @@ Sans page de vente à recopier (comme Jauge) : écrire `<id>/index.html` à la m
 
 Une entrée par app : `id`, `nom`, `phrase`, `couleur`, `icone`, `captures` (`src`, `alt`, `sombre`), `page` (la fiche, `fiche/?app=<id>`),
 `page_vente` (page complète `<id>/`, ou `null`), `points` (trois paires titre / phrase), `requis` (configuration requise),
-`depot` (dépôt public des releases), `zip` (nom du fichier de la Release), `version` (repli), `source_page`, `build_page`, `page_construite`.
+`dmg` (nom du .dmg de la Release, seulement s'il y est vraiment : `gh release view --repo <depot>` ; sans ce champ, la fiche n'affiche pas le bloc .dmg), `depot` (dépôt public des releases), `zip` (nom du fichier de la Release), `version` (repli), `source_page`, `build_page`, `page_construite`.
 La fiche (`fiche/`) est une seule page qui se remplit depuis cette entrée : commande d'installation à copier, captures, configuration, lien des releases.
 
 **Règle** : une app n'entre ici que si elle a un dépôt public `<app>-releases`. Le code reste privé ; « GitHub » pointe toujours vers ce dépôt de releases.

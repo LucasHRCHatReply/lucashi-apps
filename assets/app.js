@@ -53,6 +53,26 @@
     maj();
   }
 
+
+  // étape Gatekeeper : trois vignettes en HTML, fidèles à macOS, pas des captures
+  function dmgBloc(a) {
+    const url = `https://github.com/${a.depot}/releases/latest/download/${a.dmg}`;
+    const n = esc(a.nom);
+    const etapes = [
+      ["Blocage", "Au premier lancement, macOS refuse d'ouvrir l'app : elle est signée mais pas notarisée par Apple. Choisir « Terminé ».",
+        `<div class="mac dlg"><div class="ic">${`<img src="${racine}${esc(a.icone)}" alt="" width="34" height="34">`}</div><b>« ${n} » n'a pas été ouverte</b><p>Apple n'a pas pu vérifier que « ${n} » ne contient pas de logiciel malveillant.</p><div class="bt"><span>Placer dans la corbeille</span><span class="d">Terminé</span></div></div>`],
+      ["Réglages Système", "Ouvrir Réglages Système › Confidentialité et sécurité, descendre jusqu'à « Sécurité » : l'app y est listée avec un bouton.",
+        `<div class="mac reg"><small>Confidentialité et sécurité</small><div class="lg"><span>« ${n} » a été bloquée pour protéger votre Mac.</span><span class="d">Ouvrir quand même</span></div></div>`],
+      ["Confirmation", "macOS demande une dernière fois. Choisir « Ouvrir quand même » et entrer le mot de passe du Mac. L'app s'ouvre, et ne redemandera plus.",
+        `<div class="mac dlg"><div class="ic"><img src="${racine}${esc(a.icone)}" alt="" width="34" height="34"></div><b>Ouvrir « ${n} » ?</b><p>Votre Mac ne peut pas vérifier cette app.</p><div class="bt"><span>Annuler</span><span class="d">Ouvrir quand même</span></div></div>`]
+    ];
+    return `<h3 class="sous rv"><span class="num">2</span> Le .dmg</h3>
+          <p class="lead rv" style="margin-bottom:18px">Ouvrir le .dmg, glisser ${n} dans Applications. ${n} n'est pas notarisée : macOS la bloque au premier lancement, et ne la débloque que sur demande. La commande ci-dessus évite ce blocage.</p>
+          <p class="rv"><a class="btn p" href="${esc(url)}">Télécharger le .dmg</a></p>
+          <ol class="etapes rv">${etapes.map((e, i) => `<li tabindex="0"><div class="vig" aria-hidden="true">${e[2]}</div><div class="leg"><span class="n">${i + 1}</span><b>${e[0]}</b></div><p class="det">${esc(e[1])}</p></li>`).join("")}</ol>
+          <p class="note rv" style="max-width:62ch">Ne jamais désactiver Gatekeeper pour installer une app. Ces vignettes sont dessinées d'après macOS, ce ne sont pas des captures.</p>`;
+  }
+
   async function charger() {
     try { return await (await fetch(racine + "apps.json", { cache: "no-cache" })).json(); } catch (e) { return null; }
   }
@@ -112,7 +132,9 @@
         <section id="installer"><div class="wrap">
           <h2 class="t rv">Installer.</h2>
           <p class="lead rv">Une commande, dans Terminal. Elle installe, et met à jour les fois suivantes.</p>
+          ${a.dmg ? `<h3 class="sous rv"><span class="num">1</span> La commande <span class="pastille">Recommandée</span></h3>` : ""}
           <div class="cmdbox rv"><pre class="cmd" id="cmd">${esc(cmd(a))}</pre><button class="btn p" type="button" data-copier>Copier</button></div>
+          ${a.dmg ? dmgBloc(a) : ""}
           ${a.requis.length ? `<h3 class="sous rv">Configuration requise</h3>
           <ul class="liste rv">${a.requis.map(r => `<li>${esc(r)}</li>`).join("")}</ul>` : ""}
           <p class="note rv" style="margin-top:28px"><b>${esc(a.nom)} n'est pas notarisée par Apple.</b> Elle est signée, mais la notarisation demande un compte développeur payant : macOS la juge non vérifiée au premier lancement. Le script retire ce blocage sur ${esc(a.nom)}.app seulement. Il se lit en entier : <a href="https://github.com/${esc(a.depot)}/blob/main/installer.sh" rel="noopener">installer.sh</a>.</p>
