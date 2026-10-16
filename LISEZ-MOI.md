@@ -29,10 +29,10 @@ Sans page de vente à recopier (comme Jauge) : écrire `<id>/index.html` à la m
 
 ## `apps.json`
 
-Une entrée par app : `id`, `nom`, `phrase`, `couleur`, `icone`, `captures` (`src`, `alt`, `sombre`), `page` (la fiche, `fiche/?app=<id>`),
-`page_vente` (page complète `<id>/`, ou `null`), `points` (trois paires titre / phrase), `requis` (configuration requise),
-`dmg` (nom du .dmg de la Release, seulement s'il y est vraiment : `gh release view --repo <depot>` ; sans ce champ, la fiche n'affiche pas le bloc .dmg), `depot` (dépôt public des releases), `zip` (nom du fichier de la Release), `version` (repli), `source_page`, `build_page`, `page_construite`.
-La fiche (`fiche/`) est une seule page qui se remplit depuis cette entrée : commande d'installation à copier, captures, configuration, lien des releases.
+Une entrée par app : `id`, `nom`, `phrase`, `couleur`, `icone`, `captures` (`src`, `alt`, `sombre`), `page` (la page de vente `<id>/`, ouverte par « Découvrir »),
+`requis` (configuration requise, passée au bloc Installer),
+`dmg` (nom du .dmg de la Release, seulement s'il y est vraiment : `gh release view --repo <depot>` ; sans ce champ, aucune page n'affiche de bloc .dmg), `depot` (dépôt public des releases), `zip` (nom du fichier de la Release), `version` (repli), `source_page`, `build_page`, `page_construite`.
+Il n'y a pas de fiche intermédiaire : « Découvrir » ouvre la page de vente. Le bloc « Installer » (commande, .dmg, étape Gatekeeper, configuration) est commun, dans le kit privé : `lucashi-kit/site/installation` (README) ; `assets/installation/` en est une copie verbatim, utilisée par la page de Jauge. `fiche/?app=<id>` redirige vers `<id>/#installer`.
 
 **Règle** : une app n'entre ici que si elle a un dépôt public `<app>-releases`. Le code reste privé ; « GitHub » pointe toujours vers ce dépôt de releases.
 Au chargement, l'accueil lit la version sur l'API publique des releases ; si elle ne répond pas, il affiche `version`.
@@ -83,7 +83,7 @@ Contrôle : `curl -sI https://app.lucashi.fr | head -1` doit répondre `HTTP/2 2
 | `apps.json` | toutes les apps |
 | `pince/` | page de vente de Pince (copie de `~/Pince/site`, ne pas la modifier ici) |
 | `jauge/` | page de vente de Jauge, écrite ici |
-| `fiche/` | la fiche d'une app, remplie depuis `apps.json` |
+| `fiche/` | redirection des anciens liens vers `<id>/#installer` |
 | `deploiement/` | `vps.sh` et son mode d'emploi (VPS, non lancé) |
 | `scripts/` | `mettre-a-jour.sh`, `ajouter-app.sh`, `controle.sh`, hook `pre-push` |
 | `CNAME` | `app.lucashi.fr` |

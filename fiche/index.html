@@ -2,22 +2,14 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Apps de Lucas</title>
-<meta name="description" content="Fiche d'une app de Lucas.">
-<meta name="color-scheme" content="light dark">
-<meta property="og:type" content="website">
-<meta property="og:image" content="https://app.lucashi.fr/assets/og.png">
-<link rel="icon" href="../assets/pince-icon.png">
-<link rel="stylesheet" href="../assets/style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="refresh" content="0; url=../">
+<script>
+// ancien lien d'une fiche : va à la page de vente de l'app, section « Installer »
+var id = (new URLSearchParams(location.search).get("app") || "").replace(/[^a-z0-9-]/g, "");
+location.replace(id ? "../" + id + "/#installer" : "../");
+</script>
 </head>
-<body data-page="fiche" data-racine="../">
-<div class="fond" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-<nav class="nav" aria-label="Navigation">
-  <a href="../" style="text-decoration:none"><b>← Apps de Lucas</b></a>
-  <div class="liens"><a class="m" href="#installer">Installer</a></div>
-</nav>
-<main id="fiche"></main>
-<script src="../assets/app.js"></script>
-</body>
+<body><p><a href="../">Toutes les apps</a></p></body>
 </html>

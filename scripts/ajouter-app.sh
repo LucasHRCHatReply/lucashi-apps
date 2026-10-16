@@ -13,9 +13,9 @@ import json,sys
 i,nom,ph,c,dep,zip_,ver,src=sys.argv[1:9]
 j=json.load(open("apps.json"))
 if any(a["id"]==i for a in j["apps"]): sys.exit("déjà dans apps.json : "+i)
-e={"id":i,"nom":nom,"phrase":ph,"couleur":c,"icone":f"assets/{i}-icon.png","captures":[],"page":f"fiche/?app={i}","page_vente":(f"{i}/" if src else None),"requis":[],"points":[],"depot":dep,"zip":zip_,"version":ver,"source_page":src or None}
+e={"id":i,"nom":nom,"phrase":ph,"couleur":c,"icone":f"assets/{i}-icon.png","captures":[],"page":f"{i}/","requis":[],"depot":dep,"zip":zip_,"version":ver,"source_page":src or None}
 j["apps"].append(e); json.dump(j,open("apps.json","w"),ensure_ascii=False,indent=2)
 PY
-echo "entrée ajoutée. Pour les captures de la carte : poser les images dans $ID/ et les lister dans apps.json (champ captures) ; compléter aussi « points » (trois phrases) et « requis » (configuration requise) pour la fiche."
+echo "entrée ajoutée. Pour les captures de la carte : poser les images dans $ID/ et les lister dans apps.json (champ captures) ; compléter aussi « requis » (configuration requise) ; la page de vente de l'app insère le bloc Installer du kit (lucashi-kit/site/installation)."
 [ -n "$SRC" ] && exec scripts/mettre-a-jour.sh "$ID" --sans-push
 echo "Pas de page de vente fournie : écrire $ID/index.html, puis : git add -A && git commit && git push"

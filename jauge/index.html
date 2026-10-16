@@ -13,6 +13,7 @@
 <meta property="og:image" content="https://app.lucashi.fr/assets/og.png">
 <link rel="icon" href="../assets/jauge-icon.png">
 <link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/installation/installation.css">
 <style>
 :root{--c:#DE0C48;--w1:#ff3d6e;--w2:#ff8a3d;--w3:#ffc23d;--w4:#a8336f;--w-base:#4a0f2a}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--w1:#DE0C48;--w2:#7a1a9c;--w3:#b3401c;--w4:#2a1a6e;--w-base:#12040c}}
@@ -55,15 +56,14 @@
       <div class="tx"><h3>Les appareils branchés.</h3><p>iPhone, iPad : la puissance reçue et le niveau de chaque appareil, sans droits administrateur.</p></div>
       <img src="appareils.jpg" alt="La liste des appareils branchés au Mac" loading="lazy">
     </div></section>
-    <section id="installer"><div class="wrap">
-      <h2 class="t">Installer.</h2>
-      <p class="lead">Un MacBook à puce Apple, macOS 26 ou plus. Aucun compte, aucun mot de passe administrateur.</p>
-      <pre class="cmd">curl -fsSL https://raw.githubusercontent.com/LucasHRCHatReply/jauge-releases/main/installer.sh | zsh</pre>
-      <p class="note"><b>Jauge n'est pas notarisée par Apple.</b> Elle est signée, mais la notarisation demande un compte développeur payant : macOS la juge non vérifiée au premier lancement. Le script retire ce blocage sur Jauge.app seulement. Il se lit en entier : <a href="https://github.com/LucasHRCHatReply/jauge-releases/blob/main/installer.sh" rel="noopener">installer.sh</a>.</p>
-      <p class="note" style="margin-top:14px">Un geste reste manuel, une fois : Réglages Système › Général › Ouverture et arrière-plan, activer « Jauge ». Quitter AlDente ou toute autre app de limite de charge avant : deux apps qui pilotent la charge se contredisent. Mises à jour ensuite depuis l'app, dans Réglages › Mises à jour.</p>
+    <section><div class="wrap" style="padding:0">
+      <div id="installer" data-lucashi-installation data-nom="Jauge" data-depot="LucasHRCHatReply/jauge-releases" data-couleur="#DE0C48" data-icone="../assets/jauge-icon.png"
+           data-requis='["MacBook à puce Apple (M1 ou plus récent)","macOS 26 ou plus","Quitter AlDente ou toute autre app de limite de charge : deux apps qui pilotent la charge se contredisent","Aucun compte, aucun mot de passe administrateur"]'></div>
+      <div class="wrap"><p class="note" style="margin-top:6px">Un geste reste manuel, une fois : Réglages Système › Général › Ouverture et arrière-plan, activer « Jauge ». Mises à jour ensuite depuis l'app, dans Réglages › Mises à jour.</p></div>
     </div></section>
     <footer><div class="wrap"><a href="../">Toutes les apps</a><span>© Lucas Hirschauer</span></div></footer>
   </div>
 </main>
+<script src="../assets/installation/installation.js"></script>
 </body>
 </html>
