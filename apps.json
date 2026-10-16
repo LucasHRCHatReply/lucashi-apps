@@ -6,7 +6,7 @@
       "nom": "Pince",
       "phrase": "Le presse-papiers qui garde tout et colle d'une touche.",
       "couleur": "#009EFF",
-      "icone": "assets/pince-icon.png",
+      "icone": "assets/pince-icon.png?v=20261016",
       "captures": [
         {
           "src": "pince/captures/panneau-clair.jpg",
@@ -35,7 +35,7 @@
       "nom": "Jauge",
       "phrase": "Garde la batterie du MacBook entre deux niveaux.",
       "couleur": "#2FBF4F",
-      "icone": "assets/jauge-icon.png",
+      "icone": "assets/jauge-icon.png?v=20261016",
       "captures": [
         {
           "src": "jauge/captures/panneau-clair.jpg",
@@ -70,7 +70,7 @@
       "nom": "Penombre",
       "phrase": "Assombrit tout, sauf la fenêtre active.",
       "couleur": "#6E56F0",
-      "icone": "assets/penombre-icon.png",
+      "icone": "assets/penombre-icon.png?v=20261016",
       "captures": [
         {
           "src": "penombre/captures/fenetre.jpg",
@@ -106,7 +106,7 @@
       "nom": "Tiroir",
       "phrase": "Des tiroirs flottants en verre, pour déposer vos fichiers.",
       "couleur": "#16A8BC",
-      "icone": "assets/tiroir-icon.png",
+      "icone": "assets/tiroir-icon.png?v=20261016",
       "captures": [
         {
           "src": "tiroir/captures/replie.jpg",
@@ -141,7 +141,7 @@
       "nom": "AutoFolderIcon",
       "phrase": "Pose toute seule une icône teintée sur chaque dossier, d'après son nom.",
       "couleur": "#4A90F5",
-      "icone": "assets/autofoldericon-icon.png",
+      "icone": "assets/autofoldericon-icon.png?v=20261016",
       "captures": [
         {
           "src": "autofoldericon/captures/galerie-clair.jpg",
