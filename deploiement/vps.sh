@@ -14,7 +14,7 @@ etat() {
   echo "== ports en écoute"; ss -tlnpH 2>/dev/null || true
   echo "== services actifs"; systemctl list-units --type=service --state=running --no-legend 2>/dev/null | awk '{print $1}' | grep -v -E '^(systemd|dbus|getty|serial|user@|cron|rsyslog|polkit|udisks|multipathd|unattended|snapd|ModemManager|networkd|chrony|qemu)' || true
   echo "== docker";         (command -v docker >/dev/null && docker ps --format '{{.Names}}\t{{.Ports}}') || echo "absent"
-  echo "== serveurs web";   for s in caddy nginx apache2 httpd traefik; do systemctl is-active "$s" 2>/dev/null | sed "s/^/$s : /"; done
+  echo "== serveurs web";   for s in caddy nginx apache2 httpd traefik; do echo "$s : $(systemctl is-active "$s" 2>/dev/null || true)"; done
   echo "== sites déjà servis"; ls /etc/nginx/sites-enabled /etc/caddy /etc/apache2/sites-enabled 2>/dev/null || echo "aucun répertoire connu"
   echo "== pare-feu";       (command -v ufw >/dev/null && ufw status verbose) || echo "ufw absent"; iptables -S 2>/dev/null | head -5 || true
   echo "== ssh";            sshd -T 2>/dev/null | grep -E '^(port|passwordauthentication|permitrootlogin) ' || true
