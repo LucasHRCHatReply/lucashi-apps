@@ -182,6 +182,58 @@
           "Les fichiers sont copiés ; vider un tiroir met les copies à la corbeille."
         ]
       ]
+    },
+    {
+      "id": "autofoldericon",
+      "nom": "AutoFolderIcon",
+      "phrase": "Pose toute seule une icône teintée sur chaque dossier, d'après son nom.",
+      "couleur": "#4A90F5",
+      "icone": "assets/autofoldericon-icon.png",
+      "captures": [
+        {
+          "src": "autofoldericon/captures/galerie-clair.jpg",
+          "sombre": "autofoldericon/captures/galerie-sombre.jpg",
+          "alt": "La galerie d'icônes de dossier d'AutoFolderIcon"
+        },
+        {
+          "src": "autofoldericon/captures/regles-clair.jpg",
+          "sombre": "autofoldericon/captures/regles-sombre.jpg",
+          "alt": "Les règles : un mot-clé, une couleur, un symbole"
+        },
+        {
+          "src": "autofoldericon/captures/menu-clair.jpg",
+          "sombre": "autofoldericon/captures/menu-sombre.jpg",
+          "alt": "Le menu d'AutoFolderIcon dans la barre des menus"
+        }
+      ],
+      "page": "fiche/?app=autofoldericon",
+      "page_vente": "autofoldericon/",
+      "depot": "LucasHRCHatReply/autofoldericon-releases",
+      "zip": "AutoFolderIcon.zip",
+      "version": "1.0.0",
+      "source_page": "~/AutoFolderIcon/site",
+      "build_page": "python3 build.py",
+      "page_construite": "~/Downloads/AutoFolderIcon.html",
+      "requis": [
+        "Mac à puce Apple (M1 ou plus récent)",
+        "macOS 14 ou plus",
+        "Facultatif : l'Accès complet au disque, pour styler aussi Bureau, Documents et Téléchargements",
+        "Aucun compte, aucune télémétrie, aucun mot de passe administrateur"
+      ],
+      "points": [
+        [
+          "Le nom dit tout.",
+          "Un dossier « Factures » devient vert avec un reçu ; « Voyages », bleu avec un avion."
+        ],
+        [
+          "Mot-clé, synonyme, faute de frappe.",
+          "L'app reconnaît le nom par mot-clé, synonyme, faute de frappe ou sens proche."
+        ],
+        [
+          "Dans la barre des menus.",
+          "Vos règles et réglages sont gardés à chaque mise à jour. Tout reste sur le Mac."
+        ]
+      ]
     }
   ]
 }
