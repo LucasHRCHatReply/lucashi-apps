@@ -124,7 +124,7 @@
       "page": "tiroir/",
       "depot": "LucasHRCHatReply/tiroir-releases",
       "zip": "Tiroir.zip",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "source_page": "~/Tiroir/site",
       "build_page": "python3 build.py",
       "page_construite": "~/Downloads/Tiroir.html",
