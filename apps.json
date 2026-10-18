@@ -174,6 +174,29 @@
       ],
       "dmg": "AutoFolderIcon.dmg",
       "description": "AutoFolderIcon donne à chaque dossier une couleur et un symbole d'après son nom, tout seul. « Factures » devient vert avec un reçu, « Voyages » bleu avec un avion : on retrouve ses dossiers d'un coup d'œil."
+    },
+    {
+      "id": "glisse",
+      "nom": "Glisse",
+      "phrase": "Cale la fenêtre d'un geste sur la barre de titre.",
+      "couleur": "#FF7A3D",
+      "icone": "assets/glisse-icon.png",
+      "captures": [],
+      "page": "glisse/",
+      "requis": [
+        "Mac à puce Apple (M1 ou plus récent) avec un trackpad",
+        "macOS 14 ou plus (essayée sur macOS 26)",
+        "Autorisation Accessibilité, une seule fois",
+        "Aucun compte, aucune télémétrie, aucun mot de passe"
+      ],
+      "depot": "LucasHRCHatReply/glisse-releases",
+      "zip": "Glisse.zip",
+      "version": "0.1.0",
+      "source_page": "~/Swish/site",
+      "build_page": "python3 build.py",
+      "page_construite": "~/Downloads/Glisse.html",
+      "dmg": "Glisse.dmg",
+      "description": "Glisse ajoute des gestes à la barre de titre des fenêtres : deux ou trois doigts qui glissent ou pincent calent la fenêtre en moitié ou en tiers, l'agrandissent, la minimisent ou la ferment. Version de test."
     }
   ]
 }
