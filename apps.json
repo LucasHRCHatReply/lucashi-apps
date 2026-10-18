@@ -191,12 +191,12 @@
       ],
       "depot": "LucasHRCHatReply/glisse-releases",
       "zip": "Glisse.zip",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "source_page": "~/Swish/site",
       "build_page": "python3 build.py",
       "page_construite": "~/Downloads/Glisse.html",
       "dmg": "Glisse.dmg",
-      "description": "Glisse ajoute des gestes à la barre de titre des fenêtres : deux ou trois doigts qui glissent ou pincent calent la fenêtre en moitié ou en tiers, l'agrandissent, la minimisent ou la ferment. Version de test."
+      "description": "Glisse ajoute des gestes à la barre de titre des fenêtres : deux ou trois doigts qui glissent ou pincent calent la fenêtre (moitiés, quarts, tiers, huitièmes), la passent en plein écran, la minimisent ou la ferment. Une affiche montre où elle ira avant que vous leviez les doigts. Version de test."
     }
   ]
 }
