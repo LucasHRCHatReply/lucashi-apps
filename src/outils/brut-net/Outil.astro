@@ -1,0 +1,277 @@
+---
+// Salaire brut ⇄ net (France, taux 2026). Tout se calcule dans la page ; les taux viennent de taux-2026.ts.
+import Champ from '../../composants/Champ.astro';
+import Choix from '../../composants/Choix.astro';
+import Note from '../../composants/Note.astro';
+import Resultat from '../../composants/Resultat.astro';
+import { TAUX, PMSS_MENSUEL, MULTIPLES } from './taux-2026';
+interface Props { lang?: 'fr' | 'en' }
+const { lang = 'fr' } = Astro.props;
+
+const nf = (x: number) => x.toLocaleString('fr-FR', { maximumFractionDigits: 3 });
+const eur = (x: number) => `${x.toLocaleString('fr-FR')} €`;
+const pm = eur(PMSS_MENSUEL);
+
+// Une ligne par cotisation : libellé de deux mots, explication au survol. Les lignes inutiles pour le statut choisi sont cachées par le script.
+interface Ligne { id: string; label: string; texte: string; pour: ('prive' | 'cadre' | 'public')[]; groupe: 'retraite' | 'csg' | 'autres' }
+const lignes: Ligne[] = [
+  { id: 'vieillessePlafonnee', label: 'Vieillesse plafonnée', groupe: 'retraite', pour: ['prive', 'cadre'], texte: `Retraite de base de la Sécurité sociale : ${nf(TAUX.vieillessePlafonnee)} % de la part du brut jusqu’à ${pm} par mois (le plafond de la Sécurité sociale).` },
+  { id: 'vieillesseDeplafonnee', label: 'Vieillesse déplafonnée', groupe: 'retraite', pour: ['prive', 'cadre'], texte: `Retraite de base, sans plafond : ${nf(TAUX.vieillesseDeplafonnee)} % de tout le brut.` },
+  { id: 'agircT1', label: 'Complémentaire T1', groupe: 'retraite', pour: ['prive', 'cadre'], texte: `Retraite complémentaire Agirc-Arrco, tranche 1 (jusqu’à ${pm}) : ${nf(TAUX.agircT1)} % à la charge du salarié.` },
+  { id: 'agircT2', label: 'Complémentaire T2', groupe: 'retraite', pour: ['prive', 'cadre'], texte: `Retraite complémentaire Agirc-Arrco, tranche 2 (de 1 à 8 plafonds) : ${nf(TAUX.agircT2)} % à la charge du salarié.` },
+  { id: 'cegT1', label: 'CEG T1', groupe: 'retraite', pour: ['prive', 'cadre'], texte: `Contribution d’équilibre général, tranche 1 : ${nf(TAUX.cegT1)} %. Elle finance l’équilibre de l’Agirc-Arrco.` },
+  { id: 'cegT2', label: 'CEG T2', groupe: 'retraite', pour: ['prive', 'cadre'], texte: `Contribution d’équilibre général, tranche 2 : ${nf(TAUX.cegT2)} %.` },
+  { id: 'cet', label: 'CET', groupe: 'retraite', pour: ['prive', 'cadre'], texte: `Contribution d’équilibre technique : ${nf(TAUX.cet)} % de tout le brut jusqu’à 8 plafonds, mais seulement si le brut dépasse ${pm} par mois.` },
+  { id: 'pension', label: 'Pension civile', groupe: 'retraite', pour: ['public'], texte: `Retenue pour pension du fonctionnaire d’État : ${nf(TAUX.pensionCivile)} % du traitement indiciaire (le brut hors primes).` },
+  { id: 'rafp', label: 'RAFP', groupe: 'retraite', pour: ['public'], texte: `Retraite additionnelle de la fonction publique : ${nf(TAUX.rafp)} % des primes, dans la limite de ${TAUX.rafpPlafondPrimes} % du traitement indiciaire.` },
+  { id: 'csgDeductible', label: 'CSG déductible', groupe: 'csg', pour: ['prive', 'cadre', 'public'], texte: `Contribution sociale généralisée : ${nf(TAUX.csgDeductible)} %, déductible du revenu imposable. L’assiette est ${nf(TAUX.abattementCsg)} % du brut jusqu’à 4 plafonds, 100 % au-delà.` },
+  { id: 'csgNonDeductible', label: 'CSG non déductible', groupe: 'csg', pour: ['prive', 'cadre', 'public'], texte: `Part de la CSG de ${nf(TAUX.csgNonDeductible)} % qui ne se déduit pas du revenu imposable.` },
+  { id: 'crds', label: 'CRDS', groupe: 'csg', pour: ['prive', 'cadre', 'public'], texte: `Contribution au remboursement de la dette sociale : ${nf(TAUX.crds)} %, non déductible.` },
+  { id: 'apec', label: 'APEC', groupe: 'autres', pour: ['cadre'], texte: `Cotisation de l’Association pour l’emploi des cadres : ${nf(TAUX.apec)} % du brut jusqu’à 4 plafonds. Seuls les cadres la paient.` },
+  { id: 'mutuelle', label: 'Mutuelle', groupe: 'autres', pour: ['prive', 'cadre', 'public'], texte: 'Votre part de la complémentaire santé, telle que vous l’avez saisie dans les réglages.' },
+];
+const groupes = [{ id: 'retraite', nom: 'Retraite' }, { id: 'csg', nom: 'CSG et CRDS' }, { id: 'autres', nom: 'Autres' }] as const;
+---
+<div class="bn" data-outil-id="brut-net" data-lang={lang}>
+  <div class="bn__ent">
+    <Choix id="bn-sens" label="Sens du calcul" options={[{ valeur: 'brut', libelle: 'Brut → net', aide: 'Je connais le brut' }, { valeur: 'net', libelle: 'Net → brut', aide: 'Je connais le net avant impôt' }]} valeur="brut" />
+    <div class="bn__ligne">
+      <Champ id="bn-montant" label="Salaire brut" type="text" inputmode="decimal" valeur="2500" unite="€" aide="Le montant est un salaire brut en mode Brut → net, un net avant impôt en mode Net → brut. Vous pouvez écrire une virgule." />
+      <Choix id="bn-periode" label="Période" options={[{ valeur: 'mensuel', libelle: 'Par mois' }, { valeur: 'annuel', libelle: 'Par an' }]} valeur="mensuel" />
+    </div>
+    <Champ id="bn-statut" label="Statut" type="select" valeur="non-cadre" options={[{ valeur: 'non-cadre', libelle: 'Non-cadre' }, { valeur: 'cadre', libelle: 'Cadre' }, { valeur: 'public', libelle: 'Fonction publique' }]}
+      aide="Non-cadre et cadre : salarié du privé (le cadre paie l’APEC et bénéficie d’une prévoyance). Fonction publique : fonctionnaire d’État, calcul simplifié (pension civile, RAFP, CSG)." />
+  </div>
+
+  <div class="bn__car" aria-live="polite">
+    <p class="bn__etat" id="bn-etat" hidden></p>
+    <div class="bn__cartes" id="bn-cartes">
+      <div class="bn__carte bn__carte--vedette">
+        <span class="o-etiquette">Net avant impôt</span>
+        <strong data-v="netM">—</strong><small data-v="netA"></small>
+      </div>
+      <div class="bn__carte" id="bn-carte-apres" hidden>
+        <span class="o-etiquette">Net après impôt</span>
+        <strong data-v="apresM">—</strong><small data-v="apresA"></small>
+      </div>
+      <div class="bn__carte">
+        <span class="o-etiquette">Salaire brut</span>
+        <strong data-v="brutM">—</strong><small data-v="brutA"></small>
+      </div>
+      <div class="bn__carte">
+        <span class="o-etiquette">Cotisations</span>
+        <strong data-v="cotM">—</strong><small data-v="cotA"></small>
+      </div>
+    </div>
+  </div>
+
+  <details class="bn__reg">
+    <summary>Réglages</summary>
+    <div class="bn__regs">
+      <Champ id="bn-quotite" label="Temps de travail" type="number" valeur={100} min={1} max={100} step={1} unite="%" inputmode="numeric" aide="100 % = temps plein. Le plafond de la Sécurité sociale est réduit dans la même proportion, comme sur une fiche de paie." />
+      <Champ id="bn-mois" label="Mois versés" type="select" valeur="12" options={[{ valeur: '12', libelle: '12 mois' }, { valeur: '13', libelle: '13 mois' }]} aide="Avec un 13e mois, le brut annuel est réparti sur 13 versements égaux." />
+      <Champ id="bn-mutuelle" label="Mutuelle" type="text" inputmode="decimal" valeur="0" unite="€/mois" aide="Votre part de la complémentaire santé obligatoire, par mois. La part de l’employeur est supposée égale à la vôtre : elle entre dans l’assiette de la CSG." />
+      <div id="bn-primes-champ" hidden><Champ id="bn-primes" label="Primes" type="number" valeur={0} min={0} max={100} step={1} unite="% du brut" inputmode="numeric" aide="Fonction publique : part de primes dans le brut. La RAFP s’applique aux primes (5 %, dans la limite de 20 % du traitement)." /></div>
+      <Champ id="bn-impot" label="Taux d’impôt" type="number" valeur={0} min={0} max={60} step={0.1} unite="%" inputmode="decimal" aide="Votre taux de prélèvement à la source, visible sur votre avis d’imposition ou sur impots.gouv.fr. Laissé à 0, le net après impôt n’est pas affiché." />
+    </div>
+  </details>
+
+  <details class="bn__det" open>
+    <summary>Détail des cotisations</summary>
+    <div class="bn__tableau">
+      <table>
+        <caption class="o-sr">Cotisations salariales, par mois</caption>
+        <thead><tr><th scope="col">Cotisation</th><th scope="col" class="bn__base">Assiette</th><th scope="col">Taux</th><th scope="col">Par mois</th></tr></thead>
+        {groupes.map((g) => (
+          <tbody data-groupe={g.id}>
+            <tr class="bn__groupe"><th scope="rowgroup" colspan="4">{g.nom}</th></tr>
+            {lignes.filter((l) => l.groupe === g.id).map((l) => (
+              <tr data-ligne={l.id} data-pour={l.pour.join(' ')} hidden>
+                <th scope="row"><span class="bn__lib">{l.label}<Note texte={l.texte} /></span></th>
+                <td class="bn__base" data-c="base"></td><td data-c="taux"></td><td data-c="montant"></td>
+              </tr>
+            ))}
+          </tbody>
+        ))}
+        <tfoot>
+          <tr><th scope="row">Total cotisations</th><td class="bn__base"></td><td data-c="tauxTotal"></td><td data-c="total"></td></tr>
+        </tfoot>
+      </table>
+    </div>
+    <p class="bn__bas">Barème {`${2026}`} · plafond de la Sécurité sociale {pm} par mois · CSG et CRDS : assiette à {nf(TAUX.abattementCsg)} % jusqu’à {MULTIPLES.plafondCsg} plafonds.</p>
+  </details>
+
+  <div class="bn__res">
+    <Resultat id="bn-resultat" label="Résumé à copier" copier lang={lang} />
+  </div>
+</div>
+
+<style>
+  .bn{display:grid;gap:18px 28px;grid-template-columns:minmax(0,360px) minmax(0,1fr);grid-template-areas:"ent car" "reg det" "res res";align-items:start}
+  .bn__ent{grid-area:ent;display:grid;gap:14px}
+  .bn__ligne{display:grid;gap:14px}
+  .bn__car{grid-area:car}
+  .bn__reg{grid-area:reg}
+  .bn__det{grid-area:det}
+  .bn__res{grid-area:res}
+  .bn :global(.o-champ__unite){white-space:nowrap}
+  .bn__cartes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .bn__carte{display:grid;gap:2px;padding:14px 16px;border:1px solid var(--line);border-radius:16px;background:var(--alt);min-width:0}
+  .bn__carte--vedette{grid-column:1/-1;background:var(--o-tinte);border-color:var(--o-accent)}
+  .bn__carte strong{font-size:clamp(24px,3.4vw,34px);letter-spacing:-.02em;line-height:1.1;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+  .bn__carte:not(.bn__carte--vedette) strong{font-size:clamp(20px,2.4vw,24px)}
+  .bn__carte small{font-size:14px;color:var(--ink2);min-height:1.2em;font-variant-numeric:tabular-nums}
+  .bn__etat{padding:12px 14px;border-radius:12px;border:1.5px solid var(--o-bord);font-size:15px;color:var(--ink)}
+  .bn__etat[hidden],.bn__cartes[hidden],.bn__carte[hidden],.bn__regs [hidden]{display:none}
+  details>summary{cursor:pointer;font-weight:600;font-size:16px;padding:10px 0;min-height:44px;display:flex;align-items:center}
+  details>summary:focus-visible{outline:3px solid var(--o-accent);outline-offset:2px;border-radius:8px}
+  .bn__regs{display:grid;gap:14px;padding:6px 0 4px}
+  .bn__tableau{overflow:visible}
+  .bn table{width:100%;border-collapse:collapse;font-size:15px;font-variant-numeric:tabular-nums}
+  .bn th,.bn td{padding:9px 6px;text-align:right;border-bottom:1px solid var(--line);font-weight:400}
+  .bn thead th{font-size:13px;color:var(--ink2);font-weight:600}
+  .bn th:first-child,.bn td:first-child{text-align:left}
+  .bn tbody th[scope="row"],.bn tfoot th{font-weight:500;text-align:left}
+  .bn tr[hidden]{display:none}
+  .bn .bn__groupe th{text-align:left;font-size:13px;font-weight:700;color:var(--ink2);text-transform:uppercase;letter-spacing:.04em;padding-top:16px;border-bottom:0}
+  .bn tbody[hidden]{display:none}
+  .bn tfoot th,.bn tfoot td{font-weight:700;border-bottom:0;border-top:2px solid var(--ink)}
+  .bn__lib{display:inline-flex;align-items:center;gap:8px}
+  .bn__bas{font-size:13px;color:var(--ink2);margin-top:10px}
+  @media (max-width:820px){
+    .bn{grid-template-columns:minmax(0,1fr);grid-template-areas:"ent" "car" "reg" "det" "res";gap:16px}
+  }
+  @media (max-width:480px){
+    .bn__base{display:none}
+    .bn th,.bn td{padding:9px 3px}
+    .bn table{font-size:14px}
+    .bn__cartes{gap:8px}
+    .bn__carte{padding:12px}
+  }
+</style>
+
+<script>
+  import { calculer, type Entree, type Statut } from './outil';
+  import { compter } from '../../lib/compteur';
+  import { afficherResultat, masquerResultat } from '../../lib/ui';
+
+  const racine = document.querySelector<HTMLElement>('[data-outil-id="brut-net"]');
+  if (racine) {
+    const $ = <T extends HTMLElement>(s: string) => racine.querySelector<T>(s)!;
+    const montant = $<HTMLInputElement>('#bn-montant');
+    const statut = $<HTMLSelectElement>('#bn-statut');
+    const quotite = $<HTMLInputElement>('#bn-quotite');
+    const mois = $<HTMLSelectElement>('#bn-mois');
+    const mutuelle = $<HTMLInputElement>('#bn-mutuelle');
+    const primes = $<HTMLInputElement>('#bn-primes');
+    const impot = $<HTMLInputElement>('#bn-impot');
+    const etat = $<HTMLElement>('#bn-etat');
+    const cartes = $<HTMLElement>('#bn-cartes');
+    const labelMontant = racine.querySelector<HTMLLabelElement>('label[for="bn-montant"]')!;
+    const radio = (id: string) => racine.querySelector<HTMLInputElement>(`#${id} input:checked`)?.value ?? '';
+
+    const euros = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const eurosRonds = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
+    const nombre = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 2 });
+    const lire = (el: HTMLInputElement): number => {
+      const t = el.value.replace(/[\s  €]/g, '').replace(',', '.');
+      return t === '' ? NaN : Number(t);
+    };
+
+    const ordre = racine.querySelectorAll<HTMLElement>('[data-ligne]');
+    let signature = '';
+    let actif = false; // le calcul initial n'est pas une utilisation
+    let minuteur: ReturnType<typeof setTimeout> | undefined;
+
+    const erreur = (texte: string) => {
+      etat.textContent = texte;
+      etat.hidden = false;
+      cartes.hidden = true;
+      $('#bn-carte-apres').hidden = true;
+      racine.querySelectorAll<HTMLElement>('[data-ligne]').forEach((l) => { l.hidden = true; });
+      racine.querySelectorAll<HTMLElement>('tbody').forEach((t) => { t.hidden = true; });
+      racine.querySelectorAll<HTMLElement>('[data-c="total"],[data-c="tauxTotal"]').forEach((c) => { c.textContent = ''; });
+      masquerResultat('bn-resultat');
+    };
+
+    const afficher = () => {
+      const sens = radio('bn-sens') === 'net' ? 'net' : 'brut';
+      const periode = radio('bn-periode') === 'annuel' ? 'annuel' : 'mensuel';
+      const st = statut.value as Statut;
+      labelMontant.firstChild!.textContent = sens === 'net' ? 'Salaire net' : 'Salaire brut';
+      $('#bn-primes-champ').hidden = st !== 'public';
+
+      const m = lire(montant);
+      const q = lire(quotite);
+      const mut = lire(mutuelle);
+      const pri = st === 'public' ? lire(primes) : 0;
+      const imp = lire(impot);
+      if (!Number.isFinite(m) || m <= 0) return erreur('Saisissez un montant supérieur à zéro.');
+      if (m > 10_000_000) return erreur('Ce montant est trop grand pour un salaire.');
+      if (!Number.isFinite(q) || q < 1 || q > 100) return erreur('Temps de travail : entre 1 et 100 %.');
+      if (!Number.isFinite(mut) || mut < 0) return erreur('Mutuelle : un montant de 0 € ou plus.');
+      if (st === 'public' && (!Number.isFinite(pri) || pri < 0 || pri > 100)) return erreur('Primes : entre 0 et 100 % du brut.');
+      if (!Number.isFinite(imp) || imp < 0 || imp > 60) return erreur('Taux d’impôt : entre 0 et 60 %.');
+
+      const entree: Entree = { statut: st, quotite: q, mutuelle: mut, primes: pri, tauxImpot: imp };
+      const nbMois = mois.value === '13' ? 13 : 12;
+      const r = calculer({ sens, montant: m, periode, mois: nbMois, entree });
+
+      etat.hidden = true;
+      cartes.hidden = false;
+      const v = (cle: string, t: string) => { $(`[data-v="${cle}"]`).textContent = t; };
+      v('netM', `${euros.format(r.netAvantImpot)} / mois`);
+      v('netA', `${eurosRonds.format(r.annuel.netAvantImpot)} par an sur ${nbMois} mois`);
+      v('brutM', euros.format(r.brut));
+      v('brutA', `${eurosRonds.format(r.annuel.brut)} par an`);
+      v('cotM', euros.format(r.cotisations));
+      v('cotA', `${nombre.format((r.cotisations / r.brut) * 100)} % du brut`);
+      const apres = $('#bn-carte-apres');
+      apres.hidden = r.tauxImpot <= 0;
+      if (r.tauxImpot > 0) {
+        v('apresM', euros.format(r.netApresImpot));
+        v('apresA', `${eurosRonds.format(r.annuel.netApresImpot)} par an, taux ${nombre.format(r.tauxImpot)} %`);
+      }
+
+      // détail ligne par ligne
+      const parId = new Map(r.lignes.map((l) => [l.id, l]));
+      const famille = st === 'public' ? 'public' : st === 'cadre' ? 'cadre' : 'prive';
+      ordre.forEach((tr) => {
+        const l = parId.get(tr.dataset.ligne!);
+        const concerne = (tr.dataset.pour ?? '').split(' ').includes(famille);
+        tr.hidden = !(concerne && l);
+        if (!l) return;
+        tr.querySelector('[data-c="base"]')!.textContent = euros.format(l.base);
+        tr.querySelector('[data-c="taux"]')!.textContent = tr.dataset.ligne === 'mutuelle' ? '' : `${nombre.format(l.taux)} %`;
+        tr.querySelector('[data-c="montant"]')!.textContent = euros.format(l.montant);
+      });
+      racine.querySelectorAll<HTMLElement>('tbody[data-groupe]').forEach((tb) => {
+        tb.hidden = !tb.querySelector('tr[data-ligne]:not([hidden])');
+      });
+      $('[data-c="total"]').textContent = euros.format(r.cotisations);
+      $('[data-c="tauxTotal"]').textContent = `${nombre.format((r.cotisations / r.brut) * 100)} %`;
+
+      const resume = [
+        `Salaire brut : ${euros.format(r.brut)} par mois (${eurosRonds.format(r.annuel.brut)} par an sur ${nbMois} mois)`,
+        `Cotisations salariales : ${euros.format(r.cotisations)} par mois`,
+        `Net avant impôt : ${euros.format(r.netAvantImpot)} par mois (${eurosRonds.format(r.annuel.netAvantImpot)} par an)`,
+        ...(r.tauxImpot > 0 ? [`Net après impôt à ${nombre.format(r.tauxImpot)} % : ${euros.format(r.netApresImpot)} par mois`] : []),
+        `Barème 2026, ${st === 'public' ? 'fonction publique d’État (simplifié)' : st === 'cadre' ? 'cadre du privé' : 'non-cadre du privé'}, temps de travail ${nombre.format(q)} %.`,
+      ].join('\n');
+      afficherResultat('bn-resultat', resume);
+
+      // compteur : une seule fois par saisie stabilisée (2 s sans frappe), seulement si le résultat a changé
+      const sig = [sens, periode, st, m, q, mut, pri, imp, nbMois].join('|');
+      if (!actif) { signature = sig; return; }
+      clearTimeout(minuteur);
+      minuteur = setTimeout(() => {
+        if (sig !== signature) { signature = sig; compter('utilise', 'brut-net'); }
+      }, 2000);
+    };
+
+    racine.addEventListener('input', afficher);
+    racine.addEventListener('change', afficher);
+    afficher();
+    actif = true;
+  }
+</script>
