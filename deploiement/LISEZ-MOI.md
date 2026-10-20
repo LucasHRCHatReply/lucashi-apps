@@ -1,7 +1,10 @@
 # Déployer sur le VPS (préparé, non lancé)
 
-Objectif : servir ce dépôt en HTTPS depuis le VPS, avec Caddy, et le tenir à jour à chaque push. GitHub Pages reste en
-place tant que le VPS n'est pas prêt.
+Objectif : construire ce dépôt (Astro) sur le VPS, servir `dist/` en HTTPS et le tenir à jour à chaque push. Le site n'est
+plus servable tel quel depuis la racine du dépôt (GitHub Pages ne convient plus : il faut une construction).
+
+**Pré-requis : Node 22 ou plus (avec npm) sur le VPS.** Adresse et indexation se règlent dans `/etc/lucashi-apps.env`
+(`SITE_URL`, `INDEXABLE`) ; tant que `INDEXABLE` n'est pas `true`, chaque page porte `noindex` et `robots.txt` interdit tout.
 
 Rien de ce qui suit n'a été exécuté. Le script se lance **sur** le VPS, en root, et ne modifie rien sans qu'on le demande.
 
@@ -35,8 +38,8 @@ bash vps.sh installer <IP-avec-tirets>.sslip.io app.lucashi.fr
 
 Il installe Caddy (dépôt officiel), clone ce dépôt dans `/srv/lucashi-apps`, écrit `/etc/caddy/sites/lucashi-apps.caddy`
 (sans toucher aux autres sites : une ligne `import sites/*` est ajoutée au Caddyfile, une copie est gardée en
-`Caddyfile.avant-lucashi`), cache `/.git`, `/scripts`, `/deploiement` et ce fichier, puis active un timer systemd qui
-fait `git pull` toutes les 2 minutes : chaque push est en ligne dans les 2 minutes.
+`Caddyfile.avant-lucashi`), sert `dist/` (le dépôt lui-même n'est pas exposé), relaie `/api/compte` vers le compteur, puis active un timer systemd qui
+met à jour et reconstruit toutes les 2 minutes : chaque push est en ligne dans les 2 minutes.
 
 ### Variante : nginx tient déjà 80 et 443
 
@@ -46,9 +49,32 @@ fait `git pull` toutes les 2 minutes : chaque push est en ligne dans les 2 minut
 bash vps.sh installer-nginx <hôte>
 ```
 
-Il ajoute un seul site statique, `/etc/nginx/sites-available/lucashi-apps` (mêmes chemins cachés), demande son certificat
+Il ajoute un seul site statique, `/etc/nginx/sites-available/lucashi-apps` (racine `dist/`, proxy `/api/compte`), demande son certificat
 à Certbot avec redirection HTTP → HTTPS, et active le même timer de mise à jour. Les autres sites ne sont pas modifiés.
 C'est la variante en service sur le VPS Hostinger : `https://apps.srv875929.hstgr.cloud` (16/10/2026).
+
+### Passer un site déjà installé à Astro (`migrer-astro`)
+
+Le VPS Hostinger sert encore la racine du dépôt (nginx, avant Astro). Ordre à suivre, pour qu'aucune page ne casse :
+
+```
+ssh root@<IP>
+systemctl stop lucashi-apps-maj.timer                 # plus de git pull pendant la bascule
+# (poussez main depuis le Mac)
+curl -fsSL https://raw.githubusercontent.com/LucasHRCHatReply/lucashi-apps/main/deploiement/vps.sh -o vps.sh
+bash vps.sh migrer-astro
+```
+
+`migrer-astro` : vérifie Node 22, écrit `/etc/lucashi-apps.env` (adresse lue dans la conf nginx, `INDEXABLE=false`), installe
+`/usr/local/bin/lucashi-apps-maj`, garde une copie `lucashi-apps.avant-astro`, remplace la racine par `dist/`, ajoute
+`location /api/compte` (vers `127.0.0.1:8240`, le compteur), construit une première fois, recharge nginx, relance le timer.
+Retour arrière : recopier `lucashi-apps.avant-astro` sur la conf et recharger nginx.
+
+La mise à jour (timer, toutes les 2 minutes) fait `git pull` ; si HEAD a changé (ou si `dist/` manque), `nice -n 15 npm ci`
+puis `npm run build` dans `dist.new/`, échangé d'un coup avec `dist/`.
+
+Passage en production (quand `app.lucashi.fr` pointe sur le VPS) : dans `/etc/lucashi-apps.env`, `SITE_URL=https://app.lucashi.fr`
+et `INDEXABLE=true`, puis `/usr/local/bin/lucashi-apps-maj` après avoir supprimé `dist/` (ou pousser un commit).
 
 ## 4. Pare-feu (étape à part)
 

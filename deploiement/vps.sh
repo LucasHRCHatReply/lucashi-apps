@@ -3,11 +3,18 @@
 #   vps.sh etat                         état des lieux, en lecture seule (rien n'est modifié)
 #   vps.sh installer <hôte> [<hôte>…]   Caddy + clone + mise à jour toutes les 2 minutes (refuse si 80/443 sont pris)
 #   vps.sh installer-nginx <hôte>      quand nginx tient déjà 80/443 : un site statique de plus + Certbot
+#   vps.sh migrer-astro                 sur un site déjà installé par nginx : passe à la construction Astro
+#                                       (dist/, proxy /api/compte, mise à jour qui construit) sans toucher au reste
 #   vps.sh pare-feu                     ufw : 22 (ou le port ssh réel), 80 et 443 seulement
+# Le site est construit sur le VPS : Node 22 ou plus requis. Adresse et indexation : /etc/lucashi-apps.env
+# (SITE_URL, INDEXABLE) ; production = SITE_URL=https://app.lucashi.fr et INDEXABLE=true.
 # Exemple : vps.sh installer <IP-avec-tirets>.sslip.io app.lucashi.fr
 set -euo pipefail
 DEPOT="https://github.com/LucasHRCHatReply/lucashi-apps.git"
 DOSSIER="/srv/lucashi-apps"
+ENV_FICHIER="/etc/lucashi-apps.env"
+SCRIPT_MAJ="/usr/local/bin/lucashi-apps-maj"
+PORT_COMPTEUR=8240
 [ "$(id -u)" -eq 0 ] || { echo "à lancer en root"; exit 1; }
 
 etat() {
@@ -22,12 +29,50 @@ etat() {
   echo "== tâches planifiées"; crontab -l 2>/dev/null | grep -v '^#' || true; systemctl list-timers --no-legend 2>/dev/null | head -8
 }
 
+verifier_node() {
+  command -v node >/dev/null && command -v npm >/dev/null && [ "$(node -p 'process.versions.node.split(".")[0]')" -ge 22 ] \
+    || { echo "Node 22 ou plus (avec npm) est requis pour construire le site : l'installer d'abord (nodejs.org), rien n'est modifié."; exit 3; }
+}
+
+ecrire_env() { # $1 = hôte public
+  [ -f "$ENV_FICHIER" ] || printf 'SITE_URL=https://%s\nINDEXABLE=false\n' "$1" > "$ENV_FICHIER"
+  chmod 644 "$ENV_FICHIER"
+}
+
+ecrire_script_maj() {
+  # git pull ; si HEAD a changé (ou si dist/ manque) : npm ci puis build dans dist.new, échangé d'un coup (pas de page cassée entre deux).
+  cat > "$SCRIPT_MAJ" <<'MAJ'
+#!/usr/bin/env bash
+set -euo pipefail
+DOSSIER="__DOSSIER__"
+[ -f "__ENV__" ] && { set -a; . "__ENV__"; set +a; }
+cd "$DOSSIER"
+avant=$(git rev-parse HEAD)
+git pull --ff-only --quiet
+apres=$(git rev-parse HEAD)
+if [ "$avant" != "$apres" ] || [ ! -f dist/index.html ]; then
+  nice -n 15 npm ci --no-audit --no-fund --loglevel=error
+  rm -rf dist.new
+  OUT_DIR=dist.new nice -n 15 npm run build
+  rm -rf dist.old
+  [ -d dist ] && mv dist dist.old
+  mv dist.new dist
+  rm -rf dist.old
+fi
+MAJ
+  sed -i "s#__DOSSIER__#$DOSSIER#; s#__ENV__#$ENV_FICHIER#g" "$SCRIPT_MAJ"
+  chmod 755 "$SCRIPT_MAJ"
+}
+
+construire_une_fois() { HOME=/root "$SCRIPT_MAJ"; }
+
 installer() {
   [ $# -ge 1 ] || { echo "indiquer au moins un hôte"; exit 2; }
   for p in 80 443; do
     u=$(ss -tlnpH "sport = :$p" 2>/dev/null | grep -v '"caddy"' || true)
     [ -z "$u" ] || { echo "le port $p est déjà utilisé :"; echo "$u"; echo "rien n'est installé : voir « vps.sh etat »."; exit 3; }
   done
+  verifier_node
   command -v git >/dev/null || { apt-get update -qq; apt-get install -y -qq git; }
   if ! command -v caddy >/dev/null; then
     apt-get install -y -qq debian-keyring debian-archive-keyring apt-transport-https curl gpg
@@ -36,15 +81,19 @@ installer() {
     apt-get update -qq; apt-get install -y -qq caddy
   fi
   [ -d "$DOSSIER/.git" ] || git clone --depth 1 "$DEPOT" "$DOSSIER"
+  verifier_node; ecrire_env "$1"; ecrire_script_maj; construire_une_fois
   mkdir -p /etc/caddy/sites
   HOTES=$(printf '%s, ' "$@"); HOTES=${HOTES%, }
   cat > /etc/caddy/sites/lucashi-apps.caddy <<CADDY
 $HOTES {
-	root * $DOSSIER
 	encode zstd gzip
-	file_server
-	@prive path /.git/* /scripts/* /deploiement/* /LISEZ-MOI.md
-	respond @prive 404
+	handle /api/compte* {
+		reverse_proxy 127.0.0.1:$PORT_COMPTEUR
+	}
+	handle {
+		root * $DOSSIER/dist
+		file_server
+	}
 	header {
 		X-Content-Type-Options nosniff
 		Referrer-Policy strict-origin-when-cross-origin
@@ -66,7 +115,9 @@ minuterie_maj() {
 Description=Met à jour le site des apps de Lucas
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/git -C $DOSSIER pull --ff-only --quiet
+Environment=HOME=/root
+TimeoutStartSec=900
+ExecStart=$SCRIPT_MAJ
 UNIT
   cat > /etc/systemd/system/lucashi-apps-maj.timer <<UNIT
 [Unit]
@@ -85,17 +136,18 @@ installer_nginx() {
   H="$1"; CONF="/etc/nginx/sites-available/lucashi-apps"
   command -v nginx >/dev/null && command -v certbot >/dev/null || { echo "nginx et certbot requis"; exit 3; }
   grep -RlE "server_name[^;]*\b$H\b" /etc/nginx/sites-enabled 2>/dev/null | grep -v lucashi-apps && { echo "$H est déjà servi ailleurs : rien n'est installé"; exit 3; }
+  verifier_node
   command -v git >/dev/null || { apt-get update -qq; apt-get install -y -qq git; }
   [ -d "$DOSSIER/.git" ] || git clone --depth 1 "$DEPOT" "$DOSSIER"
+  ecrire_env "$H"; ecrire_script_maj; construire_une_fois
   [ -f "$CONF" ] || cat > "$CONF" <<NGINX
 server {
     listen 80;
     listen [::]:80;
     server_name $H;
-    root $DOSSIER;
+    root $DOSSIER/dist;
     index index.html;
-    location ~ ^/(\.git|scripts|deploiement)(/|\$) { return 404; }
-    location = /LISEZ-MOI.md { return 404; }
+    location /api/compte { proxy_pass http://127.0.0.1:$PORT_COMPTEUR; client_max_body_size 4k; }
     location / { try_files \$uri \$uri/ \$uri.html =404; }
     add_header X-Content-Type-Options nosniff always;
     add_header Referrer-Policy strict-origin-when-cross-origin always;
@@ -110,6 +162,28 @@ NGINX
   echo "en ligne : https://$H"
 }
 
+migrer_astro() {
+  verifier_node
+  systemctl stop lucashi-apps-maj.timer 2>/dev/null || true   # pas de git pull entre-temps ; minuterie_maj le relance à la fin
+  [ -d "$DOSSIER/.git" ] || { echo "le site n'est pas installé dans $DOSSIER : utiliser installer ou installer-nginx"; exit 3; }
+  CONF="/etc/nginx/sites-available/lucashi-apps"; CADDY="/etc/caddy/sites/lucashi-apps.caddy"
+  if [ -f "$CONF" ]; then
+    H=$(awk '/server_name/{gsub(";","");print $2; exit}' "$CONF")
+    ecrire_env "$H"; ecrire_script_maj
+    cp "$CONF" "$CONF.avant-astro"
+    sed -i "s#root $DOSSIER;#root $DOSSIER/dist;#" "$CONF"
+    grep -q '/api/compte' "$CONF" || sed -i "/index index.html;/a\\    location /api/compte { proxy_pass http://127.0.0.1:$PORT_COMPTEUR; client_max_body_size 4k; }" "$CONF"
+    # les anciennes règles « cacher .git/scripts » deviennent inutiles : dist ne contient que le site
+    construire_une_fois
+    nginx -t && systemctl reload nginx
+  elif [ -f "$CADDY" ]; then
+    echo "site servi par Caddy : relancer « vps.sh installer <hôte> » (le fichier $CADDY est réécrit avec dist/ et le proxy)"; exit 3
+  else
+    echo "ni $CONF ni $CADDY : rien à migrer"; exit 3
+  fi
+  minuterie_maj
+  echo "migré : le site est servi depuis $DOSSIER/dist ; les mises à jour construisent ($ENV_FICHIER : SITE_URL, INDEXABLE). Retour arrière : les fichiers .avant-astro."
+}
 
 pare_feu() {
   command -v ufw >/dev/null || apt-get install -y -qq ufw
@@ -123,6 +197,7 @@ case "${1:-}" in
   etat) etat ;;
   installer) shift; installer "$@" ;;
   installer-nginx) shift; installer_nginx "$@" ;;
+  migrer-astro) migrer_astro ;;
   pare-feu) pare_feu ;;
-  *) sed -n 2,7p "$0"; exit 2 ;;
+  *) sed -n 2,12p "$0"; exit 2 ;;
 esac
