@@ -26,13 +26,13 @@ const reseaux = [['linkedin', 'LinkedIn', D.linkedin], ['x', 'X', D.x], ['instag
   <div class="sig__form">
     <div class="sig__grille">
       <Champ id="sig-nom" label={L.nom} valeur={D.nom} autocomplete="name" lang={lang} />
-      <Champ id="sig-poste" label={L.poste} valeur={D.poste} autocomplete="organization-title" lang={lang} />
+      <Champ id="sig-poste" label={L.poste} valeur={fr ? D.poste : 'Communications manager'} autocomplete="organization-title" lang={lang} />
       <Champ id="sig-entreprise" label={L.entreprise} valeur={D.entreprise} autocomplete="organization" lang={lang} />
       <Champ id="sig-telephone" label={L.tel} type="text" inputmode="tel" valeur={D.telephone} autocomplete="tel" lang={lang} />
       <Champ id="sig-email" label={L.email} type="email" valeur={D.email} autocomplete="email" lang={lang} />
       <Champ id="sig-site" label={L.site} type="text" inputmode="url" valeur={D.site} lang={lang} />
     </div>
-    <Champ id="sig-adresse" label={L.adresse} valeur={D.adresse} autocomplete="street-address" lang={lang} />
+    <Champ id="sig-adresse" label={L.adresse} valeur={fr ? D.adresse : '12 Lilac Street, 75011 Paris'} autocomplete="street-address" lang={lang} />
     <details class="sig__reseaux">
       <summary>{L.reseaux} <Note texte={L.reseauxAide} lang={lang} /></summary>
       <div class="sig__grille">
