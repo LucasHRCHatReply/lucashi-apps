@@ -1,0 +1,291 @@
+---
+// HEIC -> JPG / PNG, dans le navigateur. Décodage par libheif (wasm) dans un Worker chargé au premier dépôt.
+import ZoneDepot from '../../composants/ZoneDepot.astro';
+import Choix from '../../composants/Choix.astro';
+import Note from '../../composants/Note.astro';
+import Bouton from '../../composants/Bouton.astro';
+import Telecharger from '../../composants/Telecharger.astro';
+interface Props { lang?: 'fr' | 'en' }
+const { lang = 'fr' } = Astro.props;
+const fr = lang === 'fr';
+const T = fr
+  ? {
+      depot: 'Choisir des photos', depotAide: 'Glisser des .heic ici, cliquer, ou coller (Cmd+V)',
+      format: 'Format', qualite: 'Qualité', exif: 'Date et lieu', vider: 'Tout effacer',
+      aideFormat: 'JPG : léger, lisible partout. PNG : sans perte, fichiers plus lourds.',
+      aideQualite: 'Plus haut = plus fidèle et plus lourd. 92 est un bon réglage pour des photos.',
+      aideExif: 'Recopie dans le JPG la date, le lieu GPS et l’appareil de la photo. Décoché, le fichier ne révèle rien : mieux pour partager.',
+      liste: 'Photos à convertir',
+    }
+  : {
+      depot: 'Choose photos', depotAide: 'Drop .heic files here, click, or paste (Cmd+V)',
+      format: 'Format', qualite: 'Quality', exif: 'Date and place', vider: 'Clear all',
+      aideFormat: 'JPG: light and readable everywhere. PNG: lossless, bigger files.',
+      aideQualite: 'Higher = more faithful and heavier. 92 is a good setting for photos.',
+      aideExif: 'Copies the photo’s date, GPS location and camera into the JPG. Unchecked, the file reveals nothing: better for sharing.',
+      liste: 'Photos to convert',
+    };
+---
+<div class="hj" data-outil-id="heic-jpg" data-lang={lang}>
+  <ZoneDepot id="hj-depot" accept=".heic,.heif,.hif,image/heic,image/heif" multiple={true} lang={lang} libelle={T.depot} aide={T.depotAide} />
+
+  <div class="hj-reglages">
+    <div class="hj-r">
+      <Choix id="hj-format" label={T.format}
+        options={[{ valeur: 'jpg', libelle: 'JPG' }, { valeur: 'png', libelle: 'PNG' }]} valeur="jpg" />
+      <Note texte={T.aideFormat} lang={lang} />
+    </div>
+    <div class="hj-r" id="hj-bloc-qualite">
+      <label class="hj-q" for="hj-qualite">
+        <span class="o-etiquette">{T.qualite}</span>
+        <input id="hj-qualite" type="range" min="50" max="100" step="1" value="92" aria-describedby="hj-q-val" />
+        <output id="hj-q-val" for="hj-qualite">92</output>
+      </label>
+      <Note texte={T.aideQualite} lang={lang} />
+    </div>
+    <div class="hj-r" id="hj-bloc-exif">
+      <label class="hj-c"><input id="hj-exif" type="checkbox" /><span class="o-etiquette">{T.exif}</span></label>
+      <Note texte={T.aideExif} lang={lang} />
+    </div>
+  </div>
+
+  <div class="hj-suite" id="hj-suite" hidden>
+    <div class="hj-entete">
+      <p class="hj-etat" id="hj-etat" role="status" aria-live="polite"></p>
+      <Bouton variante="discret" id="hj-vider">{T.vider}</Bouton>
+    </div>
+    <ul class="hj-liste" id="hj-liste" aria-label={T.liste}></ul>
+    <Telecharger id="hj-telecharger" lang={lang} />
+  </div>
+</div>
+
+<style is:global>
+  .hj{display:grid;gap:16px}
+  .hj .o-depot{padding:18px 16px}
+  .hj-reglages{display:flex;flex-wrap:wrap;gap:12px 26px;align-items:flex-end}
+  .hj-r{display:flex;align-items:flex-end;gap:8px}
+  .hj-r[hidden]{display:none}
+  .hj-q{display:grid;gap:8px;grid-template-columns:auto 1fr auto;align-items:center}
+  .hj-q .o-etiquette{grid-column:1/-1}
+  .hj-q input{width:150px;min-height:44px;accent-color:var(--o-accent)}
+  .hj-q output{font:600 15px var(--font);min-width:2.2em;text-align:right;font-variant-numeric:tabular-nums}
+  .hj-c{display:flex;align-items:center;gap:10px;min-height:44px;cursor:pointer}
+  .hj-c input{width:22px;height:22px;accent-color:var(--o-accent)}
+  .hj-suite{display:grid;gap:12px}
+  .hj-suite[hidden]{display:none}
+  .hj-entete{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .hj-etat{margin:0;font-weight:600;font-size:16px}
+  #hj-vider{width:auto}
+  .hj-liste{list-style:none;margin:0;padding:0;display:grid;gap:8px;max-height:min(46vh,420px);overflow:auto}
+  .hj-ligne{display:grid;grid-template-columns:56px minmax(0,1fr) auto;gap:12px;align-items:center;padding:8px 10px;border:1px solid var(--line);border-radius:14px}
+  .hj-vignette{width:56px;height:56px;border-radius:10px;background:var(--alt);object-fit:cover;display:block}
+  .hj-nom{font-weight:600;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
+  .hj-info{font-size:13px;color:var(--ink2);display:block;overflow-wrap:anywhere}
+  .hj-info.est-erreur{color:#b3261e;font-weight:600}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .hj-info.est-erreur{color:#ff8a80}}
+  :root[data-theme="dark"] .hj-info.est-erreur{color:#ff8a80}
+  .hj-dl{width:auto;min-height:44px;padding:8px 14px;font-size:14px}
+  .hj-attente{font-size:13px;color:var(--ink2);padding:0 6px}
+  @media (max-width:480px){
+    .hj-reglages{gap:10px 16px}
+    .hj-ligne{grid-template-columns:44px minmax(0,1fr) auto;gap:10px}
+    .hj-vignette{width:44px;height:44px}
+    .hj-q input{width:120px}
+  }
+</style>
+
+<script>
+  import { exifSansRotation, extraireExif, formaterTaille, injecterExifJpeg, messageRefus, nature, nomSortie, type Format } from './outil';
+  import { compter } from '../../lib/compteur';
+  import { fabriquerZip, masquerTelechargement, proposerTelechargement, type FichierSortie } from '../../lib/ui';
+
+  const racine = document.querySelector<HTMLElement>('[data-outil-id="heic-jpg"]');
+  if (racine) {
+    const lang = racine.dataset.lang === 'en' ? 'en' : 'fr';
+    const fr = lang === 'fr';
+    const L = fr
+      ? { attente: 'En attente', cours: 'Conversion…', zip: 'Préparation du fichier zip…', dl: 'Télécharger', ancien: 'Navigateur trop ancien pour convertir ici (OffscreenCanvas absent).', echec: 'Conversion impossible', pret: (n: number, t: number) => `${n} / ${t} converties`, fin: (n: number, e: number) => `${n} prête${n > 1 ? 's' : ''}${e ? `, ${e} en échec` : ''}`, ouvrir: 'Ouvrir' }
+      : { attente: 'Waiting', cours: 'Converting…', zip: 'Preparing the zip file…', dl: 'Download', ancien: 'This browser is too old to convert here (no OffscreenCanvas).', echec: 'Conversion failed', pret: (n: number, t: number) => `${n} / ${t} converted`, fin: (n: number, e: number) => `${n} ready${e ? `, ${e} failed` : ''}`, ouvrir: 'Open' };
+
+    const $ = <T extends HTMLElement>(s: string) => racine.querySelector<T>(s)!;
+    const depot = $('#hj-depot');
+    const fFormat = $('#hj-format');
+    const qualite = $<HTMLInputElement>('#hj-qualite');
+    const qualiteVal = $<HTMLOutputElement>('#hj-q-val');
+    const blocQualite = $('#hj-bloc-qualite');
+    const blocExif = $('#hj-bloc-exif');
+    const exifCase = $<HTMLInputElement>('#hj-exif');
+    const suite = $('#hj-suite');
+    const etat = $('#hj-etat');
+    const liste = $('#hj-liste');
+
+    type Etat = 'attente' | 'cours' | 'ok' | 'erreur';
+    interface Item {
+      file: File; etat: Etat; li: HTMLLIElement; img: HTMLImageElement; info: HTMLElement; action: HTMLElement;
+      exif?: Uint8Array | null; sortie?: FichierSortie; lien?: string; vignette?: string; message?: string;
+    }
+    let items: Item[] = [];
+    let lot = 0; // change à chaque nouveau réglage : les réponses d'avant sont ignorées
+    let actifs = 0;
+    const MAX_ACTIFS = Math.min(2, Math.max(1, (navigator.hardwareConcurrency ?? 2) - 1));
+    const workers: Worker[] = [];
+    let compteLot = false;
+
+    const reglages = () => ({
+      format: (fFormat.querySelector<HTMLInputElement>('input:checked')?.value === 'png' ? 'png' : 'jpg') as Format,
+      qualite: Number(qualite.value),
+      exif: exifCase.checked,
+    });
+
+    const prendreWorker = (): Worker => {
+      const libre = workers.find((w) => !(w as any).occupe);
+      if (libre) return libre;
+      const w = new Worker('/outils-assets/heic-jpg/worker.js');
+      workers.push(w);
+      return w;
+    };
+
+    const libererItem = (it: Item) => {
+      if (it.lien) URL.revokeObjectURL(it.lien);
+      it.lien = undefined; it.sortie = undefined;
+    };
+
+    const afficherLigne = (it: Item) => {
+      const f = it.file;
+      if (it.etat === 'attente') { it.info.textContent = `${formaterTaille(f.size, lang)} · ${L.attente}`; it.info.className = 'hj-info'; it.action.replaceChildren(); }
+      if (it.etat === 'cours') { it.info.textContent = `${formaterTaille(f.size, lang)} · ${L.cours}`; it.info.className = 'hj-info'; it.action.replaceChildren(); }
+      if (it.etat === 'erreur') { it.info.textContent = it.message ?? L.echec; it.info.className = 'hj-info est-erreur'; it.action.replaceChildren(); }
+      if (it.etat === 'ok' && it.sortie) {
+        const b = it.sortie.donnees as Blob;
+        it.info.className = 'hj-info';
+        it.info.textContent = `${formaterTaille(f.size, lang)} → ${formaterTaille(b.size, lang)} · ${it.message}`;
+        const a = document.createElement('a');
+        a.className = 'o-btn o-btn--secondaire hj-dl';
+        a.href = it.lien!; a.download = it.sortie.nom; a.textContent = L.dl;
+        a.setAttribute('aria-label', `${L.dl} ${it.sortie.nom}`);
+        it.action.replaceChildren(a);
+      }
+    };
+
+    const bilan = async () => {
+      const ok = items.filter((i) => i.etat === 'ok');
+      const erreurs = items.filter((i) => i.etat === 'erreur').length;
+      const fini = items.every((i) => i.etat === 'ok' || i.etat === 'erreur');
+      if (!fini) {
+        etat.textContent = L.pret(ok.length, items.length);
+        return;
+      }
+      const monLot = lot;
+      if (ok.length > 1) etat.textContent = L.zip;
+      if (ok.length === 0) { masquerTelechargement('hj-telecharger'); etat.textContent = L.fin(0, erreurs); return; }
+      const sorties = ok.map((i) => i.sortie!);
+      await proposerTelechargement('hj-telecharger', ok.length === 1 ? sorties : [{ nom: `photos-${reglages().format}.zip`, donnees: await fabriquerZip(sorties), type: 'application/zip' }]);
+      if (monLot !== lot) return;
+      etat.textContent = L.fin(ok.length, erreurs);
+      if (!compteLot) { compteLot = true; compter('utilise', 'heic-jpg'); }
+    };
+
+    const lancer = () => {
+      while (actifs < MAX_ACTIFS) {
+        const it = items.find((i) => i.etat === 'attente');
+        if (!it) break;
+        actifs++;
+        demarrer(it);
+      }
+    };
+
+    const demarrer = async (it: Item) => {
+      it.etat = 'cours'; afficherLigne(it);
+      const monLot = lot;
+      const r = reglages();
+      const fin = () => { actifs--; if (monLot === lot) { afficherLigne(it); bilan(); } lancer(); };
+      try {
+        const octets = await it.file.arrayBuffer();
+        if (monLot !== lot) { actifs--; lancer(); return; }
+        const n = nature(new Uint8Array(octets, 0, Math.min(octets.byteLength, 64)));
+        if (n !== 'heic') { it.etat = 'erreur'; it.message = messageRefus(n, lang); return fin(); }
+        if (it.exif === undefined) { const x = extraireExif(new Uint8Array(octets)); it.exif = x ? exifSansRotation(x) : null; }
+        const w = prendreWorker();
+        (w as any).occupe = true;
+        const rep = await new Promise<any>((ok, ko) => {
+          w.onmessage = (e) => ok(e.data);
+          w.onerror = (e) => ko(new Error(e.message || 'worker'));
+          w.postMessage({ id: 0, octets, format: r.format, qualite: r.qualite }, [octets]);
+        }).finally(() => { (w as any).occupe = false; });
+        if (monLot !== lot) { actifs--; lancer(); return; }
+        if (!rep.ok) throw new Error(rep.erreur);
+        let blob: Blob = rep.blob;
+        let note = `${rep.largeur}×${rep.hauteur}`;
+        if (r.format === 'jpg' && r.exif && it.exif) {
+          const avec = injecterExifJpeg(new Uint8Array(await blob.arrayBuffer()), it.exif);
+          blob = new Blob([avec as BlobPart], { type: 'image/jpeg' });
+          note += fr ? ' · date et lieu gardés' : ' · date and place kept';
+        }
+        libererItem(it);
+        it.sortie = { nom: nomSortie(it.file.name, r.format), donnees: blob, type: blob.type };
+        it.lien = URL.createObjectURL(blob);
+        if (!it.vignette) { it.vignette = URL.createObjectURL(rep.vignette); it.img.src = it.vignette; }
+        it.message = note;
+        it.etat = 'ok';
+      } catch (err) {
+        it.etat = 'erreur';
+        it.message = `${L.echec}${fr ? ' : fichier illisible' : ': unreadable file'}`;
+        console.warn('heic-jpg', err);
+      }
+      fin();
+    };
+
+    const creerItem = (file: File): Item => {
+      const li = document.createElement('li');
+      li.className = 'hj-ligne';
+      const img = document.createElement('img');
+      img.className = 'hj-vignette'; img.alt = ''; img.width = 56; img.height = 56;
+      const mid = document.createElement('div');
+      mid.style.minWidth = '0';
+      const nom = document.createElement('span'); nom.className = 'hj-nom'; nom.textContent = file.name; nom.title = file.name;
+      const info = document.createElement('span'); info.className = 'hj-info';
+      mid.append(nom, info);
+      const action = document.createElement('div');
+      li.append(img, mid, action);
+      liste.append(li);
+      return { file, etat: 'attente', li, img, info, action };
+    };
+
+    const ajouter = (fichiers: File[]) => {
+      if (typeof OffscreenCanvas === 'undefined' || typeof Worker === 'undefined') { etat.textContent = L.ancien; suite.hidden = false; return; }
+      if (items.every((i) => i.etat === 'ok' || i.etat === 'erreur')) { compteLot = false; masquerTelechargement('hj-telecharger'); }
+      suite.hidden = false;
+      for (const f of fichiers) items.push(creerItem(f));
+      for (const it of items) afficherLigne(it);
+      etat.textContent = L.pret(items.filter((i) => i.etat === 'ok').length, items.length);
+      lancer();
+    };
+    depot.addEventListener('fichiers', (e) => ajouter((e as CustomEvent<File[]>).detail));
+
+    // Un réglage change : tout est reconverti avec le nouveau réglage (les fichiers restent dans la page).
+    let minuterie: number | undefined;
+    const reconvertir = () => {
+      blocQualite.hidden = blocExif.hidden = reglages().format === 'png';
+      if (!items.length) return;
+      clearTimeout(minuterie);
+      minuterie = window.setTimeout(() => {
+        lot++; compteLot = false;
+        masquerTelechargement('hj-telecharger');
+        for (const it of items) { libererItem(it); it.etat = 'attente'; it.message = undefined; }
+        for (const it of items) afficherLigne(it);
+        etat.textContent = L.pret(0, items.length);
+        lancer();
+      }, 250);
+    };
+    fFormat.addEventListener('change', reconvertir);
+    exifCase.addEventListener('change', reconvertir);
+    qualite.addEventListener('input', () => { qualiteVal.textContent = qualite.value; reconvertir(); });
+
+    $('#hj-vider').addEventListener('click', () => {
+      lot++; clearTimeout(minuterie);
+      for (const it of items) { libererItem(it); if (it.vignette) URL.revokeObjectURL(it.vignette); }
+      items = []; liste.replaceChildren(); suite.hidden = true; etat.textContent = '';
+      masquerTelechargement('hj-telecharger');
+    });
+  }
+</script>
