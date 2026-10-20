@@ -1,0 +1,232 @@
+---
+// Photo prête à envoyer : on dépose, le JPG sort tout seul (tourné, sans GPS ni appareil, sous 1 Mo).
+// Décodage HEIC : worker de heic-jpg ; encodage et recherche du poids : worker du compresseur (servis par le site, lus tels quels).
+import ZoneDepot from '../../composants/ZoneDepot.astro';
+import Choix from '../../composants/Choix.astro';
+import Note from '../../composants/Note.astro';
+import Resultat from '../../composants/Resultat.astro';
+import Telecharger from '../../composants/Telecharger.astro';
+interface Props { lang?: 'fr' | 'en' }
+const { lang = 'fr' } = Astro.props;
+const fr = lang === 'fr';
+const T = fr
+  ? { depot: 'Déposer des photos', depotAide: 'iPhone (HEIC), JPG, PNG ou WebP : glisser, cliquer ou coller (Cmd+V)',
+      dest: 'Destination', formulaire: 'Formulaire', mail: 'Mail', leboncoin: 'Leboncoin', allege: 'Allégé',
+      aideDest: 'Formulaire : 1 Mo maximum. Mail : 2 Mo. Leboncoin : 2 Mo et 1600 px de côté (valeurs prudentes, le site ne publie pas de plafond). Allégé : qualité 85, sans limite de poids. Aucun choix n’est obligatoire : le résultat suit.' }
+  : { depot: 'Drop photos', depotAide: 'iPhone (HEIC), JPG, PNG or WebP: drag, click or paste (Cmd+V)',
+      dest: 'Destination', formulaire: 'Form', mail: 'Email', leboncoin: 'Classifieds', allege: 'Light',
+      aideDest: 'Form: 1 MB maximum. Email: 2 MB. Classifieds: 2 MB and 1600 px on the long side (cautious values, sites rarely publish a limit). Light: quality 85, no size limit. No choice is required: the result follows.' };
+---
+<div class="pp" data-outil-id="photo-prete" data-lang={lang}>
+  <ZoneDepot id="pp-depot" accept="image/*,.heic,.heif,.hif,.jpg,.jpeg,.png,.webp" lang={lang} libelle={T.depot} aide={T.depotAide} />
+
+  <div class="pp-reglages">
+    <div class="pp-groupe">
+      <Choix id="pp-dest" label={T.dest}
+        options={[{ valeur: 'formulaire', libelle: T.formulaire }, { valeur: 'mail', libelle: T.mail }, { valeur: 'leboncoin', libelle: T.leboncoin }, { valeur: 'allege', libelle: T.allege }]} valeur="formulaire" />
+      <Note texte={T.aideDest} lang={lang} />
+    </div>
+  </div>
+
+  <p class="pp-etat" id="pp-etat" role="status" aria-live="polite" hidden></p>
+  <ul class="pp-liste" id="pp-liste" hidden></ul>
+  <Resultat id="pp-resultat" label={fr ? 'Bilan' : 'Summary'} copier={false} lang={lang} />
+  <Telecharger id="pp-telecharger" lang={lang} />
+</div>
+
+<style is:global>
+  .pp{display:grid;gap:18px}
+  .pp-reglages{display:flex;flex-wrap:wrap;gap:14px 24px;align-items:flex-start}
+  .pp-groupe{position:relative;padding-right:28px}
+  .pp-groupe>.o-note{position:absolute;top:0;right:0}
+  .pp-groupe .o-note__bulle{left:auto;right:0;transform:none}
+  .pp-groupe .o-choix__segments{flex-wrap:wrap}
+  .pp-groupe .o-choix span{padding:8px 13px}
+  .pp-etat{margin:0;font-size:15px;font-weight:600;color:var(--o-accent)}
+  .pp-etat[hidden],.pp-liste[hidden]{display:none}
+  .pp-etat.pp-erreur{color:#b3261e}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .pp-etat.pp-erreur,:root:not([data-theme="light"]) .pp-err{color:#ff8a80}}
+  :root[data-theme="dark"] .pp-etat.pp-erreur,:root[data-theme="dark"] .pp-err{color:#ff8a80}
+  .pp-liste{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+  .pp-ligne{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 14px;align-items:start;padding:12px 14px;border:1.5px solid var(--line);border-radius:14px;background:var(--o-surface)}
+  .pp-vignettes{display:flex;gap:6px;grid-row:1 / span 2}
+  .pp-vignettes figure{margin:0;display:grid;gap:3px;justify-items:center;font-size:11px;color:var(--ink2)}
+  .pp-vignettes img,.pp-vignettes .pp-vide{width:84px;height:84px;object-fit:cover;border-radius:10px;border:1px solid var(--line);background:var(--alt)}
+  .pp-corps{display:grid;gap:4px;min-width:0}
+  .pp-nom{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .pp-poids{font-size:14px;color:var(--ink2)}
+  .pp-poids b{color:var(--ink)}
+  .pp-retire{list-style:none;margin:2px 0 0;padding:0;display:grid;gap:2px;font-size:14px}
+  .pp-retire li::before{content:"✓ ";color:var(--o-ok);font-weight:700}
+  .pp-retire a{color:var(--o-accent);font-weight:600}
+  .pp-rien{font-size:14px;color:var(--ink2)}
+  .pp-note{font-size:13px;color:var(--ink2)}
+  .pp-err{color:#b3261e;font-size:14px;font-weight:600}
+  @media (max-width:480px){.pp-groupe{width:100%}.pp-ligne{grid-template-columns:1fr}.pp-vignettes{grid-row:auto}}
+</style>
+
+<script>
+  import { cibleEffective, DESTINATIONS, gain, lienCarte, lireMetadonnees, nature, nomSortie, phrasesRetire, segmentsMetadonnees, taille, formaterGps, type DestId, type Metadonnees } from './outil';
+  import type { Demande, Reponse } from '../compresseur/worker';
+  import { compter } from '../../lib/compteur';
+  import { afficherResultat, masquerResultat, masquerTelechargement, proposerTelechargement } from '../../lib/ui';
+
+  const racine = document.querySelector<HTMLElement>('[data-outil-id="photo-prete"]');
+  if (racine) {
+    const lang = racine.dataset.lang === 'en' ? 'en' : 'fr';
+    const fr = lang === 'fr';
+    const $ = <T extends HTMLElement>(s: string) => racine.querySelector<T>(s)!;
+    const depot = $('#pp-depot'), etat = $('#pp-etat'), liste = $('#pp-liste');
+    const dest = () => (racine.querySelector<HTMLInputElement>('#pp-dest input:checked')?.value ?? 'formulaire') as DestId;
+
+    const L = fr
+      ? { encours: (i: number, n: number) => `Photo ${i} sur ${n}…`, decode: 'Lecture de la photo HEIC…', illisible: 'Ce fichier n’est pas une photo lisible : essayez le JPG ou le HEIC d’origine.',
+          heicKo: 'Cette photo HEIC n’a pas pu être lue : essayez de l’exporter en JPG depuis l’iPhone (Réglages, Appareil photo, Formats, Plus compatible).',
+          trop: 'Photo trop grande (100 mégapixels maximum) : réduisez-la d’abord.', ancien: 'Ce navigateur est trop ancien pour traiter les photos : essayez une version récente de Chrome, Safari ou Firefox.',
+          rien: 'Aucune information personnelle dans cette photo.', carte: 'Voir sur la carte', avant: 'Avant', apres: 'Après', nonAtteint: 'Poids visé non atteint : c’est le minimum possible.',
+          reduite: 'Réduite pour tenir sous le poids visé', gardeMetaKo: 'Des métadonnées restaient dans le fichier produit : il n’a pas été proposé.', aucune: 'Aucune photo n’a pu être préparée.' }
+      : { encours: (i: number, n: number) => `Photo ${i} of ${n}…`, decode: 'Reading the HEIC photo…', illisible: 'This file is not a readable photo: try the original JPG or HEIC.',
+          heicKo: 'This HEIC photo could not be read: try exporting it as JPG from the iPhone (Settings, Camera, Formats, Most Compatible).',
+          trop: 'Photo too large (100 megapixels maximum): shrink it first.', ancien: 'This browser is too old to process photos: try a recent Chrome, Safari or Firefox.',
+          rien: 'No personal information in this photo.', carte: 'See on the map', avant: 'Before', apres: 'After', nonAtteint: 'Target size not reached: this is the minimum possible.',
+          reduite: 'Shrunk to fit under the target size', gardeMetaKo: 'Metadata was still present in the produced file: it was not offered.', aucune: 'No photo could be prepared.' };
+
+    interface Entree { file: File; meta: Metadonnees | null; source: Blob | null; vignette: string | null; avantUrl: string | null; sortieUrl: string | null }
+    let entrees: Entree[] = [];
+    let jeton = 0;
+    let worker: Worker | null = null;
+    let heic: Worker | null = null;
+    const nouvelleId = (() => { let n = 0; return () => ++n; })();
+
+    const appeler = <R,>(w: Worker, msg: object, transfert: Transferable[]) =>
+      new Promise<R & { id: number }>((ok, ko) => {
+        const id = nouvelleId();
+        const ecoute = (m: MessageEvent) => { if (m.data.id === id) { w.removeEventListener('message', ecoute); ok(m.data); } };
+        w.addEventListener('message', ecoute);
+        w.addEventListener('error', (e) => ko(new Error(e.message || 'worker')), { once: true });
+        w.postMessage({ ...msg, id }, transfert);
+      });
+
+    const liberer = (e: Entree) => { [e.avantUrl, e.sortieUrl, e.vignette].forEach((u) => u && URL.revokeObjectURL(u)); };
+
+    async function preparer(e: Entree): Promise<'ok' | 'heicKo' | 'illisible'> {
+      if (e.source) return 'ok';
+      const octets = new Uint8Array(await e.file.arrayBuffer());
+      const n = nature(octets);
+      e.meta = lireMetadonnees(octets);
+      if (n === 'heic') {
+        heic ??= new Worker('/outils-assets/heic-jpg/worker.js');
+        const buf = octets.slice().buffer;
+        const r = await appeler<{ ok: boolean; blob?: Blob; vignette?: Blob }>(heic, { octets: buf, format: 'jpg', qualite: 95 }, [buf]);
+        if (!r.ok || !r.blob) return 'heicKo';
+        e.source = r.blob;
+        if (r.vignette) e.avantUrl = URL.createObjectURL(r.vignette);
+        return 'ok';
+      }
+      if (n === 'inconnu' && !e.file.type.startsWith('image/')) return 'illisible';
+      e.source = e.file;
+      e.avantUrl = URL.createObjectURL(e.file);
+      return 'ok';
+    }
+
+    function ligne(e: Entree) {
+      const li = document.createElement('li'); li.className = 'pp-ligne';
+      const v = document.createElement('div'); v.className = 'pp-vignettes';
+      const corps = document.createElement('div'); corps.className = 'pp-corps';
+      const nom = document.createElement('span'); nom.className = 'pp-nom'; nom.textContent = e.file.name; nom.title = e.file.name;
+      const poids = document.createElement('span'); poids.className = 'pp-poids'; poids.textContent = taille(e.file.size, lang);
+      corps.append(nom, poids); li.append(v, corps);
+      return { li, v, corps, poids };
+    }
+    const fig = (src: string | null, legende: string, alt: string) => {
+      const f = document.createElement('figure');
+      if (src) { const i = document.createElement('img'); i.src = src; i.alt = alt; f.append(i); } else { const s = document.createElement('span'); s.className = 'pp-vide'; f.append(s); }
+      const c = document.createElement('figcaption'); c.textContent = legende; f.append(c); return f;
+    };
+
+    async function lancer() {
+      const moi = ++jeton;
+      worker?.terminate(); worker = null;
+      if (!entrees.length) return;
+      masquerResultat('pp-resultat'); masquerTelechargement('pp-telecharger');
+      etat.className = 'pp-etat'; etat.hidden = false;
+      if (typeof OffscreenCanvas === 'undefined' || typeof Worker === 'undefined' || typeof createImageBitmap === 'undefined') { etat.textContent = L.ancien; etat.classList.add('pp-erreur'); return; }
+      const d = DESTINATIONS[dest()];
+      const w = (worker = new Worker('/outils-assets/compresseur/worker.js', { type: 'module' }));
+      liste.hidden = false; liste.replaceChildren();
+      entrees.forEach((e) => { if (e.sortieUrl) URL.revokeObjectURL(e.sortieUrl); e.sortieUrl = null; });
+      const lignes = entrees.map((e) => { const l = ligne(e); liste.append(l.li); return l; });
+      const sorties: { nom: string; donnees: Blob; type: string }[] = [];
+      const stats: { avant: number; apres: number }[] = [];
+
+      for (let i = 0; i < entrees.length; i++) {
+        const e = entrees[i], l = lignes[i];
+        etat.textContent = L.encours(i + 1, entrees.length);
+        const erreur = (m: string) => { const p = document.createElement('span'); p.className = 'pp-err'; p.textContent = m; l.corps.append(p); };
+        try {
+          if (/\.(heic|heif|hif)$/i.test(e.file.name)) etat.textContent = `${L.encours(i + 1, entrees.length)} ${L.decode}`;
+          const p = await preparer(e);
+          if (moi !== jeton) return;
+          if (p !== 'ok') { erreur(p === 'heicKo' ? L.heicKo : L.illisible); continue; }
+          let bitmap: ImageBitmap;
+          try { bitmap = await createImageBitmap(e.source!, { imageOrientation: 'from-image' }); } catch { erreur(L.illisible); continue; }
+          if (bitmap.width * bitmap.height > 100_000_000) { bitmap.close(); erreur(L.trop); continue; }
+          const origine = { l: bitmap.width, h: bitmap.height };
+          const poidsVise = d.cible ? cibleEffective(d.cible, e.file.size) : 0;
+          const demande = (cible: number): Omit<Demande, 'id'> => ({ bitmap, format: 'jpeg', mode: d.cible ? 'poids' : 'qualite', qualite: d.qualite, cibleOctets: cible, cote: d.cote });
+          let r = await appeler<Reponse>(w, demande(poidsVise), [bitmap]);
+          if (moi !== jeton) return;
+          if (d.cible && r.ok && r.atteint === false && poidsVise < d.cible) { // la cible « sous l'original » était trop serrée : on revise la vraie cible
+            const b2 = await createImageBitmap(e.source!, { imageOrientation: 'from-image' });
+            r = await appeler<Reponse>(w, demande(d.cible), [b2] as Transferable[]);
+            if (moi !== jeton) return;
+          }
+          if (!r.ok || !r.octets) { erreur(L.illisible); continue; }
+          const octets = new Uint8Array(r.octets);
+          if (segmentsMetadonnees(octets).length) { erreur(L.gardeMetaKo); continue; }
+          const blob = new Blob([octets], { type: 'image/jpeg' });
+          e.sortieUrl = URL.createObjectURL(blob);
+          sorties.push({ nom: nomSortie(e.file.name), donnees: blob, type: 'image/jpeg' });
+          stats.push({ avant: e.file.size, apres: blob.size });
+
+          l.v.append(fig(e.avantUrl, L.avant, L.avant), fig(e.sortieUrl, L.apres, L.apres));
+          const g = gain(e.file.size, blob.size);
+          l.poids.replaceChildren();
+          const b = document.createElement('b'); b.textContent = taille(blob.size, lang);
+          const redim = r.largeur !== origine.l || r.hauteur !== origine.h;
+          l.poids.append(`${taille(e.file.size, lang)} → `, b, ` · ${origine.l}×${origine.h}${redim ? ` → ${r.largeur}×${r.hauteur}` : ''}`, g.pourcent === null ? '' : ` · ${g.pourcent > 0 ? '−' : '+'}${Math.abs(g.pourcent)} %`);
+          const retire = phrasesRetire(e.meta!, lang);
+          if (retire.length) {
+            const ul = document.createElement('ul'); ul.className = 'pp-retire';
+            retire.forEach((t) => { const li = document.createElement('li'); li.textContent = t; ul.append(li); });
+            if (e.meta!.gps) { // lien que l'utilisateur ouvre lui-même ; l'outil n'interroge aucune carte
+              const a = document.createElement('a'); a.href = lienCarte(e.meta!.gps); a.target = '_blank'; a.rel = 'noopener noreferrer'; a.textContent = L.carte;
+              a.title = formaterGps(e.meta!.gps, lang);
+              const li = document.createElement('li'); li.append(a); li.className = 'pp-carte'; ul.append(li);
+            }
+            l.corps.append(ul);
+          } else { const s = document.createElement('span'); s.className = 'pp-rien'; s.textContent = L.rien; l.corps.append(s); }
+          if (d.cible && r.atteint === false) { const s = document.createElement('span'); s.className = 'pp-note'; s.textContent = L.nonAtteint; l.corps.append(s); }
+          else if (redim && !d.cote) { const s = document.createElement('span'); s.className = 'pp-note'; s.textContent = L.reduite; l.corps.append(s); }
+        } catch { erreur(L.illisible); }
+      }
+      if (moi !== jeton) return;
+      w.terminate(); if (worker === w) worker = null;
+      if (!sorties.length) { etat.textContent = L.aucune; etat.classList.add('pp-erreur'); return; }
+      etat.hidden = true;
+      const avant = stats.reduce((s, x) => s + x.avant, 0), apres = stats.reduce((s, x) => s + x.apres, 0);
+      afficherResultat('pp-resultat', fr
+        ? `${sorties.length} photo${sorties.length > 1 ? 's' : ''} prête${sorties.length > 1 ? 's' : ''} : ${taille(avant)} → ${taille(apres)}, sans position ni appareil`
+        : `${sorties.length} photo${sorties.length > 1 ? 's' : ''} ready: ${taille(avant, 'en')} → ${taille(apres, 'en')}, no location or camera info`);
+      await proposerTelechargement('pp-telecharger', sorties, { nomZip: fr ? 'photos-pretes.zip' : 'photos-ready.zip' });
+      compter('utilise', 'photo-prete');
+    }
+
+    depot.addEventListener('fichiers', (ev) => {
+      entrees.forEach(liberer);
+      entrees = (ev as CustomEvent<File[]>).detail.map((file) => ({ file, meta: null, source: null, vignette: null, avantUrl: null, sortieUrl: null }));
+      void lancer();
+    });
+    racine.querySelector('#pp-dest')!.addEventListener('change', () => entrees.length && void lancer());
+  }
+</script>
