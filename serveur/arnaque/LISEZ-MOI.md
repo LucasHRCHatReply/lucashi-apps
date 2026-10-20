@@ -45,4 +45,4 @@ ARNAQUE_CORS_DEV=1 node serveur/arnaque/arnaque.mjs
 PUBLIC_ARNAQUE_API=http://127.0.0.1:8241/api/arnaque npx astro dev --port 4345
 ```
 
-Santé : `GET /api/arnaque/sante`. Tests : `node --test serveur/arnaque/`.
+Santé : `GET /api/arnaque/sante`. Tests : `node --test serveur/arnaque/arnaque.test.mjs`.
