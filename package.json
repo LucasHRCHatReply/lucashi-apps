@@ -22,9 +22,13 @@
     "@resvg/resvg-js": "^2.6.2",
     "astro": "^5.18.2",
     "fflate": "^0.8.3",
+<<<<<<< HEAD
     "libheif-js": "^1.23.5",
     "pdf-lib": "^1.17.1",
     "qrcode": "^1.5.4",
+=======
+    "pdf-lib": "^1.17.1",
+>>>>>>> outils/resiliation
     "satori": "^0.63.2",
     "tesseract.js": "^5.1.1",
     "typescript": "^5.9.3",
