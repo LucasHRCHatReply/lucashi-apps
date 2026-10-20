@@ -1,0 +1,462 @@
+---
+// Scanner un document : photos de feuilles -> bords trouvés seuls, page redressée, fond blanchi -> PDF multipage (+ JPG).
+// Tout se passe dans le navigateur : Web Worker (détection, redressement, blanchiment), HEIC décodé par le Worker de l'outil HEIC -> JPG.
+import ZoneDepot from '../../composants/ZoneDepot.astro';
+import Choix from '../../composants/Choix.astro';
+import Note from '../../composants/Note.astro';
+import Bouton from '../../composants/Bouton.astro';
+import Resultat from '../../composants/Resultat.astro';
+import Telecharger from '../../composants/Telecharger.astro';
+interface Props { lang?: 'fr' | 'en' }
+const { lang = 'fr' } = Astro.props;
+const fr = lang === 'fr';
+const T = fr
+  ? {
+      depot: 'Déposer des photos', depotAide: 'Photos de feuilles (JPG, PNG, HEIC) : glisser, cliquer ou coller. Le PDF sort tout seul.',
+      photo: 'Prendre en photo', options: 'Options', rendu: 'Rendu',
+      net: 'Net', couleur: 'Couleur', nb: 'Noir et blanc',
+      aideRendu: 'Net : niveaux de gris, texte noir sur fond blanc (le plus léger). Couleur : garde les couleurs, fond blanchi. Noir et blanc : deux tons, idéal pour un texte seul.',
+      vider: 'Tout effacer', pages: 'Pages du document',
+      editeur: 'Ajuster les coins', editeurAide: 'Glissez chaque point sur un coin de la feuille, ou sélectionnez-le et utilisez les flèches (Maj : par 10).',
+      valider: 'Valider', annuler: 'Annuler',
+    }
+  : {
+      depot: 'Drop photos', depotAide: 'Photos of sheets (JPG, PNG, HEIC): drag, click or paste. The PDF comes out by itself.',
+      photo: 'Take a photo', options: 'Options', rendu: 'Look',
+      net: 'Clean', couleur: 'Colour', nb: 'Black and white',
+      aideRendu: 'Clean: greyscale, black text on a white background (the lightest). Colour: keeps colours, whitened background. Black and white: two tones, best for plain text.',
+      vider: 'Clear all', pages: 'Document pages',
+      editeur: 'Adjust corners', editeurAide: 'Drag each dot onto a corner of the sheet, or select it and use the arrow keys (Shift: steps of 10).',
+      valider: 'Apply', annuler: 'Cancel',
+    };
+---
+<div class="sc" data-outil-id="scanner" data-lang={lang}>
+  <ZoneDepot id="sc-depot" accept="image/*,.heic,.heif,.hif" multiple={true} lang={lang} libelle={T.depot} aide={T.depotAide} />
+
+  <div class="sc-photo" id="sc-photo" hidden>
+    <Bouton variante="secondaire" type="button" id="sc-photo-bouton">{T.photo}</Bouton>
+    <input id="sc-photo-entree" type="file" accept="image/*" capture="environment" hidden tabindex="-1" />
+  </div>
+
+  <details class="sc-options">
+    <summary>{T.options}</summary>
+    <div class="sc-groupe">
+      <Choix id="sc-rendu" label={T.rendu}
+        options={[{ valeur: 'net', libelle: T.net }, { valeur: 'couleur', libelle: T.couleur }, { valeur: 'nb', libelle: T.nb }]} valeur="net" />
+      <Note texte={T.aideRendu} lang={lang} />
+    </div>
+  </details>
+
+  <div class="sc-suivi" id="sc-suivi" hidden>
+    <p class="sc-etat" id="sc-etat" role="status" aria-live="polite"></p>
+    <progress id="sc-progression" max="1" value="0" aria-label={fr ? 'Avancement' : 'Progress'}></progress>
+  </div>
+
+  <ol class="sc-pages" id="sc-pages" aria-label={T.pages} hidden></ol>
+
+  <section class="sc-editeur" id="sc-editeur" aria-labelledby="sc-editeur-titre" hidden>
+    <h2 id="sc-editeur-titre">{T.editeur}</h2>
+    <p class="sc-editeur-aide" id="sc-editeur-aide">{T.editeurAide}</p>
+    <div class="sc-scene">
+      <img id="sc-editeur-img" alt="" />
+      <svg id="sc-editeur-svg" aria-hidden="false" focusable="false"></svg>
+    </div>
+    <p class="sc-erreur" id="sc-editeur-erreur" role="alert" hidden></p>
+    <div class="sc-actions">
+      <Bouton variante="principal" type="button" id="sc-editeur-valider">{T.valider}</Bouton>
+      <Bouton variante="secondaire" type="button" id="sc-editeur-annuler">{T.annuler}</Bouton>
+    </div>
+  </section>
+
+  <Resultat id="sc-resultat" label={fr ? 'Bilan' : 'Summary'} copier={false} lang={lang} />
+  <Telecharger id="sc-pdf" lang={lang} />
+  <details class="sc-jpg" id="sc-jpg-bloc" hidden>
+    <summary>{fr ? 'Les pages en JPG' : 'Pages as JPG'}</summary>
+    <Telecharger id="sc-jpg" lang={lang} />
+  </details>
+  <div class="sc-vider" id="sc-vider" hidden><Bouton variante="discret" type="button" id="sc-vider-bouton">{T.vider}</Bouton></div>
+</div>
+
+<style is:global>
+  .sc{display:grid;gap:18px}
+  .sc-photo[hidden],.sc-suivi[hidden],.sc-pages[hidden],.sc-editeur[hidden],.sc-vider[hidden],.sc-jpg[hidden],.sc-erreur[hidden]{display:none}
+  .sc-photo .o-btn{width:100%;min-height:52px}
+  @media (pointer:fine){.sc-photo{display:none!important}}
+  .sc-options>summary{cursor:pointer;font-weight:600;min-height:44px;display:flex;align-items:center;color:var(--ink2)}
+  .sc-groupe{position:relative;padding:4px 28px 4px 0;max-width:420px}
+  .sc-groupe>.o-note{position:absolute;top:4px;right:0}
+  .sc-groupe .o-note__bulle{left:auto;right:0;transform:none}
+  .sc-groupe .o-choix__segments{flex-wrap:nowrap}
+  .sc-groupe .o-choix span{padding:8px 13px}
+  .sc-suivi{display:grid;gap:6px}
+  .sc-etat{margin:0;font-size:15px;font-weight:600;color:var(--o-accent)}
+  .sc-suivi progress{width:100%;height:8px;accent-color:var(--o-accent)}
+  .sc-pages{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+  .sc-page{display:grid;grid-template-columns:96px minmax(0,1fr);gap:4px 12px;padding:12px;border:1.5px solid var(--line);border-radius:14px;background:var(--o-surface)}
+  .sc-page[data-etat="ajuster"]{border-color:var(--o-accent);background:var(--o-tinte)}
+  .sc-page img{grid-row:1 / span 2;width:96px;height:136px;object-fit:contain;background:#fff;border:1px solid var(--line);border-radius:6px}
+  .sc-vide{grid-row:1 / span 2;width:96px;height:136px;display:grid;place-items:center;border:1px dashed var(--line);border-radius:6px;font-size:13px;color:var(--ink2);text-align:center;padding:4px}
+  .sc-infos{display:grid;gap:2px;align-content:start;min-width:0}
+  .sc-titre{font-weight:700}
+  .sc-meta{font-size:14px;color:var(--ink2)}
+  .sc-meta b{color:var(--ink)}
+  .sc-badge{font-size:13px;font-weight:600;color:var(--o-ok)}
+  .sc-badge.sc-alerte{color:var(--o-accent)}
+  .sc-badge.sc-erreur{color:#b3261e}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .sc-badge.sc-erreur,:root:not([data-theme="light"]) .sc-erreur{color:#ff8a80}}
+  :root[data-theme="dark"] .sc-badge.sc-erreur,:root[data-theme="dark"] .sc-erreur{color:#ff8a80}
+  .sc-erreur{color:#b3261e;margin:0;font-weight:600}
+  .sc-boutons{grid-column:1 / -1;display:flex;flex-wrap:wrap;gap:6px}
+  .sc-boutons .o-btn{min-height:44px;min-width:44px;padding:6px 12px;width:auto}
+  .sc-editeur{display:grid;gap:10px;padding:14px;border:1.5px solid var(--o-accent);border-radius:16px;background:var(--o-surface)}
+  .sc-editeur h2{margin:0;font-size:18px}
+  .sc-editeur-aide{margin:0;font-size:14px;color:var(--ink2)}
+  .sc-scene{position:relative;justify-self:center;max-width:100%;line-height:0;touch-action:none;border-radius:10px;overflow:hidden;background:#000}
+  .sc-scene img{display:block;max-width:100%;max-height:70vh;width:auto;height:auto;user-select:none;-webkit-user-drag:none}
+  .sc-scene svg{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
+  .sc-scene polygon{fill:rgba(77,179,255,.16);stroke:#4db3ff;stroke-width:var(--sc-trait,3);vector-effect:none}
+  .sc-scene circle{fill:#fff;stroke:#0067b3;stroke-width:var(--sc-trait,3);cursor:grab}
+  .sc-scene circle:focus{outline:none;stroke:#ff9f0a;stroke-width:calc(var(--sc-trait,3) * 2.2)}
+  .sc-scene circle:focus-visible{outline:none}
+  .sc-actions{display:flex;flex-wrap:wrap;gap:8px}
+  .sc-jpg>summary{cursor:pointer;font-weight:600;min-height:44px;display:flex;align-items:center;color:var(--ink2)}
+  @media (max-width:480px){.sc-pages{grid-template-columns:1fr}}
+  @media (prefers-reduced-motion:reduce){.sc *{transition:none!important;animation:none!important}}
+</style>
+
+<script>
+  import { deplacer, fabriquerPdf, nomPage, taille, quadPlausible, type Quad, type Rendu } from './outil';
+  import { nature } from '../heic-jpg/outil';
+  import type { Demande, Etape, Reponse } from './worker';
+  import { compter } from '../../lib/compteur';
+  import { afficherResultat, masquerResultat, masquerTelechargement, proposerTelechargement } from '../../lib/ui';
+
+  const racine = document.querySelector<HTMLElement>('[data-outil-id="scanner"]');
+  if (racine) {
+    const lang = racine.dataset.lang === 'en' ? 'en' : 'fr';
+    const fr = lang === 'fr';
+    const $ = <T extends HTMLElement>(s: string) => racine.querySelector<T>(s)!;
+    const depot = $('#sc-depot');
+    const blocPhoto = $('#sc-photo');
+    const entreePhoto = $<HTMLInputElement>('#sc-photo-entree');
+    const suivi = $('#sc-suivi');
+    const etat = $('#sc-etat');
+    const progression = $<HTMLProgressElement>('#sc-progression');
+    const liste = $('#sc-pages');
+    const editeur = $('#sc-editeur');
+    const edImg = $<HTMLImageElement>('#sc-editeur-img');
+    const edSvg = racine.querySelector<SVGSVGElement>('#sc-editeur-svg')!;
+    const edErreur = $('#sc-editeur-erreur');
+    const blocJpg = $('#sc-jpg-bloc');
+    const blocVider = $('#sc-vider');
+    const radio = () => (racine.querySelector<HTMLInputElement>('#sc-rendu input:checked')?.value ?? 'net') as Rendu;
+
+    const L = fr
+      ? {
+          page: (i: number) => `Page ${i}`, sur: (i: number, n: number) => `Page ${i} sur ${n}`,
+          etapes: { lecture: 'lecture de la photo', bords: 'recherche des bords', redressement: 'redressement', fond: 'fond blanchi', encodage: 'compression' } as Record<Etape, string>,
+          ouvre: 'Ouverture de la photo', heic: 'Conversion de la photo HEIC',
+          trouves: 'Bords trouvés', ajuster: 'Bords à ajuster', manuel: 'Coins ajustés', encours: 'En cours…', attente: 'En attente',
+          illisible: 'Ce fichier n’est pas une photo lisible : essayez la photo d’origine (JPG ou HEIC).',
+          heicKo: 'Cette photo HEIC n’a pas pu être lue : essayez de l’exporter en JPG depuis Photos.',
+          trop: 'Cette photo est trop grande pour ce navigateur : réduisez-la ou essayez un autre navigateur.',
+          echec: 'Cette page n’a pas pu être traitée : essayez une autre photo.',
+          ancien: 'Ce navigateur est trop ancien pour l’outil : essayez une version récente de Chrome, Safari ou Firefox.',
+          monter: 'Monter', descendre: 'Descendre', pivoter: 'Pivoter', ajusterBtn: 'Ajuster', supprimer: 'Supprimer',
+          coins: ['haut gauche', 'haut droit', 'bas droit', 'bas gauche'],
+          croises: 'Les coins se croisent ou sont trop serrés : replacez-les aux quatre coins de la feuille.',
+          bilan: (n: number, pdf: number) => `${n} page${n > 1 ? 's' : ''} · PDF de ${taille(pdf, 'fr')} (${taille(Math.round(pdf / n), 'fr')} par page)`,
+          pdf: 'scan.pdf', zip: 'pages-scan.zip', vide: 'Aucune page à garder.', format: 'A4', mesure: 'rapport mesuré',
+        }
+      : {
+          page: (i: number) => `Page ${i}`, sur: (i: number, n: number) => `Page ${i} of ${n}`,
+          etapes: { lecture: 'reading the photo', bords: 'finding the edges', redressement: 'straightening', fond: 'whitening the background', encodage: 'compressing' } as Record<Etape, string>,
+          ouvre: 'Opening the photo', heic: 'Converting the HEIC photo',
+          trouves: 'Edges found', ajuster: 'Edges need adjusting', manuel: 'Corners adjusted', encours: 'Working…', attente: 'Waiting',
+          illisible: 'This file is not a readable photo: try the original photo (JPG or HEIC).',
+          heicKo: 'This HEIC photo could not be read: try exporting it as JPG from Photos.',
+          trop: 'This photo is too large for this browser: shrink it or try another browser.',
+          echec: 'This page could not be processed: try another photo.',
+          ancien: 'This browser is too old for the tool: try a recent Chrome, Safari or Firefox.',
+          monter: 'Move up', descendre: 'Move down', pivoter: 'Rotate', ajusterBtn: 'Adjust', supprimer: 'Delete',
+          coins: ['top left', 'top right', 'bottom right', 'bottom left'],
+          croises: 'The corners cross or are too close: place them on the four corners of the sheet.',
+          bilan: (n: number, pdf: number) => `${n} page${n > 1 ? 's' : ''} · PDF of ${taille(pdf, 'en')} (${taille(Math.round(pdf / n), 'en')} per page)`,
+          pdf: 'scan.pdf', zip: 'scan-pages.zip', vide: 'No page left to keep.', format: 'A4', mesure: 'measured ratio',
+        };
+
+    interface Page {
+      nom: string; source: Blob; srcUrl: string;
+      coins: Quad | null; manuel: boolean; quarts: number;
+      jpeg: Blob | null; url: string | null; largeur: number; hauteur: number;
+      fiable: boolean; etat: 'attente' | 'cours' | 'ok' | 'ajuster' | 'erreur'; message: string; etape: string; ms: number; format: string;
+    }
+    let pages: Page[] = [];
+    let jeton = 0;               // change à chaque finalisation : une réponse tardive est ignorée
+    let worker: Worker | null = null;
+    let heicWorker: Worker | null = null;
+    let enCours = false;
+    let file: Page[] = [];
+    let lot = { total: 0, fait: 0 };
+    let idMsg = 0;
+
+    // ----- Worker
+    const demander = (d: Omit<Demande, 'id'>, surEtape: (e: Etape) => void) =>
+      new Promise<Reponse>((ok, ko) => {
+        const w = (worker ??= new Worker('/outils-assets/scanner/worker.js'));
+        const id = ++idMsg;
+        const ecoute = (m: MessageEvent<Reponse>) => {
+          if (m.data.id !== id) return;
+          if (m.data.etape) { surEtape(m.data.etape); return; }
+          w.removeEventListener('message', ecoute); w.removeEventListener('error', erreur); ok(m.data);
+        };
+        const erreur = (e: ErrorEvent) => { w.removeEventListener('message', ecoute); w.removeEventListener('error', erreur); worker = null; ko(new Error(e.message || 'worker')); };
+        w.addEventListener('message', ecoute); w.addEventListener('error', erreur);
+        w.postMessage({ ...d, id }, [d.bitmap]);
+      });
+
+    const convertirHeic = (octets: ArrayBuffer) =>
+      new Promise<Blob>((ok, ko) => {
+        const w = (heicWorker ??= new Worker('/outils-assets/heic-jpg/worker.js'));
+        w.onmessage = (e) => (e.data.ok ? ok(e.data.blob as Blob) : ko(new Error(e.data.erreur)));
+        w.onerror = (e) => ko(new Error(e.message || 'worker'));
+        w.postMessage({ id: 0, octets, format: 'jpg', qualite: 92 }, [octets]);
+      });
+
+    // ----- Affichage
+    const ETAPES: Etape[] = ['lecture', 'bords', 'redressement', 'fond', 'encodage'];
+    const majSuivi = (p: Page | null, partiel = 0) => {
+      suivi.hidden = !enCours;
+      if (!enCours) return;
+      const n = lot.total, i = Math.min(n, lot.fait + 1);
+      etat.textContent = p ? `${L.sur(i, n)} : ${p.etape}…` : `${L.encours}`;
+      progression.value = Math.min(1, (lot.fait + partiel) / Math.max(1, n));
+    };
+
+    const dessiner = () => {
+      liste.hidden = pages.length === 0;
+      blocVider.hidden = pages.length === 0;
+      liste.replaceChildren();
+      pages.forEach((p, i) => {
+        const li = document.createElement('li'); li.className = 'sc-page'; li.dataset.etat = p.etat;
+        if (p.url) { const im = document.createElement('img'); im.src = p.url; im.alt = `${L.page(i + 1)} : ${p.nom}`; li.append(im); }
+        else { const v = document.createElement('div'); v.className = 'sc-vide'; v.textContent = p.etat === 'erreur' ? '!' : (p.etat === 'cours' ? L.encours : L.attente); li.append(v); }
+        const infos = document.createElement('div'); infos.className = 'sc-infos';
+        const titre = document.createElement('span'); titre.className = 'sc-titre'; titre.textContent = L.page(i + 1); titre.title = p.nom;
+        const meta = document.createElement('span'); meta.className = 'sc-meta';
+        if (p.jpeg) { const b = document.createElement('b'); b.textContent = taille(p.jpeg.size, lang); meta.append(b, ` · ${p.largeur}×${p.hauteur} · ${p.format === 'A4' ? L.format : L.mesure}`); }
+        else meta.textContent = p.nom;
+        const badge = document.createElement('span'); badge.className = 'sc-badge';
+        if (p.etat === 'erreur') { badge.textContent = p.message; badge.classList.add('sc-erreur'); }
+        else if (p.etat === 'ajuster') { badge.textContent = L.ajuster; badge.classList.add('sc-alerte'); }
+        else if (p.etat === 'ok') badge.textContent = p.manuel ? L.manuel : L.trouves;
+        else if (p.etat === 'cours') badge.textContent = `${p.etape}…`;
+        infos.append(titre, meta, badge);
+        li.append(infos);
+        const bt = document.createElement('div'); bt.className = 'sc-boutons';
+        const bouton = (texte: string, action: () => void, plein = texte) => {
+          const b = document.createElement('button'); b.type = 'button'; b.className = 'o-btn o-btn--secondaire'; b.textContent = plein;
+          b.setAttribute('aria-label', `${texte} : ${L.page(i + 1)}`); b.addEventListener('click', action); bt.append(b); return b;
+        };
+        const occupe = p.etat === 'cours' || p.etat === 'attente';
+        if (p.coins && !occupe) {
+          bouton(L.ajusterBtn, () => ouvrirEditeur(p));
+          bouton(L.pivoter, () => { p.quarts = (p.quarts + 1) % 4; retraiter([p]); });
+        }
+        if (i > 0) bouton(L.monter, () => { pages = deplacer(pages, i, i - 1); dessiner(); finaliser(); }, '↑').setAttribute('aria-label', `${L.monter} : ${L.page(i + 1)}`);
+        if (i < pages.length - 1) bouton(L.descendre, () => { pages = deplacer(pages, i, i + 1); dessiner(); finaliser(); }, '↓').setAttribute('aria-label', `${L.descendre} : ${L.page(i + 1)}`);
+        bouton(L.supprimer, () => { supprimer(p); });
+        li.append(bt);
+        liste.append(li);
+      });
+    };
+
+    const liberer = (p: Page) => { if (p.url) URL.revokeObjectURL(p.url); URL.revokeObjectURL(p.srcUrl); };
+    const supprimer = (p: Page) => {
+      if (editionPage === p) fermerEditeur();
+      liberer(p); pages = pages.filter((x) => x !== p); file = file.filter((x) => x !== p);
+      dessiner(); finaliser();
+    };
+
+    // ----- Traitement d'une page
+    async function traiterPage(p: Page) {
+      p.etat = 'cours'; p.etape = L.etapes.lecture; dessiner(); majSuivi(p);
+      let bitmap: ImageBitmap;
+      try { bitmap = await createImageBitmap(p.source); }
+      catch { p.etat = 'erreur'; p.message = L.illisible; return; }
+      if (bitmap.width * bitmap.height > 250_000_000) { bitmap.close(); p.etat = 'erreur'; p.message = L.trop; return; }
+      try {
+        const r = await demander(
+          { bitmap, coins: p.coins ?? undefined, rendu: radio(), quarts: p.quarts, maxi: 2339, qualite: 0.8 },
+          (e) => { p.etape = L.etapes[e]; majSuivi(p, ETAPES.indexOf(e) / ETAPES.length); const m = liste.children[pages.indexOf(p)]?.querySelector('.sc-badge'); if (m) m.textContent = `${p.etape}…`; },
+        );
+        if (!r.ok || !r.jpeg) throw new Error(r.erreur);
+        if (p.url) URL.revokeObjectURL(p.url);
+        p.jpeg = new Blob([r.jpeg], { type: 'image/jpeg' }); p.url = URL.createObjectURL(p.jpeg);
+        p.largeur = r.largeur!; p.hauteur = r.hauteur!; p.format = r.format!; p.ms = r.ms ?? 0;
+        if (!p.manuel) { p.coins = r.coins!; p.fiable = !!r.fiable; }
+        p.etat = p.fiable || p.manuel ? 'ok' : 'ajuster';
+      } catch (err) {
+        console.warn('scanner', err);
+        p.etat = 'erreur'; p.message = L.echec;
+      }
+    }
+
+    async function vider() {
+      if (enCours) return;
+      enCours = true;
+      const moi = jeton;
+      while (file.length) {
+        const p = file.shift()!;
+        if (!pages.includes(p)) continue;
+        await traiterPage(p);
+        lot.fait++;
+        dessiner(); majSuivi(null);
+        if (moi !== jeton) break;
+      }
+      enCours = false; suivi.hidden = true;
+      await finaliser();
+      const aAjuster = pages.find((p) => p.etat === 'ajuster');
+      if (aAjuster && !editionPage) ouvrirEditeur(aAjuster);
+    }
+
+    const retraiter = (liste_: Page[]) => {
+      if (!enCours) lot = { total: 0, fait: 0 };
+      for (const p of liste_) { if (!file.includes(p)) { file.push(p); lot.total++; } p.etat = 'attente'; }
+      jeton++; masquerTelechargement('sc-pdf'); masquerTelechargement('sc-jpg'); masquerResultat('sc-resultat'); blocJpg.hidden = true;
+      dessiner(); void vider();
+    };
+
+    // ----- PDF et téléchargements
+    async function finaliser() {
+      const moi = ++jeton;
+      const ok = pages.filter((p) => p.jpeg && (p.etat === 'ok' || p.etat === 'ajuster'));
+      masquerTelechargement('sc-pdf'); masquerTelechargement('sc-jpg'); masquerResultat('sc-resultat'); blocJpg.hidden = true;
+      if (enCours || !ok.length) return;
+      const jpegs = await Promise.all(ok.map(async (p) => ({ jpeg: new Uint8Array(await p.jpeg!.arrayBuffer()), largeur: p.largeur, hauteur: p.hauteur })));
+      if (moi !== jeton) return;
+      const pdf = await fabriquerPdf(jpegs);
+      if (moi !== jeton) return;
+      afficherResultat('sc-resultat', L.bilan(ok.length, pdf.length));
+      await proposerTelechargement('sc-pdf', [{ nom: L.pdf, donnees: pdf, type: 'application/pdf' }]);
+      await proposerTelechargement('sc-jpg', ok.map((p, i) => ({ nom: nomPage(i, ok.length), donnees: p.jpeg!, type: 'image/jpeg' })), { nomZip: L.zip });
+      blocJpg.hidden = false;
+      compter('utilise', 'scanner');
+    }
+
+    // ----- Éditeur des quatre coins
+    let editionPage: Page | null = null;
+    let pts: { x: number; y: number }[] = [];   // en pixels de l'image affichée (naturalWidth x naturalHeight)
+    let natL = 1, natH = 1;
+    const NS = 'http://www.w3.org/2000/svg';
+
+    function dessinerEditeur() {
+      edSvg.replaceChildren();
+      const trait = Math.max(2, natL / 300);
+      edSvg.style.setProperty('--sc-trait', String(trait));
+      const poly = document.createElementNS(NS, 'polygon'); poly.setAttribute('points', pts.map((p) => `${p.x},${p.y}`).join(' ')); edSvg.append(poly);
+      pts.forEach((p, i) => {
+        const c = document.createElementNS(NS, 'circle');
+        c.setAttribute('cx', String(p.x)); c.setAttribute('cy', String(p.y)); c.setAttribute('r', String(Math.max(14, natL / 40)));
+        c.setAttribute('tabindex', '0'); c.setAttribute('role', 'slider'); c.setAttribute('aria-label', `${fr ? 'Coin' : 'Corner'} ${L.coins[i]}`);
+        c.setAttribute('aria-valuetext', `${Math.round(p.x)}, ${Math.round(p.y)}`);
+        c.dataset.i = String(i);
+        edSvg.append(c);
+      });
+    }
+    const versImage = (e: PointerEvent) => {
+      const r = edSvg.getBoundingClientRect();
+      return { x: Math.min(natL, Math.max(0, ((e.clientX - r.left) / r.width) * natL)), y: Math.min(natH, Math.max(0, ((e.clientY - r.top) / r.height) * natH)) };
+    };
+    let glisse = -1;
+    edSvg.addEventListener('pointerdown', (e) => {
+      const c = (e.target as Element).closest('circle');
+      if (!c) return;
+      glisse = Number((c as SVGElement).dataset.i); (c as SVGElement).setPointerCapture(e.pointerId); (c as unknown as HTMLElement).focus(); e.preventDefault();
+    });
+    edSvg.addEventListener('pointermove', (e) => {
+      if (glisse < 0) return;
+      pts[glisse] = versImage(e);
+      const c = edSvg.querySelectorAll('circle')[glisse]; c.setAttribute('cx', String(pts[glisse].x)); c.setAttribute('cy', String(pts[glisse].y));
+      edSvg.querySelector('polygon')!.setAttribute('points', pts.map((p) => `${p.x},${p.y}`).join(' '));
+    });
+    const finGlisse = () => { glisse = -1; };
+    edSvg.addEventListener('pointerup', finGlisse); edSvg.addEventListener('pointercancel', finGlisse);
+    edSvg.addEventListener('keydown', (e) => {
+      const c = (e.target as Element).closest('circle'); if (!c) return;
+      const i = Number((c as SVGElement).dataset.i), pas = Math.max(1, natL / 400) * (e.shiftKey ? 10 : 1);
+      const d: Record<string, [number, number]> = { ArrowLeft: [-pas, 0], ArrowRight: [pas, 0], ArrowUp: [0, -pas], ArrowDown: [0, pas] };
+      const m = d[e.key]; if (!m) return;
+      e.preventDefault();
+      pts[i] = { x: Math.min(natL, Math.max(0, pts[i].x + m[0])), y: Math.min(natH, Math.max(0, pts[i].y + m[1])) };
+      dessinerEditeur(); (edSvg.querySelectorAll('circle')[i] as unknown as HTMLElement).focus();
+    });
+
+    function ouvrirEditeur(p: Page) {
+      editionPage = p; edErreur.hidden = true;
+      edImg.onload = () => {
+        natL = edImg.naturalWidth; natH = edImg.naturalHeight;
+        edSvg.setAttribute('viewBox', `0 0 ${natL} ${natH}`);
+        pts = (p.coins ?? [{ x: 0.1, y: 0.1 }, { x: 0.9, y: 0.1 }, { x: 0.9, y: 0.9 }, { x: 0.1, y: 0.9 }]).map((c) => ({ x: c.x * natL, y: c.y * natH }));
+        dessinerEditeur();
+        editeur.hidden = false;
+        editeur.scrollIntoView({ block: 'nearest', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+        (edSvg.querySelector('circle') as unknown as HTMLElement | null)?.focus({ preventScroll: true });
+      };
+      edImg.src = p.srcUrl;
+      edImg.alt = `${L.page(pages.indexOf(p) + 1)} : ${p.nom}`;
+    }
+    function fermerEditeur() { editionPage = null; editeur.hidden = true; edSvg.replaceChildren(); }
+    $('#sc-editeur-annuler').addEventListener('click', () => { const p = editionPage; fermerEditeur(); if (p?.etat === 'ajuster') { p.etat = 'ajuster'; dessiner(); } });
+    $('#sc-editeur-valider').addEventListener('click', () => {
+      const p = editionPage; if (!p) return;
+      const q = pts.map((c) => ({ x: c.x / natL, y: c.y / natH })) as Quad;
+      const px = q.map((c) => ({ x: c.x * natL, y: c.y * natH })) as Quad;
+      if (!quadPlausible(px)) { edErreur.textContent = L.croises; edErreur.hidden = false; return; }
+      p.coins = q; p.manuel = true; fermerEditeur(); retraiter([p]);
+    });
+    editeur.addEventListener('keydown', (e) => { if (e.key === 'Escape') { e.preventDefault(); $('#sc-editeur-annuler').click(); } });
+
+    // ----- Entrée des fichiers
+    async function ajouter(fichiers: File[]) {
+      if (typeof OffscreenCanvas === 'undefined' || typeof Worker === 'undefined' || typeof createImageBitmap === 'undefined') { etat.textContent = L.ancien; suivi.hidden = false; return; }
+      if (!enCours) lot = { total: 0, fait: 0 };
+      const nouvelles: Page[] = [];
+      for (const f of fichiers) {
+        const p: Page = {
+          nom: f.name || (fr ? 'photo' : 'photo'), source: f, srcUrl: '', coins: null, manuel: false, quarts: 0,
+          jpeg: null, url: null, largeur: 0, hauteur: 0, fiable: false, etat: 'attente', message: '', etape: L.ouvre, ms: 0, format: 'A4',
+        };
+        pages.push(p); nouvelles.push(p);
+      }
+      dessiner();
+      for (let k = 0; k < fichiers.length; k++) {
+        const f = fichiers[k], p = nouvelles[k];
+        try {
+          const octets = await f.arrayBuffer();
+          const n = nature(new Uint8Array(octets, 0, Math.min(octets.byteLength, 64)));
+          if (n === 'inconnu') { p.etat = 'erreur'; p.message = L.illisible; dessiner(); continue; }
+          if (n === 'heic') {
+            p.etape = L.heic; dessiner();
+            try { p.source = await convertirHeic(octets); }
+            catch { p.etat = 'erreur'; p.message = L.heicKo; dessiner(); continue; }
+          } else p.source = new Blob([octets], { type: f.type || `image/${n}` });
+          p.srcUrl = URL.createObjectURL(p.source);
+          file.push(p); lot.total++;
+          void vider();
+        } catch { p.etat = 'erreur'; p.message = L.illisible; dessiner(); }
+      }
+    }
+
+    depot.addEventListener('fichiers', (ev) => void ajouter((ev as CustomEvent<File[]>).detail));
+    if (window.matchMedia('(pointer: coarse)').matches) {
+      blocPhoto.hidden = false;
+      $('#sc-photo-bouton').addEventListener('click', () => entreePhoto.click());
+      entreePhoto.addEventListener('change', () => { void ajouter(Array.from(entreePhoto.files ?? [])); entreePhoto.value = ''; });
+    }
+    racine.querySelector('#sc-rendu')!.addEventListener('change', () => { if (pages.some((p) => p.coins)) retraiter(pages.filter((p) => p.coins)); });
+    $('#sc-vider-bouton').addEventListener('click', () => {
+      pages.forEach(liberer); pages = []; file = []; jeton++; fermerEditeur(); dessiner(); finaliser();
+    });
+  }
+</script>
