@@ -1,0 +1,190 @@
+---
+// Vocal en texte : on dépose un vocal (WhatsApp .opus, mémo iPhone .m4a, .mp3, .wav, vidéo) → le texte sort seul, langue détectée.
+// Whisper tourne dans le navigateur (Web Worker, transformers.js) ; le modèle vient de /lourds/vocal-texte/ au premier usage, puis reste dans le navigateur.
+import ZoneDepot from '../../composants/ZoneDepot.astro';
+import Resultat from '../../composants/Resultat.astro';
+import Telecharger from '../../composants/Telecharger.astro';
+import Note from '../../composants/Note.astro';
+import { DUREE_MAX_S, EXTENSIONS_ACCEPTEES, POIDS_MODELE, tailleMo } from './outil';
+interface Props { lang?: 'fr' | 'en' }
+const { lang = 'fr' } = Astro.props;
+const fr = lang === 'fr';
+const total = POIDS_MODELE.modele + POIDS_MODELE.moteur;
+const T = fr
+  ? { depot: 'Déposer un vocal', aide: 'WhatsApp (.opus), mémo vocal iPhone (.m4a), .mp3, .wav ou une vidéo : glisser, cliquer ou coller (Cmd+V)',
+      premier: `Premier usage : ${tailleMo(total, lang)} à charger, ensuite gardé sur cet appareil.`, deja: 'Modèle déjà chargé sur cet appareil : le texte démarre tout de suite.',
+      noteModele: 'Le modèle de reconnaissance (Whisper) est téléchargé depuis ce site, une seule fois, puis conservé par votre navigateur. Le son ne quitte jamais cet appareil.',
+      duree: `Jusqu’à ${DUREE_MAX_S / 60} minutes par vocal.`, avance: 'Avancement', resultat: 'Texte', options: 'Autres formats', srt: 'Sous-titres horodatés (.srt)',
+      noteSrt: 'Un fichier .srt découpe le texte en phrases avec leur minute : utile pour sous-titrer une vidéo.' }
+  : { depot: 'Drop a voice note', aide: 'WhatsApp (.opus), iPhone Voice Memo (.m4a), .mp3, .wav or a video: drag, click or paste (Cmd+V)',
+      premier: `First use: ${tailleMo(total, lang)} to load, then kept on this device.`, deja: 'Model already loaded on this device: text starts right away.',
+      noteModele: 'The recognition model (Whisper) is downloaded from this site once, then kept by your browser. The sound never leaves this device.',
+      duree: `Up to ${DUREE_MAX_S / 60} minutes per voice note.`, avance: 'Progress', resultat: 'Text', options: 'Other formats', srt: 'Timestamped subtitles (.srt)',
+      noteSrt: 'An .srt file splits the text into sentences with their time: handy for subtitling a video.' };
+---
+<div class="vocal" data-outil-id="vocal-texte" data-lang={lang} data-total={total} data-modele={POIDS_MODELE.modele} data-max={DUREE_MAX_S}>
+  <ZoneDepot id="vocal-depot" accept={EXTENSIONS_ACCEPTEES} multiple={false} lang={lang} libelle={T.depot} aide={T.aide} />
+  <p class="vo-info"><span id="vocal-premier">{T.premier}</span> {T.duree} <Note texte={T.noteModele} lang={lang} /></p>
+
+  <div class="vo-suivi" id="vocal-suivi" hidden>
+    <p class="vo-etat" id="vocal-etat" role="status" aria-live="polite"></p>
+    <progress id="vocal-barre" class="vo-barre" max="1" value="0" aria-label={T.avance}></progress>
+  </div>
+
+  <p class="vo-bilan" id="vocal-bilan" hidden></p>
+  <Resultat id="vocal-resultat" label={T.resultat} lang={lang} />
+  <Telecharger id="vocal-telecharger" lang={lang} />
+  <details class="vo-options" id="vocal-options" hidden>
+    <summary>{T.options}</summary>
+    <div class="vo-options__corps"><a class="o-btn o-btn--secondaire" id="vocal-srt" download>{T.srt}</a><Note texte={T.noteSrt} lang={lang} /></div>
+  </details>
+</div>
+
+<style is:global>
+  .vocal{display:grid;gap:16px}
+  .vo-info{margin:0;font-size:14px;color:var(--ink2);display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center}
+  .vo-suivi{display:grid;gap:8px}
+  .vo-suivi[hidden],.vo-bilan[hidden],.vo-options[hidden]{display:none}
+  .vo-etat{margin:0;font-size:15px;font-weight:600;color:var(--o-accent)}
+  .vo-etat.vo-erreur{color:#b3261e}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .vo-etat.vo-erreur{color:#ff8a80}}
+  :root[data-theme="dark"] .vo-etat.vo-erreur{color:#ff8a80}
+  .vo-barre{width:100%;height:10px;border-radius:999px;border:0;overflow:hidden;background:var(--alt);accent-color:var(--o-accent);appearance:none;-webkit-appearance:none}
+  .vo-barre::-webkit-progress-bar{background:var(--alt);border-radius:999px}
+  .vo-barre::-webkit-progress-value{background:var(--o-accent);border-radius:999px}
+  .vo-barre::-moz-progress-bar{background:var(--o-accent);border-radius:999px}
+  .vo-barre[hidden]{display:none}
+  .vo-bilan{margin:0;font-size:15px;color:var(--ink2)}
+  .vo-bilan b{color:var(--ink)}
+  .vo-options summary{cursor:pointer;font-weight:600;color:var(--o-accent);min-height:44px;display:flex;align-items:center}
+  .vo-options summary:focus-visible{outline:3px solid var(--o-accent);outline-offset:2px;border-radius:8px}
+  .vo-options__corps{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+</style>
+
+<script>
+  import { DUREE_MAX_S, ECHANTILLONNAGE, dureeS, enMono, estOgg, horloge, nomLangue, nomSortie, reechantillonner, tailleMo, versSrt, versTexte, type Segment } from './outil';
+  import type { Demande, Reponse } from './worker';
+  import { compter } from '../../lib/compteur';
+  import { afficherResultat, masquerResultat, masquerTelechargement, proposerTelechargement } from '../../lib/ui';
+
+  const racine = document.querySelector<HTMLElement>('[data-outil-id="vocal-texte"]');
+  if (racine) {
+    const lang = racine.dataset.lang === 'en' ? 'en' : 'fr';
+    const fr = lang === 'fr';
+    const total = Number(racine.dataset.total);
+    const $ = <T extends HTMLElement>(s: string) => racine.querySelector<T>(s)!;
+    const depot = $('#vocal-depot'), suivi = $('#vocal-suivi'), etat = $('#vocal-etat'), barre = $<HTMLProgressElement>('#vocal-barre');
+    const bilan = $('#vocal-bilan'), options = $<HTMLDetailsElement>('#vocal-options'), lienSrt = $<HTMLAnchorElement>('#vocal-srt'), premier = $('#vocal-premier');
+    const MAX_OCTETS = 600_000_000;
+
+    const L = fr
+      ? { decode: 'Lecture du son…', charge: (a: number) => `Chargement du modèle : ${tailleMo(a, lang)} sur ${tailleMo(total, lang)}`, prepare: 'Préparation du modèle…',
+          fenetre: (i: number, n: number) => `Transcription : morceau ${i} sur ${n} (30 s chacun)`, debutTr: 'Transcription…',
+          illisible: 'Ce fichier n’est pas un son lisible dans ce navigateur : essayez le fichier d’origine (.m4a, .mp3, .wav ou .opus).',
+          vide: 'Aucun son trouvé dans ce fichier. Si c’est une vidéo, vérifiez qu’elle a bien une piste audio.',
+          trop: (d: string) => `Ce vocal dure ${d} : l’outil en traite ${DUREE_MAX_S / 60} minutes au maximum. Découpez-le en deux et déposez chaque partie.`,
+          lourd: 'Ce fichier est trop lourd pour être lu ici (600 Mo maximum). Pour une vidéo, enregistrez d’abord le son seul.',
+          modele: 'Le modèle n’a pas pu être chargé. Vérifiez votre connexion et rechargez la page.',
+          echec: 'La transcription a échoué sur ce fichier. Réessayez, ou déposez une version plus courte.',
+          aucun: 'Aucune parole reconnue dans ce vocal.',
+          langue: 'Langue détectée', duree: 'Durée', en: 'transcrit en' }
+      : { decode: 'Reading the sound…', charge: (a: number) => `Loading the model: ${tailleMo(a, lang)} of ${tailleMo(total, lang)}`, prepare: 'Preparing the model…',
+          fenetre: (i: number, n: number) => `Transcribing: piece ${i} of ${n} (30 s each)`, debutTr: 'Transcribing…',
+          illisible: 'This file is not sound this browser can read: try the original file (.m4a, .mp3, .wav or .opus).',
+          vide: 'No sound found in this file. If it is a video, check that it has an audio track.',
+          trop: (d: string) => `This voice note lasts ${d}: the tool handles ${DUREE_MAX_S / 60} minutes at most. Split it in two and drop each part.`,
+          lourd: 'This file is too large to be read here (600 MB maximum). For a video, save the sound alone first.',
+          modele: 'The model could not be loaded. Check your connection and reload the page.',
+          echec: 'Transcription failed on this file. Try again, or drop a shorter version.',
+          aucun: 'No speech recognised in this voice note.',
+          langue: 'Detected language', duree: 'Duration', en: 'transcribed in' };
+
+    // « Déjà chargé » : le modèle est-il dans le cache du navigateur ?
+    (async () => {
+      try {
+        const c = await caches.open('transformers-cache');
+        const cles = await c.keys();
+        if (cles.some((r) => r.url.includes('/lourds/vocal-texte/models/') && r.url.endsWith('decoder_model_merged_quantized.onnx')))
+          premier.textContent = fr ? 'Modèle déjà chargé sur cet appareil : le texte démarre tout de suite.' : 'Model already loaded on this device: text starts right away.';
+      } catch { /* pas de Cache API : on garde le texte du premier usage */ }
+    })();
+
+    let worker: Worker | null = null;
+    let travail = 0;
+    const erreur = (m: string) => { suivi.hidden = false; barre.hidden = true; etat.textContent = m; etat.classList.add('vo-erreur'); };
+    const progression = (m: string, v?: number) => {
+      suivi.hidden = false; etat.classList.remove('vo-erreur'); etat.textContent = m;
+      barre.hidden = false; if (v === undefined) barre.removeAttribute('value'); else barre.value = Math.min(1, Math.max(0, v));
+    };
+    const nouveauWorker = () => { worker?.terminate(); worker = new Worker('/outils-assets/vocal-texte/worker.js', { type: 'module' }); return worker; };
+    const attendre = <R extends Reponse['type']>(w: Worker, type: R) =>
+      new Promise<Extract<Reponse, { type: R }>>((ok, ko) => {
+        const ecoute = (m: MessageEvent<Reponse>) => { if (m.data.type === type) { w.removeEventListener('message', ecoute); ok(m.data as never); } else if (m.data.type === 'erreur') { w.removeEventListener('message', ecoute); ko(m.data); } };
+        w.addEventListener('message', ecoute);
+      });
+
+    /** Son → Float32 16 kHz mono. Ogg (WhatsApp) : décodeur Opus du worker, car Safari ne lit pas l'Opus en .ogg ; le reste : le navigateur. */
+    async function decoder(fichier: File, w: Worker): Promise<Float32Array> {
+      const octets = await fichier.arrayBuffer();
+      if (estOgg(new Uint8Array(octets, 0, 4))) {
+        const p = attendre(w, 'pcm');
+        w.postMessage({ type: 'ogg', octets } satisfies Demande, [octets]);
+        return (await p).pcm;
+      }
+      const ctx = new OfflineAudioContext(1, 1, ECHANTILLONNAGE);
+      const audio = await ctx.decodeAudioData(octets);
+      const canaux = Array.from({ length: audio.numberOfChannels }, (_, i) => audio.getChannelData(i));
+      return reechantillonner(enMono(canaux), audio.sampleRate);
+    }
+
+    async function traiter(fichier: File) {
+      const moi = ++travail;
+      masquerResultat('vocal-resultat'); masquerTelechargement('vocal-telecharger');
+      bilan.hidden = true; options.hidden = true; options.open = false;
+      if (fichier.size > MAX_OCTETS) { erreur(L.lourd); return; }
+      const w = nouveauWorker();
+      progression(L.decode);
+      let pcm: Float32Array;
+      try { pcm = await decoder(fichier, w); }
+      catch { if (moi === travail) erreur(L.illisible); return; }
+      if (moi !== travail) return;
+      if (pcm.length < ECHANTILLONNAGE / 4) { erreur(L.vide); return; }
+      const d = dureeS(pcm.length);
+      if (d > DUREE_MAX_S + 5) { erreur(L.trop(horloge(d))); return; }
+
+      progression(L.prepare);
+      w.postMessage({ type: 'transcrire', pcm } satisfies Demande, [pcm.buffer]);
+      const t0 = performance.now();
+      const fini = await new Promise<Extract<Reponse, { type: 'fini' }> | null>((ok) => {
+        w.onmessage = (m: MessageEvent<Reponse>) => {
+          if (moi !== travail) return;
+          const r = m.data;
+          if (r.type === 'charge') progression(L.charge(r.charge), r.charge / total);
+          else if (r.type === 'pret') progression(L.debutTr, 0);
+          else if (r.type === 'fenetre') { if (r.total > 1) progression(L.fenetre(Math.min(r.fait + 1, r.total), r.total), r.fait / r.total); }
+          else if (r.type === 'fini') ok(r);
+          else if (r.type === 'erreur') { erreur(r.code === 'modele' ? L.modele : L.echec); ok(null); }
+        };
+      });
+      if (!fini || moi !== travail) return;
+      w.terminate(); if (worker === w) worker = null;
+      const segments: Segment[] = fini.segments;
+      const texte = versTexte(segments);
+      suivi.hidden = true;
+      if (!texte) { erreur(L.aucun); return; }
+      afficherResultat('vocal-resultat', texte);
+      bilan.replaceChildren();
+      const b = (t: string) => { const e = document.createElement('b'); e.textContent = t; return e; };
+      bilan.append(`${L.langue} : `, b(nomLangue(fini.langue, lang)), ` · ${L.duree} ${horloge(d)} · ${L.en} ${horloge(Math.max(1, Math.round((performance.now() - t0) / 1000)))}`);
+      bilan.hidden = false;
+      await proposerTelechargement('vocal-telecharger', [{ nom: nomSortie(fichier.name, 'txt'), donnees: texte, type: 'text/plain;charset=utf-8' }]);
+      if (lienSrt.href.startsWith('blob:')) URL.revokeObjectURL(lienSrt.href);
+      lienSrt.href = URL.createObjectURL(new Blob([versSrt(segments)], { type: 'text/plain;charset=utf-8' }));
+      lienSrt.download = nomSortie(fichier.name, 'srt');
+      options.hidden = false;
+      compter('utilise', 'vocal-texte');
+    }
+
+    depot.addEventListener('fichiers', (ev) => { const f = (ev as CustomEvent<File[]>).detail[0]; if (f) void traiter(f); });
+  }
+</script>
