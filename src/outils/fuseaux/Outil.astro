@@ -1,0 +1,391 @@
+---
+// Fuseaux horaires : villes ajoutées par recherche, réglette de réunion (24 h alignées), lien partageable (#fragment), export .ics.
+// Tout se calcule dans le navigateur avec Intl ; la liste de villes est embarquée (villes.json).
+import Champ from '../../composants/Champ.astro';
+import Bouton from '../../composants/Bouton.astro';
+import Note from '../../composants/Note.astro';
+import Resultat from '../../composants/Resultat.astro';
+interface Props { lang?: 'fr' | 'en' }
+const { lang = 'fr' } = Astro.props;
+const fr = lang === 'fr';
+const T = fr ? {
+  date: 'Date', dateAide: 'Date dans la ville de référence : celle dont vous modifiez l’heure.',
+  ville: 'Ville', villeAide: 'Cherchez parmi environ 400 villes (nom français ou anglais, ou pays). Jusqu’à 8 villes.', placeholder: 'Paris, Tokyo, Brésil…',
+  maintenant: 'Maintenant', lien: 'Copier lien', agenda: 'Ajouter agenda',
+  reglette: 'Réglette', regletteAide: 'Glissez sur une ligne, ou cliquez, pour choisir l’heure. Au clavier : flèches ← → (15 min), Maj + flèches ou Page ↑ ↓ (1 h). Vert : heures de bureau (9 h à 18 h) ; clair : tôt le matin et soirée ; sombre : nuit.',
+  bureau: 'Bureau', bord: 'Soirée', nuit: 'Nuit', bordMatin: 'Tôt',
+  retirer: 'Retirer', heureA: 'Heure à', reference: 'Référence', resume: 'Résumé',
+  lienCopie: 'Lien copié', lienEchec: 'Copie impossible', agendaFait: 'Fichier créé',
+  aucun: 'Aucun résultat', jour: 'j',
+  complet: 'Huit villes au maximum.',
+  evenement: 'Réunion', evenementDesc: 'Créneau calculé avec le convertisseur de fuseaux horaires.',
+} : {
+  date: 'Date', dateAide: 'Date in the reference city: the one whose time you are editing.',
+  ville: 'City', villeAide: 'Search about 400 cities (name in English or French, or country). Up to 8 cities.', placeholder: 'London, Tokyo, Brazil…',
+  maintenant: 'Now', lien: 'Copy link', agenda: 'Add calendar',
+  reglette: 'Timeline', regletteAide: 'Drag on a row, or click, to pick the time. Keyboard: ← → arrows (15 min), Shift + arrows or Page Up / Down (1 h). Green: office hours (9 am to 6 pm); light: early morning and evening; dark: night.',
+  bureau: 'Office', bord: 'Evening', nuit: 'Night', bordMatin: 'Early',
+  retirer: 'Remove', heureA: 'Time in', reference: 'Reference', resume: 'Summary',
+  lienCopie: 'Link copied', lienEchec: 'Copy failed', agendaFait: 'File created',
+  aucun: 'No result', jour: 'd',
+  complet: 'Eight cities at most.',
+  evenement: 'Meeting', evenementDesc: 'Time slot worked out with the time zone converter.',
+};
+const textes = JSON.stringify(T);
+---
+<div class="fz" data-outil-id="fuseaux" data-lang={lang} data-textes={textes}>
+  <div class="fz-barre">
+    <div class="fz-date"><Champ id="fuseaux-date" label={T.date} type="date" aide={T.dateAide} lang={lang} /></div>
+    <div class="fz-recherche">
+      <Champ id="fuseaux-ville" label={T.ville} placeholder={T.placeholder} aide={T.villeAide} lang={lang} />
+      <ul class="fz-liste" id="fuseaux-liste" role="listbox" aria-label={T.ville} hidden></ul>
+    </div>
+    <Bouton variante="secondaire" id="fuseaux-maintenant">{T.maintenant}</Bouton>
+  </div>
+
+  <div class="fz-entete"><span class="o-etiquette">{T.reglette}</span><Note texte={T.regletteAide} lang={lang} /></div>
+  <ul class="fz-lignes" id="fuseaux-lignes"></ul>
+  <p class="fz-avis" id="fuseaux-avis" role="status" hidden></p>
+
+  <div class="fz-actions">
+    <Bouton variante="principal" id="fuseaux-lien">{T.lien}</Bouton>
+    <Bouton variante="secondaire" id="fuseaux-agenda">{T.agenda}</Bouton>
+  </div>
+  <Resultat id="fuseaux-resultat" label={T.resume} copier lang={lang} />
+</div>
+
+<style is:global>
+  .fz{display:grid;gap:14px}
+  .fz-barre{display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px}
+  .fz-date{flex:0 1 190px;min-width:150px}
+  .fz-recherche{position:relative;flex:1 1 220px;min-width:180px}
+  .fz-liste{position:absolute;z-index:20;left:0;right:0;top:calc(100% + 4px);max-height:300px;overflow:auto;list-style:none;margin:0;padding:6px;background:var(--o-surface);border:1.5px solid var(--o-bord);border-radius:14px;box-shadow:0 14px 34px -14px rgba(0,0,0,.45)}
+  .fz-liste[hidden]{display:none}
+  .fz-liste li{padding:9px 12px;border-radius:9px;cursor:pointer;display:flex;justify-content:space-between;gap:12px;font-size:15px;min-height:40px;align-items:center}
+  .fz-liste li small{color:var(--ink2);font-size:13px}
+  .fz-liste li[aria-selected="true"],.fz-liste li:hover{background:var(--o-tinte)}
+  .fz-liste li[aria-disabled="true"]{color:var(--ink2);cursor:default}
+  .fz-entete{display:flex;align-items:center;gap:8px;margin-top:2px}
+  .fz-lignes{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+  .fz-ligne{display:grid;grid-template-columns:minmax(150px,230px) 118px 36px minmax(0,1fr);grid-template-areas:"info heure retirer piste";align-items:center;gap:6px 12px;padding:10px 12px;border:1px solid var(--line);border-radius:16px;background:var(--o-surface)}
+  .fz-ligne.fz-ref{border-color:var(--o-accent);box-shadow:inset 0 0 0 1px var(--o-accent)}
+  .fz-info{grid-area:info;min-width:0}
+  .fz-nom{display:flex;align-items:baseline;flex-wrap:wrap;gap:2px 8px}
+  .fz-nom b{font-size:17px;letter-spacing:-.01em}
+  .fz-pays{font-size:13px;color:var(--ink2)}
+  .fz-meta{display:flex;flex-wrap:wrap;gap:2px 10px;font-size:13px;color:var(--ink2);margin-top:2px}
+  .fz-jour{font-weight:700;color:var(--o-accent)}
+  .fz-statut{font-weight:600;color:var(--ink)}
+  .fz-heure{grid-area:heure;font:600 18px/1.2 var(--font);font-variant-numeric:tabular-nums;color:var(--ink);background:var(--o-surface);border:1.5px solid var(--o-bord);border-radius:12px;padding:8px 10px;min-height:44px;width:100%}
+  .fz-heure:focus-visible,.fz-piste:focus-visible,.fz-retirer:focus-visible{outline:3px solid var(--o-accent);outline-offset:2px}
+  .fz-retirer{grid-area:retirer;width:36px;height:36px;border-radius:50%;border:1.5px solid var(--o-bord);background:transparent;color:var(--ink2);font-size:20px;line-height:1;cursor:pointer;display:grid;place-items:center}
+  .fz-retirer:hover{background:var(--o-tinte);color:var(--ink)}
+  .fz-retirer[hidden]{display:none}
+  .fz-piste{grid-area:piste;position:relative;height:38px;border-radius:10px;overflow:hidden;cursor:ew-resize;touch-action:pan-y;user-select:none;-webkit-user-select:none;border:1px solid var(--o-bord)}
+  .fz-cases{display:grid;grid-template-columns:repeat(24,1fr);height:100%}
+  .fz-cases span{display:flex;align-items:center;font-size:10.5px;font-variant-numeric:tabular-nums;color:var(--ink);padding-left:3px;white-space:nowrap;overflow:visible;border-left:1px solid rgba(128,128,138,.25)}
+  .fz-cases span:first-child{border-left:0}
+  .fz-cases .fz-p-bureau{background:color-mix(in srgb,var(--o-ok) 42%,transparent);font-weight:700}
+  .fz-cases .fz-p-bord{background:color-mix(in srgb,var(--o-ok) 13%,transparent)}
+  .fz-cases .fz-p-nuit{background:color-mix(in srgb,var(--ink) 20%,transparent);color:var(--ink2)}
+  .fz-marque{position:absolute;top:0;bottom:0;width:3px;margin-left:-1.5px;background:var(--o-accent);pointer-events:none;box-shadow:0 0 0 1.5px var(--o-surface)}
+  .fz-marque::before{content:"";position:absolute;left:50%;top:-1px;width:11px;height:11px;margin-left:-5.5px;border-radius:50%;background:var(--o-accent);border:2px solid var(--o-surface)}
+  .fz-avis{margin:0;padding:10px 14px;border-radius:12px;background:var(--o-tinte);border:1px solid var(--o-accent);font-size:15px}
+  .fz-avis[hidden]{display:none}
+  .fz-actions{display:flex;flex-wrap:wrap;gap:10px}
+  @media (max-width:640px){
+    .fz-ligne{grid-template-columns:minmax(0,1fr) 112px 36px;grid-template-areas:"info heure retirer" "piste piste piste"}
+    .fz-heure{font-size:17px;padding:8px}
+    .fz-date{flex:1 1 140px;order:1}
+    .fz .o-btn{width:auto;flex:none}
+    #fuseaux-maintenant{order:2}
+    .fz-recherche{order:3;flex:1 1 100%}
+    .fz-barre{gap:8px 10px}
+    .fz-lignes{gap:8px}
+    .fz-cases span{font-size:10px;padding-left:2px}
+  }
+  @media (prefers-contrast:more){.fz-cases span{border-left-color:CanvasText}}
+  @media (prefers-reduced-motion:no-preference){.fz-marque{transition:left .08s linear}}
+</style>
+
+<script>
+  import { casesDe, chercherVilles, composantes, dateCourte, dateIso, debutFenetre, decalage, depuisFragment, ecartJour, genererIcs, heureIso, heureLocale, instantLocal, libelleUtc, MAX_VILLES, nomPays, nomVille, resume, versFragment, villeParId, villesParDefaut } from './outil';
+  import type { Lang, Ville } from './outil';
+  import { compter } from '../../lib/compteur';
+  import { afficherResultat } from '../../lib/ui';
+
+  const racine = document.querySelector<HTMLElement>('[data-outil-id="fuseaux"]');
+  if (racine) {
+    const lang: Lang = racine.dataset.lang === 'en' ? 'en' : 'fr';
+    const T = JSON.parse(racine.dataset.textes ?? '{}') as Record<string, string>;
+    const fr = lang === 'fr';
+    const q = <E extends HTMLElement>(s: string) => racine.querySelector<E>(s)!;
+    const champDate = q<HTMLInputElement>('#fuseaux-date');
+    const champVille = q<HTMLInputElement>('#fuseaux-ville');
+    const liste = q<HTMLUListElement>('#fuseaux-liste');
+    const lignes = q<HTMLUListElement>('#fuseaux-lignes');
+    const avis = q<HTMLElement>('#fuseaux-avis');
+    const btnLien = q<HTMLButtonElement>('#fuseaux-lien');
+    const btnAgenda = q<HTMLButtonElement>('#fuseaux-agenda');
+    const btnMaintenant = q<HTMLButtonElement>('#fuseaux-maintenant');
+
+    // ───────── état : villes, ville de référence, instant ─────────
+    const arrondi = (ms: number) => Math.floor(ms / 900000) * 900000;
+    const lu = depuisFragment(location.hash);
+    let tzVisiteur = 'Europe/Paris';
+    try { tzVisiteur = Intl.DateTimeFormat().resolvedOptions().timeZone || tzVisiteur; } catch { /* Paris par défaut */ }
+    let ms = lu.ms ?? arrondi(Date.now());
+    let villes: Ville[] = lu.villes.length ? lu.villes.map((i) => villeParId(i)!) : villesParDefaut(tzVisiteur, lang, ms);
+    let ref = lu.ref ?? villes[0].id;
+    const refVille = () => villes.find((v) => v.id === ref) ?? villes[0];
+
+    // ───────── construction des lignes (quand la liste de villes change) ─────────
+    type Ligne = { v: Ville; li: HTMLElement; heure: HTMLInputElement; piste: HTMLElement; marque: HTMLElement; cases: HTMLElement[]; date: HTMLElement; jour: HTMLElement; utc: HTMLElement; statut: HTMLElement; retirer: HTMLButtonElement };
+    let rangees: Ligne[] = [];
+    let cleFenetre = '';
+
+    const el = <K extends keyof HTMLElementTagNameMap>(tag: K, cls?: string, txt?: string) => {
+      const e = document.createElement(tag);
+      if (cls) e.className = cls;
+      if (txt !== undefined) e.textContent = txt;
+      return e;
+    };
+
+    function construire() {
+      lignes.replaceChildren();
+      rangees = villes.map((v, idx) => {
+        const nom = nomVille(v, lang);
+        const li = el('li', 'fz-ligne');
+        const info = el('div', 'fz-info');
+        const n = el('div', 'fz-nom');
+        n.append(el('b', '', nom), el('span', 'fz-pays', nomPays(v.cc, lang) || v.tz));
+        const meta = el('div', 'fz-meta');
+        const date = el('span'); const jour = el('span', 'fz-jour'); const utc = el('span'); const statut = el('span', 'fz-statut');
+        meta.append(date, jour, utc, statut);
+        info.append(n, meta);
+        const heure = el('input', 'fz-heure');
+        heure.type = 'time'; heure.required = true; heure.setAttribute('aria-label', `${T.heureA} ${nom}`);
+        const retirer = el('button', 'fz-retirer', '×');
+        retirer.type = 'button'; retirer.setAttribute('aria-label', `${T.retirer} ${nom}`); retirer.title = `${T.retirer} ${nom}`;
+        const piste = el('div', 'fz-piste');
+        piste.setAttribute('role', 'slider'); piste.tabIndex = idx === 0 ? 0 : -1;
+        piste.setAttribute('aria-label', `${T.reglette} · ${nom}`);
+        piste.setAttribute('aria-valuemin', '0'); piste.setAttribute('aria-valuemax', '1425');
+        const bloc = el('div', 'fz-cases');
+        const cases = Array.from({ length: 24 }, () => bloc.appendChild(el('span')));
+        const marque = el('div', 'fz-marque');
+        piste.append(bloc, marque);
+        li.append(info, heure, retirer, piste);
+        lignes.append(li);
+
+        heure.addEventListener('input', () => {
+          if (!heure.value) return;
+          const c = composantes(ms, v.tz);
+          const r = instantLocal(dateIso(c), heure.value, v.tz);
+          ref = v.id; ms = r.ms; noterStatut(r.statut, v);
+          maj(); valider();
+        });
+        retirer.addEventListener('click', () => {
+          villes = villes.filter((x) => x.id !== v.id);
+          if (ref === v.id) ref = villes[0].id;
+          construire(); maj(); valider();
+        });
+        brancherPiste(piste);
+        return { v, li, heure, piste, marque, cases, date, jour, utc, statut, retirer };
+      });
+      cleFenetre = '';
+    }
+
+    // ───────── réglette : pointeur et clavier ─────────
+    let debut = 0;
+    const MIN_MAX = 1425;
+    const posePar = (minutes: number) => {
+      const m = Math.max(0, Math.min(MIN_MAX, minutes));
+      ms = debut + m * 60000; avis.hidden = true;
+      maj();
+    };
+    let glisse = false;
+    let aBouge = false;
+    function brancherPiste(piste: HTMLElement) {
+      const depuisX = (x: number) => {
+        const r = piste.getBoundingClientRect();
+        return Math.round(((x - r.left) / r.width) * 1440 / 15) * 15;
+      };
+      piste.addEventListener('pointerdown', (e) => {
+        if (e.button !== 0) return;
+        glisse = true; aBouge = false;
+        piste.setPointerCapture(e.pointerId);
+        piste.focus({ preventScroll: true });
+        posePar(depuisX(e.clientX));
+      });
+      piste.addEventListener('pointermove', (e) => { if (glisse) { aBouge = true; posePar(depuisX(e.clientX)); } });
+      const fin = () => { if (glisse) { glisse = false; valider(); } };
+      piste.addEventListener('pointerup', fin);
+      piste.addEventListener('pointercancel', fin);
+      piste.addEventListener('keydown', (e) => {
+        const actuel = Math.round((ms - debut) / 60000);
+        const pas = e.shiftKey ? 60 : 15;
+        let cible: number | null = null;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowUp') cible = actuel + pas;
+        else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') cible = actuel - pas;
+        else if (e.key === 'PageUp') cible = actuel + 60;
+        else if (e.key === 'PageDown') cible = actuel - 60;
+        else if (e.key === 'Home') cible = 0;
+        else if (e.key === 'End') cible = MIN_MAX;
+        if (cible === null) return;
+        e.preventDefault();
+        posePar(Math.round(cible / 15) * 15);
+        valider();
+      });
+    }
+
+    // ───────── mise à jour de l'affichage (sans reconstruire) ─────────
+    function noterStatut(statut: 'ok' | 'inexistante' | 'ambigue', v: Ville) {
+      const nom = nomVille(v, lang);
+      if (statut === 'inexistante') {
+        avis.textContent = fr
+          ? `Cette heure n’existe pas à ${nom} (passage à l’heure d’été) : elle est décalée à ${heureLocale(ms, v.tz)}.`
+          : `This time does not exist in ${nom} (clocks go forward): it is moved to ${heureLocale(ms, v.tz)}.`;
+        avis.hidden = false;
+      } else if (statut === 'ambigue') {
+        avis.textContent = fr
+          ? `Cette heure existe deux fois à ${nom} (retour à l’heure d’hiver) : la première est retenue.`
+          : `This time happens twice in ${nom} (clocks go back): the first one is used.`;
+        avis.hidden = false;
+      } else avis.hidden = true;
+    }
+
+    function maj() {
+      const rv = refVille();
+      const jourRef = dateIso(composantes(ms, rv.tz));
+      debut = debutFenetre(jourRef, rv.tz);
+      const cle = `${jourRef}|${villes.map((v) => v.id).join()}|${ref}`;
+      const refreshCases = cle !== cleFenetre;
+      cleFenetre = cle;
+      if (document.activeElement !== champDate) champDate.value = jourRef;
+      const minutes = Math.max(0, Math.min(1440, Math.round((ms - debut) / 60000)));
+      for (const r of rangees) {
+        const c = composantes(ms, r.v.tz);
+        if (document.activeElement !== r.heure) r.heure.value = heureIso(c);
+        r.date.textContent = dateCourte(ms, r.v.tz, lang);
+        const e = ecartJour(ms, r.v.tz, rv.tz);
+        r.jour.textContent = e === 0 ? '' : `${e > 0 ? '+' : '−'}${Math.abs(e)} ${T.jour}`;
+        r.utc.textContent = libelleUtc(decalage(ms, r.v.tz));
+        const h = c.h + c.mi / 60;
+        r.statut.textContent = h >= 9 && h < 18 ? T.bureau : (h >= 18 && h < 22) ? T.bord : (h >= 7 && h < 9) ? T.bordMatin : T.nuit;
+        r.li.classList.toggle('fz-ref', r.v.id === ref && villes.length > 1);
+        r.li.title = r.v.id === ref && villes.length > 1 ? T.reference : '';
+        r.retirer.hidden = villes.length <= 1;
+        r.marque.style.left = `${(minutes / 1440) * 100}%`;
+        r.piste.setAttribute('aria-valuenow', String(Math.min(1425, minutes)));
+        r.piste.setAttribute('aria-valuetext', `${heureLocale(ms, r.v.tz)} · ${nomVille(r.v, lang)}`);
+        if (refreshCases) {
+          casesDe(debut, r.v.tz).forEach((k, i) => {
+            const s = r.cases[i];
+            s.className = `fz-p-${k.plage}`;
+            const lib = k.mi ? `${k.h}:${String(k.mi).padStart(2, '0')}` : String(k.h);
+            s.textContent = i % 3 === 0 ? lib : '';
+            s.title = `${nomVille(r.v, lang)} : ${String(k.h).padStart(2, '0')}:${String(k.mi).padStart(2, '0')}`;
+          });
+        }
+      }
+      afficherResultat('fuseaux-resultat', resume(ms, villes, rv.tz, lang));
+      history.replaceState(null, '', versFragment({ villes: villes.map((v) => v.id), ref, ms }));
+    }
+
+    // « un résultat produit » : le changement d'heure validé, compté une fois quand l'utilisateur s'arrête
+    let minuterie: ReturnType<typeof setTimeout> | undefined;
+    function valider() {
+      clearTimeout(minuterie);
+      minuterie = setTimeout(() => compter('utilise', 'fuseaux'), 1500);
+    }
+
+    // ───────── date, maintenant ─────────
+    champDate.addEventListener('input', () => {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(champDate.value)) return;
+      const rv = refVille();
+      const r = instantLocal(champDate.value, heureIso(composantes(ms, rv.tz)), rv.tz);
+      ms = r.ms; noterStatut(r.statut, rv); maj(); valider();
+    });
+    btnMaintenant.addEventListener('click', () => { ms = arrondi(Date.now()); avis.hidden = true; maj(); valider(); });
+
+    // ───────── recherche de ville (liste déroulante au clavier) ─────────
+    let resultats: Ville[] = [];
+    let actif = -1;
+    champVille.setAttribute('role', 'combobox');
+    champVille.setAttribute('aria-autocomplete', 'list');
+    champVille.setAttribute('aria-controls', 'fuseaux-liste');
+    champVille.setAttribute('aria-expanded', 'false');
+    const ferme = () => { liste.hidden = true; champVille.setAttribute('aria-expanded', 'false'); champVille.removeAttribute('aria-activedescendant'); actif = -1; };
+    function dessiner() {
+      liste.replaceChildren();
+      resultats.forEach((v, i) => {
+        const li = el('li'); li.id = `fuseaux-o${i}`; li.setAttribute('role', 'option'); li.setAttribute('aria-selected', String(i === actif));
+        li.append(el('span', '', nomVille(v, lang)), el('small', '', nomPays(v.cc, lang)));
+        li.addEventListener('mousedown', (e) => { e.preventDefault(); ajouter(v); });
+        liste.append(li);
+      });
+      if (!resultats.length && champVille.value.trim()) {
+        const li = el('li', '', T.aucun); li.setAttribute('aria-disabled', 'true'); li.setAttribute('role', 'option'); liste.append(li);
+      }
+      liste.hidden = liste.childElementCount === 0;
+      champVille.setAttribute('aria-expanded', String(!liste.hidden));
+      if (actif >= 0) champVille.setAttribute('aria-activedescendant', `fuseaux-o${actif}`); else champVille.removeAttribute('aria-activedescendant');
+    }
+    function ajouter(v: Ville) {
+      if (villes.length >= MAX_VILLES || villes.some((x) => x.id === v.id)) return;
+      villes = [...villes, v];
+      champVille.value = ''; resultats = []; ferme();
+      construire(); maj(); valider();
+    }
+    champVille.addEventListener('input', () => {
+      if (villes.length >= MAX_VILLES) { resultats = []; champVille.value = ''; avis.textContent = T.complet; avis.hidden = false; ferme(); return; }
+      resultats = chercherVilles(champVille.value, lang, villes.map((v) => v.id));
+      actif = resultats.length ? 0 : -1;
+      dessiner();
+    });
+    champVille.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown' && resultats.length) { e.preventDefault(); actif = (actif + 1) % resultats.length; dessiner(); }
+      else if (e.key === 'ArrowUp' && resultats.length) { e.preventDefault(); actif = (actif - 1 + resultats.length) % resultats.length; dessiner(); }
+      else if (e.key === 'Enter' && actif >= 0) { e.preventDefault(); ajouter(resultats[actif]); }
+      else if (e.key === 'Escape') { ferme(); }
+    });
+    champVille.addEventListener('blur', () => setTimeout(ferme, 120));
+
+    // ───────── lien et calendrier ─────────
+    btnLien.addEventListener('click', async () => {
+      const avant = btnLien.textContent;
+      let ok = true;
+      try { await navigator.clipboard.writeText(location.href); } catch { ok = false; }
+      btnLien.textContent = ok ? T.lienCopie : T.lienEchec;
+      if (ok) compter('utilise', 'fuseaux');
+      setTimeout(() => { btnLien.textContent = avant; }, 2200);
+    });
+    btnAgenda.addEventListener('click', () => {
+      const rv = refVille();
+      const ics = genererIcs({ debutMs: ms, titre: T.evenement, description: `${T.evenementDesc}\n${resume(ms, villes, rv.tz, lang)}` });
+      const url = URL.createObjectURL(new Blob([ics], { type: 'text/calendar;charset=utf-8' }));
+      const a = document.createElement('a');
+      a.href = url; a.download = 'reunion.ics';
+      document.body.append(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 4000);
+      const avant = btnAgenda.textContent;
+      btnAgenda.textContent = T.agendaFait;
+      setTimeout(() => { btnAgenda.textContent = avant; }, 2200);
+      compter('utilise', 'fuseaux');
+    });
+
+    // un fragment modifié à la main (ou un lien collé dans la même page)
+    window.addEventListener('hashchange', () => {
+      const l = depuisFragment(location.hash);
+      if (!l.villes.length) return;
+      villes = l.villes.map((i) => villeParId(i)!);
+      ref = l.ref ?? villes[0].id;
+      if (l.ms !== undefined) ms = l.ms;
+      construire(); maj();
+    });
+
+    construire();
+    maj();
+  }
+</script>
