@@ -155,3 +155,8 @@
 @media (forced-colors:active){
   .o-depot,.o-choix__segments,.o-champ input,.o-champ select,.o-champ textarea{border-color:CanvasText}
 }
+/* Outils automatiques devant, première vague en retrait */
+.o-sur-titre{margin-top:44px;font-size:15px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted,#6b7280)}
+.o-categorie--avant+.o-sur-titre~.o-categorie .o-tuile{opacity:.86}
+.o-retrait{margin-top:18px;font-size:15px;color:var(--muted,#6b7280);line-height:1.8}
+.o-retrait a{color:inherit;text-decoration:underline;text-underline-offset:3px}

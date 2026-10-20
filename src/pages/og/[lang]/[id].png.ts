@@ -38,7 +38,7 @@ export const GET: APIRoute = async ({ props }) => {
       el('div', { display: 'flex', fontSize: 74, fontWeight: 700, lineHeight: 1.05, letterSpacing: -2 }, nettoyer(d.nom_court)),
       el('div', { display: 'flex', fontSize: 32, fontWeight: 400, marginTop: 18, opacity: 0.95 }, nettoyer(d.phrase)),
     ]),
-    el('div', { display: 'flex', fontSize: 26, fontWeight: 400, opacity: 0.9 }, d.calcul ? (d.lang === 'fr' ? 'Gratuit · sans inscription' : 'Free · no sign-up') : (d.lang === 'fr' ? 'Gratuit · traité sur votre appareil' : 'Free · processed on your device')),
+    el('div', { display: 'flex', fontSize: 26, fontWeight: 400, opacity: 0.9 }, d.serveur ? (d.lang === 'fr' ? 'Gratuit · rien n’est conservé' : 'Free · nothing is stored') : d.calcul ? (d.lang === 'fr' ? 'Gratuit · sans inscription' : 'Free · no sign-up') : (d.lang === 'fr' ? 'Gratuit · traité sur votre appareil' : 'Free · processed on your device')),
   ]);
   const svg = await satori(arbre as never, { width: 1200, height: 630, fonts: polices });
   const png = new Resvg(svg, { fitTo: { mode: 'width', value: 1200 } }).render().asPng();

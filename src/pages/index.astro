@@ -4,6 +4,10 @@ import TuileOutil from '../composants/TuileOutil.astro';
 import { fiches } from '../lib/outils';
 import { INDEXABLE, url } from '../lib/site';
 const tuiles = await fiches('fr');
+// Les outils automatiques (en_avant) passent devant ; les autres restent en retrait, en liste courte.
+const devant = tuiles.filter((f) => f.data.en_avant);
+const retrait = devant.length ? tuiles.filter((f) => !f.data.en_avant) : [];
+const grille = devant.length ? devant : tuiles;
 ---
 <!doctype html>
 <html lang="fr">
@@ -48,8 +52,9 @@ const tuiles = await fiches('fr');
     {tuiles.length > 0 && (
       <section id="outils"><div class="wrap">
         <h2 class="t">Outils gratuits</h2>
-        <p class="lead">Une page, une action, un résultat. Tout se passe dans votre navigateur : rien n’est envoyé.</p>
-        <div class="o-grille" style="margin-top:28px">{tuiles.map((f) => <TuileOutil fiche={f} />)}</div>
+        <p class="lead">{devant.length ? 'Déposez, collez : le résultat sort tout seul.' : 'Une page, une action, un résultat. Tout se passe dans votre navigateur : rien n’est envoyé.'}</p>
+        <div class="o-grille" style="margin-top:28px">{grille.map((f) => <TuileOutil fiche={f} />)}</div>
+        {retrait.length > 0 && <p class="o-retrait">Aussi : {retrait.map((f, i) => <>{i > 0 && ' · '}<a href={`outils/${f.data.slug}/`}>{f.data.nom_court}</a></>)}</p>}
         <p style="margin-top:20px"><a class="o-btn o-btn--secondaire" href="outils/">Tous les outils</a></p>
       </div></section>
     )}

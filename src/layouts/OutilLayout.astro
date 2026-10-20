@@ -19,10 +19,10 @@ const { Content } = await render(fiche);
 const monChemin = chemin(fiche);
 
 const T = lang === 'fr'
-  ? { accueil: 'Accueil', outils: 'Outils', fil: 'Fil d’Ariane', local: 'Traité sur votre appareil — rien n’est envoyé', calcul: 'Calcul instantané, sans inscription',
+  ? { accueil: 'Accueil', outils: 'Outils', fil: 'Fil d’Ariane', local: 'Traité sur votre appareil — rien n’est envoyé', calcul: 'Calcul instantané, sans inscription', serveur: 'Analysé par notre serveur — rien n’est conservé',
       faq: 'Questions fréquentes', sources: 'Sources', maj: 'Mis à jour le', autres: 'Autres outils',
       storeTitre: 'Des petites apps Mac, gratuites aussi', storeTexte: 'Faites pour moi, partagées telles quelles. Sans compte, sans télémétrie.', storeBouton: 'Voir les apps', outil: 'Outil' }
-  : { accueil: 'Home', outils: 'Tools', fil: 'Breadcrumb', local: 'Processed on your device — nothing is uploaded', calcul: 'Instant calculation, no sign-up',
+  : { accueil: 'Home', outils: 'Tools', fil: 'Breadcrumb', local: 'Processed on your device — nothing is uploaded', calcul: 'Instant calculation, no sign-up', serveur: 'Checked by our server — nothing is stored',
       faq: 'Frequently asked questions', sources: 'Sources', maj: 'Last updated', autres: 'More tools',
       storeTitre: 'Small Mac apps, free too', storeTexte: 'Made for myself, shared as they are. No account, no telemetry.', storeBouton: 'See the apps', outil: 'Tool' };
 
@@ -63,7 +63,7 @@ const alternates: { fr?: string; en?: string } = { [lang]: monChemin, ...(autre 
       </nav>
       <h1>{d.h1}</h1>
       <p class="o-phrase">{d.phrase}</p>
-      <p class="o-pastille"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6z"/><path d="m9 12 2 2 4-4"/></svg>{d.calcul ? T.calcul : T.local}</p>
+      <p class="o-pastille"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6z"/><path d="m9 12 2 2 4-4"/></svg>{d.serveur ? T.serveur : d.calcul ? T.calcul : T.local}</p>
     </div>
   </header>
   <main class="o-plat" id="contenu">

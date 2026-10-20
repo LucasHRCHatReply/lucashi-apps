@@ -21,5 +21,9 @@ export const schemaFiche = z.object({
   sources: z.array(z.union([z.string(), z.object({ titre: z.string(), url: z.string().url().optional() })])).default([]),
   // outil de calcul : la pastille dit « Calcul instantané, sans inscription » au lieu de « Traité sur votre appareil »
   calcul: z.boolean().default(false),
+  // outil traité par le serveur du site (arnaque) : la pastille dit « Analysé par notre serveur, rien n'est conservé »
+  serveur: z.boolean().default(false),
+  // outil automatique (deuxième vague) : en tête de l'accueil et du hub
+  en_avant: z.boolean().default(false),
 });
 export type DonneesFiche = z.infer<typeof schemaFiche>;

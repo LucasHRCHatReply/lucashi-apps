@@ -7,12 +7,13 @@ import { url } from '../lib/site';
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const liste = await fiches(lang);
-const groupes = parCategorie(liste);
+const devant = liste.filter((f) => f.data.en_avant);
+const groupes = parCategorie(devant.length ? liste.filter((f) => !f.data.en_avant) : liste);
 const T = lang === 'fr'
   ? { titre: 'Outils gratuits en ligne, sans envoi de fichier', desc: 'Convertir, compresser, calculer : des outils gratuits, sans compte ni publicité, qui travaillent dans votre navigateur. Vos fichiers ne quittent pas votre appareil.',
-      h1: 'Outils gratuits', phrase: 'Une page, une action, un résultat. Tout se passe dans votre navigateur : rien n’est envoyé.', vide: 'Les premiers outils arrivent bientôt.', accueil: 'Accueil', fil: 'Fil d’Ariane' }
+      h1: 'Outils gratuits', phrase: 'Une page, une action, un résultat. Tout se passe dans votre navigateur : rien n’est envoyé.', vide: 'Les premiers outils arrivent bientôt.', auto: 'On dépose, c’est fait', autres: 'Autres outils', accueil: 'Accueil', fil: 'Fil d’Ariane' }
   : { titre: 'Free online tools, no file upload', desc: 'Convert, compress, calculate: free tools with no account and no ads, running in your browser. Your files never leave your device.',
-      h1: 'Free tools', phrase: 'One page, one action, one result. Everything happens in your browser: nothing is uploaded.', vide: 'The first tools are coming soon.', accueil: 'Home', fil: 'Breadcrumb' };
+      h1: 'Free tools', phrase: 'One page, one action, one result. Everything happens in your browser: nothing is uploaded.', vide: 'The first tools are coming soon.', auto: 'Drop it, done', autres: 'More tools', accueil: 'Home', fil: 'Breadcrumb' };
 const monChemin = cheminHub(lang);
 const jsonld = [{
   '@context': 'https://schema.org', '@type': 'BreadcrumbList',
@@ -32,7 +33,14 @@ const jsonld = [{
   </header>
   <main class="o-plat" id="contenu">
     <div class="wrap">
-      {groupes.length === 0
+      {devant.length > 0 && (
+        <section class="o-categorie o-categorie--avant" aria-labelledby="cat-avant">
+          <h2 id="cat-avant">{T.auto}</h2>
+          <div class="o-grille">{devant.map((f) => <TuileOutil fiche={f} />)}</div>
+        </section>
+      )}
+      {devant.length > 0 && groupes.length > 0 && <h2 class="o-sur-titre">{T.autres}</h2>}
+      {groupes.length === 0 && devant.length === 0
         ? <p class="o-vide">{T.vide}</p>
         : groupes.map((g) => (
           <section class="o-categorie" aria-labelledby={`cat-${g.categorie}`}>
