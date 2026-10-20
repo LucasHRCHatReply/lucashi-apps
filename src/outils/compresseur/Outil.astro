@@ -1,0 +1,300 @@
+---
+// Compresseur d'images : JPG, PNG, WebP, AVIF en entrée ; qualité ou poids cible ; avant/après ; tout dans le navigateur (Web Worker + WebAssembly).
+import ZoneDepot from '../../composants/ZoneDepot.astro';
+import Champ from '../../composants/Champ.astro';
+import Choix from '../../composants/Choix.astro';
+import Resultat from '../../composants/Resultat.astro';
+import Telecharger from '../../composants/Telecharger.astro';
+import Note from '../../composants/Note.astro';
+import Bouton from '../../composants/Bouton.astro';
+interface Props { lang?: 'fr' | 'en' }
+const { lang = 'fr' } = Astro.props;
+const fr = lang === 'fr';
+const T = fr
+  ? { depot: 'Ouvrir des images', depotAide: 'JPG, PNG, WebP ou AVIF : glisser, cliquer ou coller (Cmd+V)',
+      format: 'Format', meme: 'Identique', reglage: 'Réglage', qualite: 'Qualité', poids: 'Poids cible', cote: 'Côté max', unitePx: 'px', vide: 'Original',
+      aideFormat: 'Identique garde le format d’origine (un AVIF sort en WebP). WebP est le plus léger ; JPG le plus compatible.',
+      aideReglage: 'Qualité : vous choisissez le curseur. Poids cible : l’outil cherche la meilleure qualité qui tient sous la taille voulue, et réduit l’image si besoin.',
+      aideQualite: 'Plus haut = plus net et plus lourd. 75 convient à la plupart des photos. Sans effet sur les PNG, compressés sans perte.',
+      aideCible: 'Taille maximale de chaque image. Utile pour un formulaire, un site ou un e-mail.',
+      aideCote: 'Plus grand côté de l’image en pixels (largeur ou hauteur). Laissez vide pour garder les dimensions. Une image n’est jamais agrandie.',
+      uneIdee: 'Raccourcis' }
+  : { depot: 'Open images', depotAide: 'JPG, PNG, WebP or AVIF: drag, click or paste (Cmd+V)',
+      format: 'Format', meme: 'Same', reglage: 'Mode', qualite: 'Quality', poids: 'Target size', cote: 'Max side', unitePx: 'px', vide: 'Original',
+      aideFormat: 'Same keeps the original format (an AVIF becomes WebP). WebP is the lightest; JPG is the most compatible.',
+      aideReglage: 'Quality: you set the slider. Target size: the tool finds the best quality that fits under the size you want, and shrinks the image if needed.',
+      aideQualite: 'Higher = sharper and heavier. 75 suits most photos. No effect on PNG, which is compressed losslessly.',
+      aideCible: 'Maximum size of each image. Handy for a form, a website or an email.',
+      aideCote: 'Longest side of the image in pixels (width or height). Leave empty to keep the dimensions. An image is never enlarged.',
+      uneIdee: 'Shortcuts' };
+---
+<div class="compresseur" data-outil-id="compresseur" data-lang={lang}>
+  <ZoneDepot id="compresseur-depot" accept="image/jpeg,image/png,image/webp,image/avif,.jpg,.jpeg,.png,.webp,.avif" lang={lang} libelle={T.depot} aide={T.depotAide} />
+
+  <div class="cp-reglages">
+    <div class="cp-groupe">
+      <Choix id="compresseur-format" label={T.format}
+        options={[{ valeur: 'meme', libelle: T.meme }, { valeur: 'webp', libelle: 'WebP' }, { valeur: 'jpeg', libelle: 'JPG' }]} valeur="meme" />
+      <Note texte={T.aideFormat} lang={lang} />
+    </div>
+    <div class="cp-groupe">
+      <Choix id="compresseur-mode" label={T.reglage}
+        options={[{ valeur: 'qualite', libelle: T.qualite }, { valeur: 'poids', libelle: T.poids }]} valeur="qualite" />
+      <Note texte={T.aideReglage} lang={lang} />
+    </div>
+    <div class="o-champ cp-qualite" id="compresseur-bloc-qualite">
+      <div class="o-champ__tete">
+        <label for="compresseur-qualite">{T.qualite}</label>
+        <Note texte={T.aideQualite} lang={lang} />
+      </div>
+      <div class="o-champ__ligne cp-curseur">
+        <input id="compresseur-qualite" type="range" min="10" max="95" step="1" value="75" />
+        <output for="compresseur-qualite" id="compresseur-qualite-val">75</output>
+      </div>
+    </div>
+    <div class="cp-cible" id="compresseur-bloc-cible" hidden>
+      <Champ id="compresseur-cible" label={T.poids} type="number" valeur={500} unite={fr ? 'Ko' : 'KB'} min={10} step={10} inputmode="numeric" aide={T.aideCible} lang={lang} />
+      <div class="cp-raccourcis" role="group" aria-label={T.uneIdee}>
+        <Bouton variante="discret" type="button" data-cible="200">200 {fr ? 'Ko' : 'KB'}</Bouton>
+        <Bouton variante="discret" type="button" data-cible="500">500 {fr ? 'Ko' : 'KB'}</Bouton>
+        <Bouton variante="discret" type="button" data-cible="1000">1 {fr ? 'Mo' : 'MB'}</Bouton>
+        <Bouton variante="discret" type="button" data-cible="2000">2 {fr ? 'Mo' : 'MB'}</Bouton>
+      </div>
+    </div>
+    <div class="cp-cote"><Champ id="compresseur-cote" label={T.cote} type="number" unite={T.unitePx} min={64} step={100} inputmode="numeric" placeholder={T.vide} aide={T.aideCote} lang={lang} /></div>
+  </div>
+
+  <p class="cp-etat" id="compresseur-etat" role="status" aria-live="polite" hidden></p>
+
+  <section class="cp-comparaison" id="compresseur-comparaison" hidden aria-label={fr ? 'Avant et après' : 'Before and after'}>
+    <div class="cp-scene" id="compresseur-scene">
+      <img id="compresseur-img-apres" alt={fr ? 'Après compression' : 'After compression'} />
+      <img id="compresseur-img-avant" alt={fr ? 'Avant compression' : 'Before compression'} />
+      <span class="cp-badge cp-badge--avant">{fr ? 'Avant' : 'Before'}</span>
+      <span class="cp-badge cp-badge--apres">{fr ? 'Après' : 'After'}</span>
+      <span class="cp-poignee" id="compresseur-poignee" aria-hidden="true"></span>
+    </div>
+    <input type="range" id="compresseur-glisse" class="cp-glisse" min="0" max="100" value="50" aria-label={fr ? 'Curseur avant / après' : 'Before / after slider'} />
+  </section>
+
+  <ul class="cp-liste" id="compresseur-liste" hidden></ul>
+
+  <Resultat id="compresseur-resultat" label={fr ? 'Bilan' : 'Summary'} copier={false} lang={lang} />
+  <p class="cp-meta" id="compresseur-meta" hidden>{fr ? 'Les métadonnées (EXIF, position GPS, appareil) sont retirées des images produites.' : 'Metadata (EXIF, GPS position, camera) is removed from the images produced.'}</p>
+  <Telecharger id="compresseur-telecharger" lang={lang} />
+</div>
+
+<style is:global>
+  .compresseur{display:grid;gap:18px}
+  .cp-reglages{display:flex;flex-wrap:wrap;gap:14px 24px;align-items:flex-start}
+  .cp-reglages>*{flex:0 0 auto}
+  .cp-groupe{position:relative;padding-right:28px}
+  .cp-groupe>.o-note{position:absolute;top:0;right:0}
+  .cp-groupe .o-note__bulle{left:auto;right:0;transform:none} /* la bulle s'ouvre vers la gauche : l'info est au bord droit */
+  .cp-groupe .o-choix__segments{flex-wrap:nowrap}
+  .cp-groupe .o-choix span{padding:8px 13px}
+  .cp-qualite{width:230px}
+  .cp-cible{width:210px}
+  .cp-cote{width:150px}
+  .cp-curseur{display:flex;align-items:center;gap:12px}
+  .cp-curseur input[type=range]{flex:1;min-height:44px;padding:0;border:0;background:transparent;accent-color:var(--o-accent)}
+  .cp-curseur output{min-width:2.4ch;font-weight:700;font-variant-numeric:tabular-nums;color:var(--ink)}
+  .cp-raccourcis{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+  .cp-raccourcis .o-btn{min-height:36px;padding:6px 12px}
+  .cp-cible[hidden],.cp-qualite[hidden]{display:none}
+  .cp-etat{margin:0;font-size:15px;font-weight:600;color:var(--o-accent)}
+  .cp-etat[hidden]{display:none}
+  .cp-etat.cp-erreur{color:#b3261e}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .cp-etat.cp-erreur{color:#ff8a80}}
+  :root[data-theme="dark"] .cp-etat.cp-erreur{color:#ff8a80}
+  .cp-liste{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+  .cp-liste[hidden],.cp-comparaison[hidden],.cp-meta[hidden]{display:none}
+  .cp-ligne{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;align-items:center;padding:10px 14px;border:1.5px solid var(--line);border-radius:14px;background:var(--o-surface)}
+  .cp-ligne[aria-current="true"]{border-color:var(--o-accent);background:var(--o-tinte)}
+  .cp-nom{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .cp-poids{font-size:14px;color:var(--ink2);grid-column:1}
+  .cp-poids b{color:var(--ink)}
+  .cp-gain{font-weight:800;font-size:18px;color:var(--o-ok);grid-row:1;grid-column:2;text-align:right}
+  .cp-gain.cp-neutre{color:var(--ink2)}
+  .cp-note{font-size:13px;color:var(--ink2);grid-column:1 / -1}
+  .cp-ligne .o-btn{grid-column:2;grid-row:2;min-height:34px;padding:4px 12px;width:auto}
+  .cp-comparaison{display:grid;gap:6px}
+  .cp-scene{position:relative;overflow:hidden;border-radius:16px;border:1px solid var(--line);background:repeating-conic-gradient(var(--alt) 0% 25%,var(--o-surface) 0% 50%) 0 0/20px 20px;aspect-ratio:var(--cp-ratio,4/3);max-height:300px;width:100%;justify-self:center}
+  .cp-scene img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;user-select:none;-webkit-user-drag:none}
+  #compresseur-img-avant{clip-path:inset(0 var(--cp-coupe,50%) 0 0)}
+  .cp-poignee{position:absolute;top:0;bottom:0;left:calc(100% - var(--cp-coupe,50%));width:2px;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.35);pointer-events:none}
+  .cp-badge{position:absolute;top:10px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700;background:rgba(0,0,0,.62);color:#fff;pointer-events:none}
+  .cp-badge--avant{left:10px}.cp-badge--apres{right:10px}
+  .cp-glisse{width:100%;min-height:44px;accent-color:var(--o-accent);margin:0}
+  @media (max-width:480px){.cp-qualite,.cp-cible,.cp-cote,.cp-groupe{width:100%}.cp-reglages>*{flex:1 1 100%}.cp-scene{max-height:240px}}
+</style>
+
+<script>
+  import { bilan, cibleEnOctets, formatEntree, formatSortie, gain, nomSortie, taille, TYPES, type ChoixFormat, type Format } from './outil';
+  import type { Demande, Reponse } from './worker';
+  import { compter } from '../../lib/compteur';
+  import { afficherResultat, masquerResultat, masquerTelechargement, proposerTelechargement } from '../../lib/ui';
+
+  const racine = document.querySelector<HTMLElement>('[data-outil-id="compresseur"]');
+  if (racine) {
+    const lang = racine.dataset.lang === 'en' ? 'en' : 'fr';
+    const fr = lang === 'fr';
+    const $ = <T extends HTMLElement>(s: string) => racine.querySelector<T>(s)!;
+    const depot = $('#compresseur-depot');
+    const etat = $('#compresseur-etat');
+    const liste = $('#compresseur-liste');
+    const meta = $('#compresseur-meta');
+    const comparaison = $('#compresseur-comparaison');
+    const scene = $('#compresseur-scene');
+    const imgAvant = $<HTMLImageElement>('#compresseur-img-avant');
+    const imgApres = $<HTMLImageElement>('#compresseur-img-apres');
+    const glisse = $<HTMLInputElement>('#compresseur-glisse');
+    const qualite = $<HTMLInputElement>('#compresseur-qualite');
+    const qualiteVal = $('#compresseur-qualite-val');
+    const cible = $<HTMLInputElement>('#compresseur-cible');
+    const cote = $<HTMLInputElement>('#compresseur-cote');
+    const blocQualite = $('#compresseur-bloc-qualite');
+    const blocCible = $('#compresseur-bloc-cible');
+    const radio = (id: string) => racine.querySelector<HTMLInputElement>(`#${id} input:checked`)?.value ?? '';
+
+    const L = fr
+      ? { encours: (i: number, n: number) => `Compression ${i} sur ${n}…`, attente: 'En attente', illisible: 'Image illisible dans ce navigateur', trop: 'Image trop grande (100 mégapixels maximum)',
+          conserve: 'Déjà bien compressée : l’original est conservé', cibleKo: 'Poids cible non atteint : c’est le minimum possible avec ces réglages', reduite: 'Réduite pour tenir sous le poids cible',
+          pngSans: 'PNG compressé sans perte', comparer: 'Comparer', plusLourd: 'plus lourd', erreur: 'Échec' }
+      : { encours: (i: number, n: number) => `Compressing ${i} of ${n}…`, attente: 'Waiting', illisible: 'Image can’t be read by this browser', trop: 'Image too large (100 megapixels maximum)',
+          conserve: 'Already well compressed: the original is kept', cibleKo: 'Target size not reached: this is the minimum possible with these settings', reduite: 'Shrunk to fit the target size',
+          pngSans: 'PNG compressed losslessly', comparer: 'Compare', plusLourd: 'heavier', erreur: 'Failed' };
+
+    interface Entree { file: File; url: string; sortieUrl: string | null }
+    let entrees: Entree[] = [];
+    let jeton = 0;
+    let worker: Worker | null = null;
+    let minuteur = 0;
+
+    const maj = () => {
+      const poids = radio('compresseur-mode') === 'poids';
+      blocQualite.hidden = poids;
+      blocCible.hidden = !poids;
+      qualiteVal.textContent = qualite.value;
+    };
+
+    const dessinerComparaison = (e: Entree | undefined, ratio: number) => {
+      if (!e || !e.sortieUrl) { comparaison.hidden = true; return; }
+      imgAvant.src = e.url; imgApres.src = e.sortieUrl;
+      scene.style.setProperty('--cp-ratio', String(ratio));
+      comparaison.hidden = false;
+    };
+    glisse.addEventListener('input', () => scene.style.setProperty('--cp-coupe', `${100 - Number(glisse.value)}%`));
+
+    const demander = (w: Worker, d: Omit<Demande, 'id'>, id: number) =>
+      new Promise<Reponse>((ok) => {
+        const ecoute = (m: MessageEvent<Reponse>) => { if (m.data.id === id) { w.removeEventListener('message', ecoute); ok(m.data); } };
+        w.addEventListener('message', ecoute);
+        w.postMessage({ ...d, id }, [d.bitmap]);
+      });
+
+    async function lancer() {
+      const moi = ++jeton;
+      worker?.terminate();
+      if (!entrees.length) return;
+      const w = (worker = new Worker('/outils-assets/compresseur/worker.js', { type: 'module' }));
+      const mode = radio('compresseur-mode') === 'poids' ? 'poids' : 'qualite';
+      const choix = (radio('compresseur-format') || 'meme') as ChoixFormat;
+      const cibleOctets = cibleEnOctets(Number(cible.value)) ?? 500_000;
+      const cotePx = Number(cote.value) > 0 ? Number(cote.value) : null;
+      const q = Number(qualite.value);
+
+      masquerResultat('compresseur-resultat');
+      masquerTelechargement('compresseur-telecharger');
+      meta.hidden = true;
+      etat.className = 'cp-etat'; etat.hidden = false;
+      liste.hidden = false; liste.replaceChildren();
+      const lignes = entrees.map((e) => {
+        const li = document.createElement('li'); li.className = 'cp-ligne';
+        const nom = document.createElement('span'); nom.className = 'cp-nom'; nom.textContent = e.file.name; nom.title = e.file.name;
+        const poids = document.createElement('span'); poids.className = 'cp-poids'; poids.textContent = `${taille(e.file.size, lang)} · ${L.attente}`;
+        li.append(nom, poids); liste.append(li);
+        return { li, poids };
+      });
+      entrees.forEach((e) => { if (e.sortieUrl) URL.revokeObjectURL(e.sortieUrl); e.sortieUrl = null; });
+      comparaison.hidden = true;
+
+      const sorties: { nom: string; donnees: Blob; type: string }[] = [];
+      const stats: { avant: number; apres: number }[] = [];
+      const ratios: number[] = [];
+      for (let i = 0; i < entrees.length; i++) {
+        const e = entrees[i], { li, poids } = lignes[i];
+        etat.textContent = L.encours(i + 1, entrees.length);
+        const entree = formatEntree(e.file.type, e.file.name);
+        const sortie: Format = formatSortie(entree, choix);
+        let bitmap: ImageBitmap;
+        try { bitmap = await createImageBitmap(e.file); }
+        catch { poids.textContent = L.illisible; li.classList.add('cp-erreur'); continue; }
+        if (moi !== jeton) { bitmap.close(); return; }
+        if (bitmap.width * bitmap.height > 100_000_000) { bitmap.close(); poids.textContent = L.trop; continue; }
+        const origine = { l: bitmap.width, h: bitmap.height };
+        const r = await demander(w, { bitmap, format: sortie, mode, qualite: q, cibleOctets, cote: cotePx }, i);
+        if (moi !== jeton) return;
+        if (!r.ok || !r.octets) { poids.textContent = `${L.erreur} : ${r.erreur ?? ''}`; continue; }
+        const redimensionne = r.largeur !== origine.l || r.hauteur !== origine.h;
+        let blob = new Blob([r.octets], { type: TYPES[sortie] });
+        let nomFinal = nomSortie(e.file.name, sortie);
+        let conserve = false;
+        if (blob.size >= e.file.size && sortie === entree && !redimensionne) { blob = e.file; nomFinal = e.file.name; conserve = true; }
+        e.sortieUrl = URL.createObjectURL(blob);
+        sorties.push({ nom: nomFinal, donnees: blob, type: blob.type });
+        stats.push({ avant: e.file.size, apres: blob.size });
+        ratios[i] = (r.largeur ?? origine.l) / (r.hauteur ?? origine.h);
+
+        const g = gain(e.file.size, blob.size);
+        poids.replaceChildren();
+        const dims = `${origine.l}×${origine.h}${redimensionne ? ` → ${r.largeur}×${r.hauteur}` : ''}`;
+        const b = document.createElement('b'); b.textContent = taille(blob.size, lang);
+        poids.append(`${taille(e.file.size, lang)} → `, b, ` · ${dims}`);
+        const gainEl = document.createElement('span'); gainEl.className = 'cp-gain';
+        if (g.pourcent === null) { gainEl.textContent = 'n/a'; gainEl.classList.add('cp-neutre'); }
+        else if (conserve || g.pourcent <= 0) { gainEl.textContent = conserve ? '0 %' : `+${-g.pourcent} %`; gainEl.classList.add('cp-neutre'); }
+        else gainEl.textContent = `−${g.pourcent} %`;
+        li.append(gainEl);
+        const notes: string[] = [];
+        if (conserve) notes.push(L.conserve);
+        else if (sortie === 'png' && mode === 'qualite') notes.push(L.pngSans);
+        if (mode === 'poids' && r.atteint === false) notes.push(L.cibleKo);
+        else if (mode === 'poids' && redimensionne && !cotePx) notes.push(L.reduite);
+        else if (mode === 'poids' && redimensionne) notes.push(L.reduite);
+        if (notes.length) { const n = document.createElement('span'); n.className = 'cp-note'; n.textContent = notes.join(' · '); li.append(n); }
+        const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'o-btn o-btn--secondaire'; btn.textContent = L.comparer;
+        btn.addEventListener('click', () => {
+          lignes.forEach((x) => x.li.removeAttribute('aria-current')); li.setAttribute('aria-current', 'true');
+          dessinerComparaison(e, ratios[i]);
+        });
+        li.append(btn);
+        if (sorties.length === 1) { li.setAttribute('aria-current', 'true'); dessinerComparaison(e, ratios[i]); }
+      }
+      if (moi !== jeton) return;
+      w.terminate(); if (worker === w) worker = null;
+      if (!sorties.length) { etat.textContent = fr ? 'Aucune image n’a pu être compressée.' : 'No image could be compressed.'; etat.classList.add('cp-erreur'); return; }
+      etat.hidden = true;
+      afficherResultat('compresseur-resultat', bilan(stats, lang));
+      meta.hidden = false;
+      await proposerTelechargement('compresseur-telecharger', sorties, { nomZip: fr ? 'images-compressees.zip' : 'compressed-images.zip' });
+      compter('utilise', 'compresseur');
+    }
+
+    const relancer = (delai = 0) => { maj(); clearTimeout(minuteur); minuteur = window.setTimeout(lancer, delai); };
+
+    depot.addEventListener('fichiers', (ev) => {
+      const fichiers = (ev as CustomEvent<File[]>).detail;
+      entrees.forEach((e) => { URL.revokeObjectURL(e.url); if (e.sortieUrl) URL.revokeObjectURL(e.sortieUrl); });
+      entrees = fichiers.map((file) => ({ file, url: URL.createObjectURL(file), sortieUrl: null }));
+      relancer();
+    });
+    racine.querySelector('#compresseur-format')!.addEventListener('change', () => entrees.length && relancer());
+    racine.querySelector('#compresseur-mode')!.addEventListener('change', () => { maj(); if (entrees.length) relancer(); });
+    qualite.addEventListener('input', () => { maj(); if (entrees.length) relancer(400); });
+    cible.addEventListener('input', () => entrees.length && relancer(600));
+    cote.addEventListener('input', () => entrees.length && relancer(600));
+    racine.querySelectorAll<HTMLElement>('[data-cible]').forEach((b) => b.addEventListener('click', () => { cible.value = b.dataset.cible!; if (entrees.length) relancer(); }));
+    maj();
+  }
+</script>
