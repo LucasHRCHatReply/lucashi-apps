@@ -1,0 +1,262 @@
+---
+// Frais de notaire : tout se calcule dans la page, à chaque frappe. Barèmes datés dans baremes-2026.ts.
+import Champ from '../../composants/Champ.astro';
+import Choix from '../../composants/Choix.astro';
+import Resultat from '../../composants/Resultat.astro';
+import Note from '../../composants/Note.astro';
+import { DEPARTEMENTS, LOTS, DATE_TAUX_DEPARTEMENTS, DATE_TARIF_EMOLUMENTS } from './baremes-2026';
+interface Props { lang?: 'fr' | 'en' }
+const { lang = 'fr' } = Astro.props;
+const pct = (n: number) => `${String(n).replace('.', ',')} %`;
+const jour = (iso: string) => new Date(iso + 'T12:00:00Z').toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+const lignes: { id: string; libelle: string; note: string }[] = [
+  { id: 'droits', libelle: 'Droits mutation', note: '' },
+  { id: 'emol', libelle: 'Émoluments', note: '' },
+  { id: 'form', libelle: 'Formalités', note: '' },
+  { id: 'tva', libelle: 'TVA', note: '' },
+  { id: 'csi', libelle: 'Sécurité immobilière', note: '' },
+  { id: 'deb', libelle: 'Débours', note: '' },
+];
+---
+<div class="nt" data-outil-id="notaire" data-lang={lang}>
+  <form class="nt-form" novalidate onsubmit="return false">
+    <Choix id="nt-type" label="Type de bien" options={[
+      { valeur: 'ancien', libelle: 'Ancien', aide: 'Logement de plus de cinq ans, ou déjà habité' },
+      { valeur: 'neuf', libelle: 'Neuf (VEFA)', aide: 'Achat sur plan ou logement neuf : taxe de publicité foncière réduite' },
+    ]} valeur="ancien" />
+    <div class="nt-dep">
+      <Champ id="nt-dep" label="Département" placeholder="Numéro ou nom : 75, Rhône…" autocomplete="off" aide="Chaque département vote son taux de droits de mutation. Tapez le numéro ou le nom, puis choisissez dans la liste." />
+      <ul class="nt-liste" id="nt-liste" role="listbox" aria-label="Départements" hidden></ul>
+    </div>
+    <Champ id="nt-prix" label="Prix" unite="€" type="text" inputmode="numeric" placeholder="250 000" aide="Prix de vente figurant dans l'acte, mobilier compris, charges d'agence comprises si elles sont payées par l'acquéreur." />
+    <div class="nt-duo">
+      <Champ id="nt-mobilier" label="Mobilier" unite="€" type="text" inputmode="numeric" placeholder="0" aide="Prix des meubles listés dans l'acte : ils ne paient pas de droits de mutation. Au plus 20 % du prix." />
+      <Choix id="nt-primo" label="Primo-accédant" options={[
+        { valeur: 'non', libelle: 'Non', aide: 'Taux voté par le département' },
+        { valeur: 'oui', libelle: 'Oui', aide: 'Première propriété destinée à la résidence principale : le relèvement à 5 % ne s’applique pas' },
+      ]} valeur="non" />
+    </div>
+    <div class="nt-duo">
+      <div id="nt-bloc-lots" hidden>
+        <Champ id="nt-lots" label="Lots du programme" type="select" valeur="25-99" options={LOTS.map((l) => ({ valeur: l.cle, libelle: l.libelle }))} aide="Dans le neuf, les émoluments du notaire baissent avec le nombre de lots vendus par le promoteur dans le même programme." />
+      </div>
+      <Champ id="nt-remise" label="Remise notaire" unite="%" type="text" inputmode="decimal" placeholder="0" aide="Remise facultative du notaire, jusqu'à 20 %, sur la part des émoluments calculée au-delà de 100 000 € de prix. Laissez 0 sans accord de votre notaire." />
+    </div>
+  </form>
+
+  <div class="nt-sortie" aria-live="polite">
+    <p class="nt-etat" id="nt-etat" role="status">Renseignez un département et un prix : le détail s’affiche ici.</p>
+    <div id="nt-detail" hidden>
+      <p class="nt-total"><span class="nt-total__chiffre" id="nt-total">—</span><span class="nt-total__aide" id="nt-part">—</span></p>
+      <dl class="nt-lignes">
+        {lignes.map((l) => (
+          <div class="nt-ligne">
+            <dt><span>{l.libelle}</span><Note id={`nt-note-${l.id}`} texte="…" /></dt>
+            <dd id={`nt-v-${l.id}`}>—</dd>
+          </div>
+        ))}
+        <div class="nt-ligne nt-ligne--total"><dt>Total estimé</dt><dd id="nt-v-total">—</dd></div>
+      </dl>
+      <p class="nt-info" id="nt-info"></p>
+    </div>
+    <Resultat id="nt-resultat" label="Résumé à copier" copier lang="fr" />
+    <p class="nt-date">Taux départementaux au {jour(DATE_TAUX_DEPARTEMENTS)} (DGFiP) · tarif des notaires au {jour(DATE_TARIF_EMOLUMENTS)}. Estimation : seul le notaire fixe le montant définitif.</p>
+  </div>
+
+  <details class="nt-tableau">
+    <summary>Taux par département au {jour(DATE_TAUX_DEPARTEMENTS)}</summary>
+    <div class="nt-tableau__defile">
+      <table>
+        <caption class="o-sr">Taux départementaux des droits de mutation à titre onéreux, hors taxe communale de 1,20 % et frais d’assiette</caption>
+        <thead><tr><th scope="col">N°</th><th scope="col">Département</th><th scope="col">Taux voté</th><th scope="col">Primo-accédant</th></tr></thead>
+        <tbody>
+          {DEPARTEMENTS.map((d) => (<tr><td>{d.code}</td><th scope="row">{d.nom}</th><td>{pct(d.taux)}</td><td>{pct(d.tauxPrimo)}</td></tr>))}
+        </tbody>
+      </table>
+    </div>
+  </details>
+</div>
+
+<script>
+  import { calculer, chercherDepartements, formatEuros, formatPourcent, resume, type Entree } from './outil';
+  import { DEPARTEMENTS, FRAIS_ASSIETTE, TAXE_COMMUNALE, TAUX_TPF_NEUF, TRANCHES_EMOLUMENTS, FORMALITES_HT, MAJORATION_EMOLUMENTS, type CleLots, type Departement } from './baremes-2026';
+  import { compter } from '../../lib/compteur';
+  import { afficherResultat, masquerResultat } from '../../lib/ui';
+
+  const racine = document.querySelector<HTMLElement>('[data-outil-id="notaire"]');
+  if (racine) {
+    const $ = <T extends HTMLElement>(id: string) => racine.querySelector<T>('#' + id)!;
+    const champDep = $<HTMLInputElement>('nt-dep');
+    const liste = $<HTMLUListElement>('nt-liste');
+    const prix = $<HTMLInputElement>('nt-prix');
+    const mobilier = $<HTMLInputElement>('nt-mobilier');
+    const remise = $<HTMLInputElement>('nt-remise');
+    const lots = $<HTMLSelectElement>('nt-lots');
+    const blocLots = $('nt-bloc-lots');
+    const etat = $('nt-etat');
+    const detail = $('nt-detail');
+    const nombre = (el: HTMLInputElement) => {
+      const t = el.value.replace(/[\s  €]/g, '').replace(',', '.');
+      return t === '' ? 0 : Number(t);
+    };
+    const radio = (id: string) => racine.querySelector<HTMLInputElement>(`#${id} input:checked`)?.value ?? '';
+    const norm = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+
+    // --- Choix du département : recherche par numéro ou nom, liste au clavier ---
+    let choisi: Departement | null = null;
+    let actif = -1;
+    let propositions: Departement[] = [];
+    champDep.setAttribute('role', 'combobox');
+    champDep.setAttribute('aria-autocomplete', 'list');
+    champDep.setAttribute('aria-expanded', 'false');
+    champDep.setAttribute('aria-controls', 'nt-liste');
+    champDep.setAttribute('autocapitalize', 'off');
+    const libelleDep = (d: Departement) => `${d.code} ${d.nom}`;
+    const fermer = () => { liste.hidden = true; champDep.setAttribute('aria-expanded', 'false'); champDep.removeAttribute('aria-activedescendant'); actif = -1; };
+    const marquer = (i: number) => {
+      actif = i;
+      liste.querySelectorAll('li').forEach((li, k) => { li.setAttribute('aria-selected', String(k === i)); li.classList.toggle('est-actif', k === i); });
+      if (i >= 0) { champDep.setAttribute('aria-activedescendant', `nt-opt-${i}`); liste.children[i]?.scrollIntoView({ block: 'nearest' }); }
+      else champDep.removeAttribute('aria-activedescendant');
+    };
+    const choisir = (d: Departement) => { choisi = d; champDep.value = libelleDep(d); fermer(); calculerTout(); };
+    const ouvrir = () => {
+      propositions = chercherDepartements(champDep.value.trim() ? champDep.value : '').slice(0, 12);
+      liste.replaceChildren();
+      propositions.forEach((d, i) => {
+        const li = document.createElement('li');
+        li.id = `nt-opt-${i}`; li.setAttribute('role', 'option'); li.setAttribute('aria-selected', 'false');
+        li.innerHTML = `<b></b><span></span><em></em>`;
+        li.children[0].textContent = d.code; li.children[1].textContent = d.nom; li.children[2].textContent = `${String(d.taux).replace('.', ',')} %`;
+        li.addEventListener('mousedown', (e) => { e.preventDefault(); choisir(d); });
+        liste.append(li);
+      });
+      if (!propositions.length) { const li = document.createElement('li'); li.className = 'nt-aucun'; li.textContent = 'Aucun département de ce nom'; liste.append(li); }
+      liste.hidden = false; champDep.setAttribute('aria-expanded', 'true');
+      marquer(propositions.length ? 0 : -1);
+    };
+    champDep.addEventListener('input', () => {
+      const q = norm(champDep.value);
+      choisi = null;
+      ouvrir();
+      // sélection automatique quand la saisie désigne un seul département (« 75 », « paris », « indre »)
+      const exact = DEPARTEMENTS.find((d) => d.code.toLowerCase() === q || norm(d.nom) === q);
+      if (exact) { choisi = exact; }
+      else if (q && propositions.length === 1 && /^[0-9]+[ab]?$/.test(q) && propositions[0].code.toLowerCase() === q) choisi = propositions[0];
+      calculerTout();
+    });
+    champDep.addEventListener('focus', () => { if (!choisi) ouvrir(); });
+    champDep.addEventListener('blur', () => { setTimeout(fermer, 80); if (choisi) champDep.value = libelleDep(choisi); });
+    champDep.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown') { e.preventDefault(); if (liste.hidden) ouvrir(); else marquer(Math.min(actif + 1, propositions.length - 1)); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); marquer(Math.max(actif - 1, 0)); }
+      else if (e.key === 'Enter') { if (!liste.hidden && propositions[actif]) { e.preventDefault(); choisir(propositions[actif]); } }
+      else if (e.key === 'Escape') { if (!liste.hidden) { e.preventDefault(); fermer(); } }
+    });
+
+    // --- Calcul et affichage ---
+    const texteNote = (id: string, t: string) => { const b = racine.querySelector(`#nt-note-${id} .o-note__bulle, #nt-note-${id}`); if (b) b.textContent = t; };
+    const montrerEtat = (t: string) => { etat.textContent = t; etat.hidden = false; detail.hidden = true; masquerResultat('nt-resultat'); };
+    let dernier = '';
+    let minuterie: number | undefined;
+
+    function calculerTout() {
+      const neuf = radio('nt-type') === 'neuf';
+      blocLots.hidden = !neuf;
+      const p = nombre(prix);
+      if (!choisi) { montrerEtat(champDep.value.trim() ? 'Choisissez un département dans la liste.' : 'Renseignez un département et un prix : le détail s’affiche ici.'); return planifierCompte(''); }
+      if (!(p > 0)) { montrerEtat('Renseignez le prix du bien : le détail s’affiche ici.'); return planifierCompte(''); }
+      const entree: Entree = { type: neuf ? 'neuf' : 'ancien', prix: p, mobilier: nombre(mobilier), departement: choisi.code, primo: radio('nt-primo') === 'oui', lots: lots.value as CleLots, remise: nombre(remise) };
+      const r = calculer(entree);
+      if (!r.ok) {
+        montrerEtat(r.code === 'mobilier' ? 'Le mobilier doit rester inférieur à 20 % du prix.' : 'Vérifiez les montants saisis.');
+        return planifierCompte('');
+      }
+      etat.hidden = true; detail.hidden = false;
+      const set = (id: string, v: number) => { $('nt-v-' + id).textContent = formatEuros(v); };
+      set('droits', r.droits); set('emol', r.emoluments); set('form', r.formalites); set('tva', r.tva); set('csi', r.csi); set('deb', r.debours); set('total', r.total);
+      $('nt-total').textContent = formatEuros(r.total);
+      $('nt-part').textContent = `${formatPourcent(r.pourcent)} du prix, dont ${formatPourcent(r.partEtat, 0)} pour l’État`;
+      // libellé et explication de chaque poste, vrais de la saisie courante
+      const ligneDroits = detail.querySelector('.nt-ligne dt span')!;
+      ligneDroits.textContent = neuf ? 'Publicité foncière' : 'Droits mutation';
+      const base = p - r.mobilier;
+      if (neuf) {
+        texteNote('droits', `Taxe de publicité foncière réduite du neuf : ${formatPourcent(TAUX_TPF_NEUF, 3)} du prix hors taxe (${formatEuros(base / 1.2)} sur ${formatEuros(base)} TTC). Pas de taxe communale.`);
+      } else {
+        const dep = r.tauxDepartemental;
+        texteNote('droits', `Droit départemental ${formatPourcent(dep, 2)} + frais d’assiette ${formatPourcent(dep * FRAIS_ASSIETTE, 2)} + taxe communale ${formatPourcent(TAXE_COMMUNALE, 2)} = ${formatPourcent(dep * (1 + FRAIS_ASSIETTE) + TAXE_COMMUNALE, 2)} de ${formatEuros(base)} (prix moins mobilier). Pour l’État et les collectivités.`);
+      }
+      const tr = TRANCHES_EMOLUMENTS.map((t) => `${formatPourcent(t.taux, 3)} ${t.jusqua ? 'jusqu’à ' + t.jusqua.toLocaleString('fr-FR').replace(/[  ]/g, ' ') + ' €' : 'au-delà'}`).join(', ');
+      texteNote('emol', `Rémunération du notaire, hors taxe, au tarif réglementé (A444-91) : ${tr}, calculée sur le prix total, mobilier compris.${neuf ? ' Réduite selon le nombre de lots du programme.' : ''}${r.remiseEuros ? ` Remise déduite : ${formatEuros(r.remiseEuros)}.` : ''}${(MAJORATION_EMOLUMENTS[r.departement.code] ?? 1) > 1 ? ' Majorée outre-mer.' : ''}${r.plafonne ? ' Ramenée au plafond de 10 % du prix.' : ''}`);
+      texteNote('form', `Estimation des formalités et démarches faites pour votre compte (${formatEuros(FORMALITES_HT)} hors taxe en moyenne) : cadastre, publicité foncière, purge du droit de préemption.`);
+      texteNote('tva', 'TVA de 20 % sur les émoluments et les formalités. Les droits et les débours n’en portent pas.');
+      texteNote('csi', 'Contribution de sécurité immobilière : 0,10 % du prix moins mobilier, au minimum 15 €. Elle rémunère la publication de l’acte au service de la publicité foncière.');
+      texteNote('deb', 'Sommes avancées par le notaire à des tiers (extraits, certificats, frais de dossier) : estimation de 400 € dès 15 000 € de prix. Facturées au réel.');
+      const info = [];
+      if (radio('nt-primo') === 'oui') info.push(r.primoApplique ? `Primo-accédant : taux départemental ramené à ${formatPourcent(r.tauxDepartemental, 2)} au lieu de ${formatPourcent(r.departement.taux, 2)}.` : 'Primo-accédant : sans effet ici, le département n’a pas relevé son taux.');
+      else if (!neuf && r.departement.taux > r.departement.tauxPrimo) info.push(`${r.departement.nom} applique ${formatPourcent(r.departement.taux, 2)} : un primo-accédant paie ${formatPourcent(r.departement.tauxPrimo, 2)}.`);
+      if (r.plafonne) info.push('Émoluments plafonnés à 10 % du prix sur les très petits montants.');
+      $('nt-info').textContent = info.join(' ');
+      afficherResultat('nt-resultat', resume(r));
+      planifierCompte(`${r.type}|${r.departement.code}|${r.total}`);
+    }
+
+    // Une utilisation est comptée une fois, après 2 s sans frappe, et seulement si le résultat a changé.
+    function planifierCompte(cle: string) {
+      window.clearTimeout(minuterie);
+      if (!cle) return;
+      minuterie = window.setTimeout(() => { if (cle !== dernier) { dernier = cle; compter('utilise', 'notaire'); } }, 2000);
+    }
+
+    [prix, mobilier, remise].forEach((el) => el.addEventListener('input', calculerTout));
+    lots.addEventListener('change', calculerTout);
+    racine.querySelector('#nt-type')!.addEventListener('change', calculerTout);
+    racine.querySelector('#nt-primo')!.addEventListener('change', calculerTout);
+    calculerTout();
+  }
+</script>
+
+<style is:global>
+  .nt{display:grid;gap:26px}
+  @media (min-width:800px){.nt{grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);align-items:start;gap:30px}.nt-tableau{grid-column:1/-1}}
+  .nt-form{display:grid;gap:14px}
+  .nt-duo{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start}
+  .nt-duo .o-choix__segments{justify-self:start}
+  .nt-dep{position:relative}
+  .nt-liste{position:absolute;z-index:30;left:0;right:0;top:calc(100% + 4px);margin:0;padding:6px;list-style:none;max-height:260px;overflow:auto;background:var(--o-surface);border:1.5px solid var(--o-bord);border-radius:14px;box-shadow:0 14px 30px -12px rgba(0,0,0,.35)}
+  .nt-liste li{display:grid;grid-template-columns:42px 1fr auto;gap:8px;align-items:baseline;padding:9px 10px;border-radius:10px;cursor:pointer;font-size:15px;color:var(--ink)}
+  .nt-liste li b{font-variant-numeric:tabular-nums}
+  .nt-liste li em{font-style:normal;color:var(--ink2);font-size:13px}
+  .nt-liste li.est-actif,.nt-liste li:hover{background:var(--o-tinte)}
+  .nt-liste li.nt-aucun{display:block;cursor:default;color:var(--ink2)}
+  .nt-sortie{display:grid;gap:14px;min-width:0}
+  .nt-etat{margin:0;padding:18px;border:1.5px dashed var(--o-bord);border-radius:16px;color:var(--ink2);font-size:16px;line-height:1.45}
+  .nt-total{margin:0;display:grid;gap:2px}
+  .nt-total__chiffre{font-size:clamp(34px,6vw,46px);font-weight:700;letter-spacing:-.03em;line-height:1.05;font-variant-numeric:tabular-nums;color:var(--ink)}
+  .nt-total__aide{font-size:15px;color:var(--ink2)}
+  .nt-lignes{margin:0;display:grid}
+  .nt-ligne{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+  .nt-ligne dt{display:flex;align-items:center;gap:8px;font-size:16px;color:var(--ink)}
+  .nt-ligne dd{margin:0;font-variant-numeric:tabular-nums;font-weight:600;font-size:16px;color:var(--ink)}
+  .nt-ligne--total{border-bottom:0;border-top:2px solid var(--ink);margin-top:2px}
+  .nt-ligne--total dt,.nt-ligne--total dd{font-weight:700}
+  .nt-ligne{position:relative}
+  .nt-ligne .o-note{position:static}
+  .nt-ligne .o-note__bulle{left:0;right:auto;transform:none;width:min(340px,100%);max-width:100%;bottom:calc(100% - 4px)}
+  .nt-info{margin:8px 0 0;font-size:14px;line-height:1.45;color:var(--ink2);min-height:0}
+  .nt-info:empty{display:none}
+  .nt-date{margin:0;font-size:13px;line-height:1.45;color:var(--ink2)}
+  .nt-tableau summary{cursor:pointer;font-weight:600;font-size:16px;padding:10px 0;color:var(--ink)}
+  .nt-tableau summary:focus-visible{outline:3px solid var(--o-accent);outline-offset:3px}
+  .nt-tableau__defile{max-height:340px;overflow:auto;border:1px solid var(--line);border-radius:14px}
+  .nt-tableau table{width:100%;border-collapse:collapse;font-size:14px}
+  .nt-tableau th,.nt-tableau td{padding:7px 12px;text-align:left;border-bottom:1px solid var(--line);color:var(--ink);font-weight:400;font-variant-numeric:tabular-nums}
+  .nt-tableau thead th{position:sticky;top:0;background:var(--alt);font-weight:600}
+  .nt-tableau tbody th{font-weight:600}
+  @media (max-width:480px){
+    .nt-duo{grid-template-columns:1fr}
+    .nt-liste{max-height:220px}
+    .nt-ligne dt{font-size:15px}
+  }
+</style>
