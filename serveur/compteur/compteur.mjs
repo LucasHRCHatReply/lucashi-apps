@@ -144,7 +144,9 @@ export function creer({ donnees = './donnees', jeton = '', maintenant = () => ne
   return { serveur, ecrire, incrementer, memoire };
 }
 
-const principal = process.argv[1] && import.meta.url === new URL(`file://${path.resolve(process.argv[1])}`).href;
+// Lancé directement (node compteur.mjs) ou par pm2, dont le conteneur change argv[1] : pm_id le signale.
+const principal = process.env.pm_id !== undefined
+  || (process.argv[1] && import.meta.url === new URL(`file://${path.resolve(process.argv[1])}`).href);
 if (principal) {
   const c = creer({
     donnees: process.env.DONNEES || './donnees',

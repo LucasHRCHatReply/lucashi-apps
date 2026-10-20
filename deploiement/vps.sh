@@ -151,10 +151,12 @@ server {
     root $DOSSIER/dist;
     index index.html;
     location /api/compte { proxy_pass http://127.0.0.1:$PORT_COMPTEUR; client_max_body_size 4k; }
+    location /_astro/ { add_header Cache-Control "public, max-age=31536000, immutable"; add_header X-Content-Type-Options nosniff always; }
+    location /outils-assets/ { add_header Cache-Control "public, max-age=604800"; add_header X-Content-Type-Options nosniff always; }
     location / { try_files \$uri \$uri/ \$uri.html =404; }
     add_header X-Content-Type-Options nosniff always;
     add_header Referrer-Policy strict-origin-when-cross-origin always;
-    gzip on; gzip_types text/css application/javascript application/json image/svg+xml;
+    gzip on; gzip_types text/css application/javascript application/json image/svg+xml application/wasm;
 }
 NGINX
   ln -sf "$CONF" /etc/nginx/sites-enabled/lucashi-apps
@@ -177,6 +179,9 @@ migrer_astro() {
     sed -i "s#root $DOSSIER;#root $DOSSIER/dist;#" "$CONF"
     grep -q '/api/compte' "$CONF" || sed -i "/index index.html;/a\\    location /api/compte { proxy_pass http://127.0.0.1:$PORT_COMPTEUR; client_max_body_size 4k; }" "$CONF"
     # les anciennes règles « cacher .git/scripts » deviennent inutiles : dist ne contient que le site
+    # cache : fichiers à empreinte (_astro) un an, gros fichiers des outils une semaine ; wasm compressé
+    grep -q 'location /_astro/' "$CONF" || sed -i "/location \/api\/compte/a\\    location /outils-assets/ { add_header Cache-Control \"public, max-age=604800\"; add_header X-Content-Type-Options nosniff always; }\n    location /_astro/ { add_header Cache-Control \"public, max-age=31536000, immutable\"; add_header X-Content-Type-Options nosniff always; }" "$CONF"
+    grep -q 'application/wasm' "$CONF" || sed -i "s#image/svg+xml;#image/svg+xml application/wasm;#" "$CONF"
     construire_une_fois
     nginx -t && systemctl reload nginx
   elif [ -f "$CADDY" ]; then
