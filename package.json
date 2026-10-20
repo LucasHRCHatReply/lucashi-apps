@@ -18,6 +18,8 @@
     "@resvg/resvg-js": "^2.6.2",
     "astro": "^5.18.2",
     "fflate": "^0.8.3",
+    "pdf-lib": "^1.17.1",
+    "qrcode": "^1.5.4",
     "satori": "^0.63.2",
     "typescript": "^5.9.3",
     "zod": "^3.25.76"
@@ -25,6 +27,8 @@
   "devDependencies": {
     "@fontsource/inter": "^5.3.0",
     "@types/node": "^22.20.5",
+    "@types/qrcode": "^1.5.6",
+    "jsqr": "^1.4.0",
     "vitest": "^5.0.5",
     "yaml": "^2.9.1"
   }

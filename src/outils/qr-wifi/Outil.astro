@@ -1,0 +1,211 @@
+---
+// QR code Wi-Fi : formulaire, aperçu de la fiche (SVG), puis PNG, SVG, PDF ou impression.
+// Tout se calcule dans la page ; la librairie du QR et celle du PDF se chargent à la première frappe / au premier clic.
+import Champ from '../../composants/Champ.astro';
+import Choix from '../../composants/Choix.astro';
+import Resultat from '../../composants/Resultat.astro';
+import Bouton from '../../composants/Bouton.astro';
+interface Props { lang?: 'fr' | 'en' }
+const { lang = 'fr' } = Astro.props;
+const fr = lang === 'fr';
+const L = fr
+  ? { reseau: 'Réseau', reseauAide: 'Le nom exact du Wi-Fi, majuscules et accents compris (32 octets au plus).', mdp: 'Mot de passe', mdpAide: 'Rien n’est envoyé ni enregistré : le mot de passe reste dans cette page.',
+      modele: 'Modèle', modeleAides: ['Le code seul, à poser ou à glisser dans un document', 'Petite fiche A6 sobre', 'Carte A6 encadrée avec un titre', 'Affiche A4 avec les trois gestes'],
+      modeles: ['Code', 'Minimal', 'Carte', 'Affiche'], options: 'Options', secu: 'Sécurité', secuAide: 'WPA couvre WPA, WPA2 et WPA3, c’est le cas de presque tous les réseaux.',
+      secuNon: 'Aucune', masque: 'Réseau masqué', masqueAide: 'À régler seulement si le nom du réseau n’est pas diffusé : l’appareil le cherchera quand même.', non: 'Non', oui: 'Oui',
+      titre: 'Titre', titreAide: 'Affiché en haut de la carte et de l’affiche.', titreDefaut: 'Bienvenue', visible: 'Texte visible', visibleAide: 'Écrire le nom du réseau et le mot de passe en clair sur la fiche, pour ceux qui ne peuvent pas scanner.',
+      rien: 'Aucun', reseauSeul: 'Réseau', tout: 'Tout', apercu: 'Aperçu de la fiche', vide: 'Saisissez le nom du réseau pour voir la fiche.',
+      png: 'Télécharger PNG', svg: 'Télécharger SVG', pdf: 'Télécharger PDF', imprimer: 'Imprimer', texte: 'Texte du code', actions: 'Exporter la fiche' }
+  : { reseau: 'Network', reseauAide: 'The exact Wi-Fi name, capitals and accents included (32 bytes at most).', mdp: 'Password', mdpAide: 'Nothing is sent or saved: the password stays on this page.',
+      modele: 'Layout', modeleAides: ['The code alone, to place or paste into a document', 'Plain A6 sheet', 'Framed A6 card with a title', 'A4 poster with the three steps'],
+      modeles: ['Code', 'Minimal', 'Card', 'Poster'], options: 'Options', secu: 'Security', secuAide: 'WPA covers WPA, WPA2 and WPA3, which is nearly every network.',
+      secuNon: 'None', masque: 'Hidden network', masqueAide: 'Only if the network name is not broadcast: the device will still look for it.', non: 'No', oui: 'Yes',
+      titre: 'Title', titreAide: 'Shown at the top of the card and the poster.', titreDefaut: 'Welcome', visible: 'Visible text', visibleAide: 'Print the network name and password in clear text on the sheet, for people who cannot scan.',
+      rien: 'None', reseauSeul: 'Network', tout: 'All', apercu: 'Sheet preview', vide: 'Enter the network name to see the sheet.',
+      png: 'Download PNG', svg: 'Download SVG', pdf: 'Download PDF', imprimer: 'Print', texte: 'Code text', actions: 'Export the sheet' };
+const MODELES = ['code', 'minimal', 'carte', 'affiche'] as const;
+---
+<div class="qw" data-outil-id="qr-wifi" data-lang={lang} data-vide={L.vide} data-titre-defaut={L.titreDefaut}>
+  <div class="qw-form">
+    <Champ id="qw-ssid" label={L.reseau} aide={L.reseauAide} requis placeholder={fr ? 'Mon Wi-Fi' : 'My Wi-Fi'} lang={lang} />
+    <Champ id="qw-mdp" label={L.mdp} aide={L.mdpAide} lang={lang} />
+    <Choix id="qw-modele" label={L.modele} valeur="carte" options={MODELES.map((m, i) => ({ valeur: m, libelle: L.modeles[i], aide: L.modeleAides[i] }))} />
+    <details class="qw-options" id="qw-options">
+      <summary>{L.options}</summary>
+      <div class="qw-options__corps">
+        <Choix id="qw-secu" label={L.secu} options={[{ valeur: 'WPA', libelle: 'WPA / WPA2 / WPA3', aide: L.secuAide }, { valeur: 'WEP', libelle: 'WEP', aide: fr ? 'Ancien et peu sûr : seulement pour un vieux matériel.' : 'Old and weak: only for old equipment.' }, { valeur: 'nopass', libelle: L.secuNon, aide: fr ? 'Réseau ouvert, sans mot de passe.' : 'Open network, no password.' }]} valeur="WPA" />
+        <Choix id="qw-masque" label={L.masque} options={[{ valeur: 'non', libelle: L.non, aide: L.masqueAide }, { valeur: 'oui', libelle: L.oui, aide: L.masqueAide }]} valeur="non" />
+        <div id="qw-groupe-titre"><Champ id="qw-titre" label={L.titre} aide={L.titreAide} valeur={L.titreDefaut} maxlength={30} lang={lang} /></div>
+        <div id="qw-groupe-visible"><Choix id="qw-visible" label={L.visible} options={[{ valeur: 'rien', libelle: L.rien }, { valeur: 'reseau', libelle: L.reseauSeul }, { valeur: 'tout', libelle: L.tout, aide: L.visibleAide }]} valeur="tout" /></div>
+      </div>
+    </details>
+  </div>
+  <div class="qw-vue">
+    <div class="qw-cadre">
+      <div class="qw-feuille" id="qw-feuille" role="img" aria-label={L.apercu} hidden></div>
+      <p class="qw-vide" id="qw-vide">{L.vide}</p>
+    </div>
+    <p class="qw-etat" id="qw-etat" role="status" aria-live="polite"></p>
+    <div class="qw-actions" id="qw-actions" role="group" aria-label={L.actions} hidden>
+      <Bouton variante="principal" id="qw-png">{L.png}</Bouton>
+      <Bouton id="qw-pdf">{L.pdf}</Bouton>
+      <Bouton id="qw-svg">{L.svg}</Bouton>
+      <Bouton id="qw-imprimer">{L.imprimer}</Bouton>
+    </div>
+    <Resultat id="qw-texte" label={L.texte} mono lang={lang} />
+  </div>
+</div>
+<div id="qw-impression" aria-hidden="true"></div>
+
+<style is:global>
+  .qw{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(18px,3vw,36px);align-items:start}
+  .qw-form{display:grid;gap:18px;min-width:0}
+  .qw-options{border:1.5px solid var(--o-bord);border-radius:14px;padding:0 16px}
+  .qw-options summary{cursor:pointer;font-weight:600;font-size:15px;min-height:44px;display:flex;align-items:center;color:var(--ink);list-style-position:inside}
+  .qw-options summary:focus-visible{outline:3px solid var(--o-accent);outline-offset:2px;border-radius:8px}
+  .qw-options__corps{display:grid;gap:18px;padding:4px 0 18px}
+  .qw-options [hidden]{display:none}
+  .qw-vue{display:grid;gap:14px;min-width:0;position:sticky;top:12px}
+  .qw-cadre{display:grid;place-items:center;min-height:200px;padding:clamp(12px,2.5vw,22px);border-radius:18px;background:var(--alt);border:1px solid var(--line)}
+  .qw-feuille{width:min(100%,calc(62vh * var(--ratio,.7)));background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.18),0 10px 28px -12px rgba(0,0,0,.35);line-height:0}
+  .qw-feuille[hidden],.qw-vide[hidden],.qw-actions[hidden]{display:none}
+  .qw-feuille svg{display:block;width:100%;height:auto}
+  .qw-vide{color:var(--ink2);font-size:16px;text-align:center;max-width:30ch}
+  .qw-etat{font-size:14px;color:var(--ink2);min-height:1.3em}
+  .qw-etat[data-ton="erreur"]{color:#b3261e;font-weight:600}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .qw-etat[data-ton="erreur"]{color:#ff8a80}}
+  :root[data-theme="dark"] .qw-etat[data-ton="erreur"]{color:#ff8a80}
+  .qw-actions{display:flex;flex-wrap:wrap;gap:10px}
+  #qw-impression{display:none}
+  @media (max-width:820px){
+    .qw{grid-template-columns:minmax(0,1fr)}
+    .qw-vue{position:static}
+    .qw-feuille{width:min(100%,calc(55vh * var(--ratio,.7)))}
+  }
+  @media (max-width:480px){.qw-actions .o-btn{width:calc(50% - 5px)}}
+  @media print{
+    @page{size:210mm 297mm;margin:0}
+    html,body{margin:0!important;padding:0!important;background:#fff!important}
+    body > :not(#qw-impression){display:none!important}
+    #qw-impression{display:block!important;width:210mm;height:297mm;overflow:hidden;break-inside:avoid;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    #qw-impression svg{display:block;width:210mm;height:297mm}
+  }
+</style>
+
+<script>
+  import { chaineWifi, valider, messageErreur, compatiblePDF, nomFichier, type Securite } from './outil';
+  import type { Modele, Visible, Mise } from './fiche';
+  import { compter } from '../../lib/compteur';
+  import { afficherResultat, masquerResultat } from '../../lib/ui';
+
+  const racine = document.querySelector<HTMLElement>('[data-outil-id="qr-wifi"]');
+  if (racine) {
+    const lang = racine.dataset.lang === 'en' ? 'en' : 'fr';
+    const $ = <T extends HTMLElement>(s: string) => racine.querySelector<T>(s)!;
+    const ssid = $<HTMLInputElement>('#qw-ssid');
+    const mdp = $<HTMLInputElement>('#qw-mdp');
+    const titre = $<HTMLInputElement>('#qw-titre');
+    const feuille = $('#qw-feuille');
+    const videMsg = $('#qw-vide');
+    const etat = $('#qw-etat');
+    const actions = $('#qw-actions');
+    const impression = document.getElementById('qw-impression')!;
+    document.body.appendChild(impression); // sous <body> : l'impression ne garde que lui
+    const options = $<HTMLDetailsElement>('#qw-options');
+    options.open = matchMedia('(min-width: 821px)').matches;
+    for (const c of [ssid, mdp, titre]) { c.setAttribute('autocapitalize', 'off'); c.setAttribute('autocorrect', 'off'); c.setAttribute('spellcheck', 'false'); }
+
+    const choix = (id: string) => racine.querySelector<HTMLInputElement>(`#${id} input:checked`)?.value ?? '';
+    let courant: { mise: Mise; page: Mise; nom: string; texte: string } | null = null;
+    let jeton = 0;
+
+    const message = (t: string, ton: '' | 'erreur' = '') => { etat.textContent = t; if (ton) etat.dataset.ton = ton; else delete etat.dataset.ton; };
+
+    const rendre = async () => {
+      const mon = ++jeton;
+      const securite = choix('qw-secu') as Securite;
+      const modele = choix('qw-modele') as Modele;
+      // « états vrais » : les réglages sans effet sur ce modèle disparaissent
+      $('#qw-groupe-titre').hidden = !(modele === 'carte' || modele === 'affiche');
+      $('#qw-groupe-visible').hidden = modele === 'code';
+      mdp.disabled = securite === 'nopass';
+      mdp.placeholder = securite === 'nopass' ? (lang === 'fr' ? 'Réseau ouvert : aucun mot de passe' : 'Open network: no password') : '';
+      const reseau = { ssid: ssid.value, mdp: securite === 'nopass' ? '' : mdp.value, securite, masque: choix('qw-masque') === 'oui' };
+      const erreurs = valider(reseau);
+      // tant que rien n'est saisi, l'invite suffit ; une erreur ne s'affiche qu'une fois le champ touché
+      const vierge = ssid.value === '' && mdp.value === '';
+      if (erreurs.length) {
+        courant = null; feuille.hidden = true; actions.hidden = true; videMsg.hidden = false;
+        masquerResultat('qw-texte');
+        message(vierge ? '' : messageErreur(erreurs[0], lang), vierge ? '' : 'erreur');
+        impression.replaceChildren();
+        return;
+      }
+      const [{ matriceQR }, f] = await Promise.all([import('./qr'), import('./fiche')]);
+      if (mon !== jeton) return;
+      const texte = chaineWifi(reseau);
+      let matrice;
+      try { matrice = matriceQR(texte); } catch { message(lang === 'fr' ? 'Ce réseau est trop long pour un QR code.' : 'This network is too long for a QR code.', 'erreur'); return; }
+      const params = { modele, ssid: ssid.value, mdp: reseau.mdp, securite, titre: titre.value, visible: choix('qw-visible') as Visible, lang } as const;
+      const mise = f.fiche(params, matrice);
+      const page = f.pageA4(mise);
+      courant = { mise, page, nom: ssid.value, texte };
+      feuille.innerHTML = f.versSVG(mise, { titre: lang === 'fr' ? 'QR code Wi-Fi' : 'Wi-Fi QR code' });
+      feuille.style.setProperty('--ratio', String(mise.largeur / mise.hauteur));
+      feuille.hidden = false; videMsg.hidden = true; actions.hidden = false;
+      impression.innerHTML = f.versSVG(page);
+      afficherResultat('qw-texte', texte);
+      const visible = params.visible !== 'rien' && modele !== 'code';
+      const cache = !compatiblePDF(`${ssid.value}${visible ? reseau.mdp : ''}${modele === 'carte' || modele === 'affiche' ? titre.value : ''}`);
+      message(cache
+        ? (lang === 'fr' ? 'Prêt. Les caractères hors alphabet latin du texte seront remplacés par « ? » dans le PDF ; le code, lui, est exact.' : 'Ready. Characters outside the Latin alphabet will show as “?” in the PDF text; the code itself is exact.')
+        : (lang === 'fr' ? 'Prêt : le code connecte à « ' + ssid.value + ' ».' : 'Ready: the code connects to “' + ssid.value + '”.'));
+    };
+
+    const enregistrer = (nom: string, blob: Blob) => {
+      const u = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = u; a.download = nom; document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(u), 4000);
+    };
+    const modeleCourant = () => choix('qw-modele');
+
+    $<HTMLButtonElement>('#qw-svg').addEventListener('click', async () => {
+      if (!courant) return;
+      const { versSVG } = await import('./fiche');
+      enregistrer(nomFichier(courant.nom, modeleCourant(), 'svg'), new Blob([versSVG(courant.mise, { titre: 'QR code Wi-Fi' })], { type: 'image/svg+xml' }));
+      compter('utilise', 'qr-wifi');
+    });
+    $<HTMLButtonElement>('#qw-png').addEventListener('click', async () => {
+      if (!courant) return;
+      const { versSVG } = await import('./fiche');
+      const px = Math.round((courant.mise.largeur * 300) / 25.4); // 300 points par pouce
+      const svg = versSVG(courant.mise, { px });
+      const img = new Image();
+      img.src = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }));
+      try { await img.decode(); } catch { message(lang === 'fr' ? 'Le navigateur n’a pas pu fabriquer l’image : essayez le PDF.' : 'The browser could not build the image: try the PDF.', 'erreur'); return; }
+      const c = document.createElement('canvas');
+      c.width = px; c.height = Math.round((px * courant.mise.hauteur) / courant.mise.largeur);
+      c.getContext('2d')!.drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(img.src);
+      const nom = nomFichier(courant.nom, modeleCourant(), 'png');
+      c.toBlob((b) => { if (b) { enregistrer(nom, b); compter('utilise', 'qr-wifi'); } }, 'image/png');
+    });
+    $<HTMLButtonElement>('#qw-pdf').addEventListener('click', async () => {
+      if (!courant) return;
+      const { versPDF } = await import('./fiche');
+      const octets = await versPDF(courant.page, lang === 'fr' ? 'QR code Wi-Fi' : 'Wi-Fi QR code');
+      enregistrer(nomFichier(courant.nom, modeleCourant(), 'pdf'), new Blob([octets as BlobPart], { type: 'application/pdf' }));
+      compter('utilise', 'qr-wifi');
+    });
+    $<HTMLButtonElement>('#qw-imprimer').addEventListener('click', () => {
+      if (!courant) return;
+      window.print();
+      compter('utilise', 'qr-wifi');
+    });
+
+    racine.addEventListener('input', rendre);
+    racine.addEventListener('change', rendre);
+    rendre();
+  }
+</script>
