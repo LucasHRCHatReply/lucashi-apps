@@ -15,6 +15,8 @@ DOSSIER="/srv/lucashi-apps"
 ENV_FICHIER="/etc/lucashi-apps.env"
 SCRIPT_MAJ="/usr/local/bin/lucashi-apps-maj"
 PORT_COMPTEUR=8240
+# Node 22 réservé au site (le Node du système sert d'autres apps sous pm2 : on n'y touche pas)
+[ -x /opt/node22/bin/node ] && export PATH="/opt/node22/bin:$PATH"
 [ "$(id -u)" -eq 0 ] || { echo "à lancer en root"; exit 1; }
 
 etat() {
@@ -44,6 +46,7 @@ ecrire_script_maj() {
   cat > "$SCRIPT_MAJ" <<'MAJ'
 #!/usr/bin/env bash
 set -euo pipefail
+[ -x /opt/node22/bin/node ] && export PATH="/opt/node22/bin:$PATH"
 DOSSIER="__DOSSIER__"
 [ -f "__ENV__" ] && { set -a; . "__ENV__"; set +a; }
 cd "$DOSSIER"
