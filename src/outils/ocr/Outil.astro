@@ -1,0 +1,253 @@
+---
+// Outil « image en texte » : coller, glisser ou choisir une image → texte copiable. Reconnaissance par tesseract.js,
+// moteur et langues servis par le site (public/outils-assets/ocr), chargés au premier usage seulement.
+import ZoneDepot from '../../composants/ZoneDepot.astro';
+import Choix from '../../composants/Choix.astro';
+import Note from '../../composants/Note.astro';
+import Resultat from '../../composants/Resultat.astro';
+import Telecharger from '../../composants/Telecharger.astro';
+import { langueParDefaut } from './outil';
+interface Props { lang?: 'fr' | 'en' }
+const { lang = 'fr' } = Astro.props;
+const fr = lang === 'fr';
+---
+<div class="ocr" data-outil-id="ocr" data-lang={lang}>
+  <div class="ocr__gauche">
+    <ZoneDepot id="ocr-depot" accept="image/*" multiple={false} lang={lang}
+      libelle={fr ? 'Coller une image' : 'Paste an image'}
+      aide={fr ? 'Cmd+V, glisser ou cliquer' : 'Cmd+V, drag or click'} />
+    <Choix id="ocr-langue" label={fr ? 'Langue' : 'Language'}
+      options={[
+        { valeur: 'fra', libelle: fr ? 'Français' : 'French', aide: fr ? 'Texte en français (accents compris)' : 'French text (accents included)' },
+        { valeur: 'eng', libelle: fr ? 'Anglais' : 'English', aide: fr ? 'Texte en anglais' : 'English text' },
+        { valeur: 'fra+eng', libelle: fr ? 'Les deux' : 'Both', aide: fr ? 'Texte mêlant français et anglais (un peu plus lent)' : 'Text mixing French and English (a little slower)' },
+      ]}
+      valeur={langueParDefaut(lang)} />
+    <div class="ocr__options">
+      <span class="ocr__option">
+        <label><input type="checkbox" id="ocr-recoller" /> <span>{fr ? 'Recoller lignes' : 'Join lines'}</span></label>
+        <Note lang={lang} texte={fr ? 'Recolle les lignes d’un même paragraphe, utile pour une capture dont les lignes sont coupées à la largeur de la fenêtre. Une ligne vide sépare toujours deux paragraphes.' : 'Joins the lines of one paragraph, useful for a screenshot whose lines break at the window width. A blank line still separates paragraphs.'} />
+      </span>
+      <span class="ocr__option">
+        <label><input type="checkbox" id="ocr-surligner" checked /> <span>{fr ? 'Surligner mots' : 'Highlight words'}</span></label>
+        <Note lang={lang} texte={fr ? 'Entoure sur l’image chaque mot lu. Pointillés orange : lecture incertaine, à relire.' : 'Outlines each word read on the image. Dashed orange: uncertain reading, worth checking.'} />
+      </span>
+    </div>
+    <div class="ocr__etat" id="ocr-etat" role="status" aria-live="polite" hidden>
+      <span id="ocr-etat-texte"></span>
+      <progress id="ocr-barre" max="100" hidden></progress>
+    </div>
+    <p class="ocr__erreur" id="ocr-erreur" role="alert" hidden></p>
+    <figure class="ocr__image" id="ocr-image" hidden>
+      <div class="ocr__cadre" id="ocr-cadre">
+        <img id="ocr-img" alt={fr ? 'Image dont le texte est lu' : 'Image whose text is being read'} />
+        <div class="ocr__zones" id="ocr-zones" aria-hidden="true"></div>
+      </div>
+    </figure>
+  </div>
+  <div class="ocr__droite">
+    <Resultat id="ocr-resultat" copier lang={lang} label={fr ? 'Texte lu' : 'Text read'} />
+    <Telecharger id="ocr-telecharger" lang={lang} />
+  </div>
+</div>
+<style>
+  .ocr { display: grid; gap: 22px; }
+  .ocr__gauche, .ocr__droite { display: grid; gap: 16px; align-content: start; min-width: 0; }
+  @media (max-width: 879px) { .ocr__gauche, .ocr__droite { display: contents; } .ocr__image { order: 5; } } /* téléphone : le texte lu passe avant l'aperçu de l'image */
+  @media (min-width: 880px) { .ocr { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; } }
+  .ocr__options { display: flex; flex-wrap: wrap; gap: 8px 22px; }
+  .ocr__option { display: inline-flex; align-items: center; gap: 8px; }
+  .ocr__option label { display: inline-flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; color: var(--ink); cursor: pointer; min-height: 36px; }
+  .ocr__option input { width: 20px; height: 20px; accent-color: var(--o-accent); margin: 0; }
+  .ocr__option input:focus-visible { outline: 3px solid var(--o-accent); outline-offset: 2px; }
+  .ocr__etat { display: flex; align-items: center; gap: 12px; font-size: 15px; color: var(--ink); min-height: 24px; }
+  .ocr__etat[hidden], .ocr__image[hidden], .ocr__erreur[hidden], .ocr__etat progress[hidden] { display: none; }
+  .ocr__etat progress { flex: 1; height: 8px; accent-color: var(--o-accent); min-width: 80px; }
+  .ocr__erreur { margin: 0; padding: 10px 14px; border: 1.5px solid #b3261e; border-radius: 12px; color: var(--ink); font-size: 15px; }
+  .ocr__image { margin: 0; }
+  .ocr__cadre { position: relative; display: inline-block; max-width: 100%; line-height: 0; border: 1.5px solid var(--o-bord); border-radius: 12px; overflow: hidden; background: var(--o-surface); }
+  .ocr__cadre img { display: block; max-width: 100%; max-height: 300px; width: auto; height: auto; }
+  .ocr__zones { position: absolute; inset: 0; pointer-events: none; }
+  .ocr__zones[hidden] { display: none; }
+  .ocr__zones :global(i) { position: absolute; box-sizing: border-box; border: 1.5px solid var(--o-accent); background: var(--o-tinte); border-radius: 2px; pointer-events: auto; }
+  .ocr__zones :global(i.incertain) { border: 1.5px dashed #d9730d; background: rgba(217, 115, 13, .14); }
+  @media (prefers-reduced-motion: no-preference) { .ocr__etat progress { transition: none; } }
+</style>
+<script>
+  import { LANGUES, DOSSIER_ASSETS, boiteEnPourcent, dimensionsReduites, etatProgression, motsValides, recollerParagraphes, type Langue, type Mot } from './outil';
+  import { compter } from '../../lib/compteur';
+  import { afficherResultat, masquerResultat, masquerTelechargement, proposerTelechargement } from '../../lib/ui';
+
+  const racine = document.querySelector<HTMLElement>('[data-outil-id="ocr"]');
+  if (racine) {
+    const lang = racine.dataset.lang === 'en' ? 'en' : 'fr';
+    const fr = lang === 'fr';
+    const q = <T extends HTMLElement>(id: string) => racine.querySelector<T>('#' + id)!;
+    const depot = q('ocr-depot');
+    const choixLangue = q('ocr-langue');
+    const recoller = q<HTMLInputElement>('ocr-recoller');
+    const surligner = q<HTMLInputElement>('ocr-surligner');
+    const etat = q('ocr-etat');
+    const etatTexte = q('ocr-etat-texte');
+    const barre = q<HTMLProgressElement>('ocr-barre');
+    const erreur = q('ocr-erreur');
+    const figure = q('ocr-image');
+    const img = q<HTMLImageElement>('ocr-img');
+    const zones = q('ocr-zones');
+
+    type Worker = import('tesseract.js').Worker;
+    let worker: Worker | null = null;
+    let langueWorker: Langue | null = null;
+    let surProgres: (statut: string, progression: number) => void = () => {};
+    let chaine: Promise<unknown> = Promise.resolve();
+    let jeton = 0;
+
+    let image: Blob | null = null;
+    let nomBase = 'texte';
+    let brut = '';
+    let urlImage = '';
+
+    const url = (nom: string) => new URL(`${DOSSIER_ASSETS}/${nom}`, location.href).href;
+    const langueChoisie = (): Langue => {
+      const v = choixLangue.querySelector<HTMLInputElement>('input:checked')?.value as Langue | undefined;
+      return v && LANGUES.includes(v) ? v : 'fra';
+    };
+
+    const montrerEtat = (texte: string, valeur: number | null) => {
+      etat.hidden = false;
+      etatTexte.textContent = texte;
+      barre.hidden = valeur === null;
+      if (valeur !== null) barre.value = valeur;
+    };
+    const cacherEtat = () => { etat.hidden = true; barre.hidden = true; };
+    const montrerErreur = (m: string) => { erreur.textContent = m; erreur.hidden = false; };
+
+    // Cœur wasm avec ou sans instructions SIMD (plus rapide) : le test est local, le fichier choisi vient du site.
+    async function choisirCoeur(): Promise<string> {
+      const simd = WebAssembly.validate(new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0, 1, 5, 1, 96, 0, 1, 123, 3, 2, 1, 0, 10, 10, 1, 8, 0, 65, 0, 253, 15, 253, 98, 11]));
+      return simd ? 'tesseract-core-simd-lstm.js' : 'tesseract-core-lstm.js';
+    }
+
+    async function obtenirWorker(langue: Langue): Promise<Worker> {
+      if (worker && langueWorker === langue) return worker;
+      if (worker) { await worker.terminate(); worker = null; langueWorker = null; }
+      const { createWorker } = await import('tesseract.js');
+      // Tout vient du site : worker, cœur wasm et données de langue. Aucun CDN.
+      worker = await createWorker(langue, 1, {
+        workerPath: url('worker.min.js'),
+        corePath: url(await choisirCoeur()),
+        langPath: new URL(DOSSIER_ASSETS, location.href).href,
+        gzip: false,
+        workerBlobURL: false,
+        logger: (m: { status: string; progress: number }) => surProgres(m.status, m.progress),
+      });
+      langueWorker = langue;
+      return worker;
+    }
+
+    // Décode l'image (orientation EXIF respectée), la réduit si elle est énorme, et rend un PNG : ce sont ces pixels qui sont lus ET affichés.
+    async function preparer(f: File): Promise<Blob> {
+      let source: ImageBitmap | HTMLImageElement;
+      let l: number, h: number;
+      try {
+        const bmp = await createImageBitmap(f, { imageOrientation: 'from-image' } as ImageBitmapOptions);
+        source = bmp; l = bmp.width; h = bmp.height;
+      } catch {
+        const u = URL.createObjectURL(f);
+        try {
+          const el = new Image();
+          el.src = u;
+          await el.decode();
+          source = el; l = el.naturalWidth; h = el.naturalHeight;
+        } finally { URL.revokeObjectURL(u); }
+      }
+      const d = dimensionsReduites(l, h);
+      const canvas = document.createElement('canvas');
+      canvas.width = d.largeur; canvas.height = d.hauteur;
+      const ctx = canvas.getContext('2d')!;
+      ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, d.largeur, d.hauteur); // fond blanc sous les PNG transparents
+      ctx.drawImage(source, 0, 0, d.largeur, d.hauteur);
+      if ('close' in source) source.close();
+      return await new Promise<Blob>((ok, ko) => canvas.toBlob((b) => (b ? ok(b) : ko(new Error('canvas'))), 'image/png'));
+    }
+
+    function dessinerZones(mots: Mot[], largeur: number, hauteur: number) {
+      zones.replaceChildren();
+      for (const m of motsValides(mots)) {
+        const b = boiteEnPourcent(m, largeur, hauteur);
+        const i = document.createElement('i');
+        i.style.left = b.gauche + '%'; i.style.top = b.haut + '%'; i.style.width = b.largeur + '%'; i.style.height = b.hauteur + '%';
+        i.title = m.confiance < 60 ? `${m.texte} — ${fr ? 'lecture incertaine' : 'uncertain reading'}` : m.texte;
+        if (m.confiance < 60) i.className = 'incertain';
+        zones.append(i);
+      }
+    }
+
+    function afficherTexte() {
+      const texte = recoller.checked ? recollerParagraphes(brut) : brut.trim();
+      if (!texte) { masquerResultat('ocr-resultat'); masquerTelechargement('ocr-telecharger'); return; }
+      afficherResultat('ocr-resultat', texte);
+      void proposerTelechargement('ocr-telecharger', [{ nom: `${nomBase}.txt`, donnees: texte, type: 'text/plain;charset=utf-8' }]);
+    }
+
+    async function lire(mon: number) {
+      if (!image) return;
+      const blob = image;
+      const langue = langueChoisie();
+      erreur.hidden = true;
+      masquerResultat('ocr-resultat'); masquerTelechargement('ocr-telecharger');
+      zones.replaceChildren();
+      montrerEtat(fr ? 'Préparation' : 'Preparing', null);
+      try {
+        surProgres = (s, p) => { if (mon === jeton) { const e = etatProgression(s, p, lang); montrerEtat(e.texte, e.valeur); } };
+        const w = await obtenirWorker(langue);
+        if (mon !== jeton) return;
+        const { data } = await w.recognize(blob);
+        if (mon !== jeton) return; // une autre image ou une autre langue a pris la suite
+        brut = data.text ?? '';
+        const mots: Mot[] = (data.words ?? []).map((m) => ({ texte: m.text, confiance: m.confidence, x0: m.bbox.x0, y0: m.bbox.y0, x1: m.bbox.x1, y1: m.bbox.y1 }));
+        dessinerZones(mots, img.naturalWidth, img.naturalHeight);
+        if (!brut.trim()) {
+          montrerEtat(fr ? 'Aucun texte reconnu' : 'No text found', null);
+          return;
+        }
+        cacherEtat();
+        afficherTexte();
+        compter('utilise', 'ocr'); // une fois par résultat produit
+      } catch (e) {
+        if (mon !== jeton) return;
+        cacherEtat();
+        if (worker) { try { await worker.terminate(); } catch { /* déjà arrêté */ } worker = null; langueWorker = null; }
+        montrerErreur(fr ? 'Lecture impossible : le moteur ou la langue n’a pas pu se charger. Rechargez la page et réessayez.' : 'Could not read: the engine or language failed to load. Reload the page and try again.');
+        console.error(e);
+      }
+    }
+
+    const lancer = () => { const mon = ++jeton; chaine = chaine.then(() => lire(mon)).catch(() => {}); };
+
+    depot.addEventListener('fichiers', async (e) => {
+      const [f] = (e as CustomEvent<File[]>).detail;
+      erreur.hidden = true;
+      try {
+        const blob = await preparer(f);
+        image = blob;
+        nomBase = (f.name.replace(/\.[^.]+$/, '') || 'texte').replace(/[^\p{L}\p{N}._-]+/gu, '-');
+        if (urlImage) URL.revokeObjectURL(urlImage);
+        urlImage = URL.createObjectURL(blob);
+        zones.replaceChildren();
+        img.src = urlImage;
+        await img.decode().catch(() => {});
+        figure.hidden = false;
+        lancer();
+      } catch {
+        image = null;
+        figure.hidden = true;
+        masquerResultat('ocr-resultat'); masquerTelechargement('ocr-telecharger'); cacherEtat();
+        montrerErreur(fr ? 'Image illisible : ce format n’est pas lu par ce navigateur.' : 'Unreadable image: this browser cannot open that format.');
+      }
+    });
+    choixLangue.addEventListener('change', () => { if (image) lancer(); });
+    recoller.addEventListener('change', () => { if (brut.trim()) afficherTexte(); });
+    surligner.addEventListener('change', () => { zones.hidden = !surligner.checked; });
+  }
+</script>

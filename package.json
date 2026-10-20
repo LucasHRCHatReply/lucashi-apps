@@ -19,6 +19,7 @@
     "astro": "^5.18.2",
     "fflate": "^0.8.3",
     "satori": "^0.63.2",
+    "tesseract.js": "^5.1.1",
     "typescript": "^5.9.3",
     "zod": "^3.25.76"
   },
