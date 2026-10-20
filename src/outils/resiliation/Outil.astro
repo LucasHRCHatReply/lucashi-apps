@@ -1,0 +1,299 @@
+---
+// Lettre de résiliation ou de rétractation (FR). Logique dans outil.ts, PDF dans pdf.ts (pdf-lib, chargé au premier usage).
+// Composants communs : Champ, Choix, Resultat, Telecharger. Rien de ce qui est saisi ne quitte la page.
+import Champ from '../../composants/Champ.astro';
+import Choix from '../../composants/Choix.astro';
+import Resultat from '../../composants/Resultat.astro';
+import Telecharger from '../../composants/Telecharger.astro';
+import Note from '../../composants/Note.astro';
+import { CAS, EVENEMENTS, DATE_VERIFICATION } from './outil';
+interface Props { lang?: 'fr' | 'en' }
+const { lang = 'fr' } = Astro.props;
+---
+<div class="res" data-outil-id="resiliation" data-lang={lang}>
+  <div class="res__saisie">
+    <div class="res__bloc">
+      <Champ id="res-cas" label="Contrat" type="select" aide="Le contrat que vous voulez arrêter. Chaque choix applique les articles de loi qui le concernent."
+        options={CAS.map((c) => ({ valeur: c.id, libelle: c.libelle }))} valeur="retractation" lang={lang} />
+      {CAS.map((c) => (
+        <div data-variantes={c.id} hidden={c.id !== 'retractation'}>
+          <Choix id={`res-var-${c.id}`} label="Situation" options={c.variantes.map((v) => ({ valeur: v.id, libelle: v.libelle, aide: v.aide }))} />
+        </div>
+      ))}
+      <p class="res__cas" id="res-cas-aide" aria-live="polite"></p>
+    </div>
+
+    <div class="res__bloc res__grille">
+      <div data-champ="dateRef"><Champ id="res-dateref" label="Date" type="date" aide="La date qui déclenche le calcul." lang={lang} /></div>
+      <div data-champ="preavis" hidden><Champ id="res-preavis" label="Préavis" type="number" min={0} max={365} step={1} unite="jours" valeur={0} inputmode="numeric" aide="Le préavis écrit dans votre contrat, en jours. 0 si le contrat n’en prévoit pas." lang={lang} /></div>
+      <div data-champ="evenement" hidden><Champ id="res-evenement" label="Événement" type="select" aide="L’événement de votre vie qui rend le contrat inutile : il doit en rester un lien direct avec le risque garanti."
+        options={Object.entries(EVENEMENTS).map(([valeur, libelle]) => ({ valeur, libelle: libelle.replace(/ ou cessation.*$/, '') }))} lang={lang} /></div>
+      <div data-champ="objetAchat" hidden><Champ id="res-achat" label="Achat" aide="Ce que vous avez commandé, en quelques mots : « une paire de chaussures »." maxlength={120} lang={lang} /></div>
+      <div data-champ="pdl" hidden><Champ id="res-pdl" label="Point livraison" aide="Le numéro de votre compteur, sur votre facture." inputmode="numeric" maxlength={20} lang={lang} /></div>
+      <div data-champ="reference"><Champ id="res-reference" label="N° contrat" aide="Numéro de contrat, de client ou de commande." maxlength={60} lang={lang} /></div>
+    </div>
+
+    <div class="res__bloc res__grille">
+      <Champ id="res-organisme" label="Société" aide="Le nom de l’entreprise à qui vous écrivez, tel qu’il figure sur votre contrat." maxlength={80} autocomplete="off" lang={lang} />
+      <Champ id="res-adresse-org" label="Adresse société" type="textarea" lignes={3} aide="L’adresse de résiliation ou de rétractation, indiquée dans votre contrat ou ses conditions générales. Une ligne par ligne d’adresse." maxlength={240} lang={lang} />
+    </div>
+
+    <div class="res__bloc res__grille">
+      <Champ id="res-nom" label="Nom" aide="Votre nom et prénom, tels qu’ils figurent sur le contrat." maxlength={80} autocomplete="name" lang={lang} />
+      <Champ id="res-adresse" label="Adresse" aide="Numéro et rue." maxlength={100} autocomplete="street-address" lang={lang} />
+      <Champ id="res-ville" label="Code, ville" aide="Code postal et ville." maxlength={60} autocomplete="off" lang={lang} />
+      <Champ id="res-lieu" label="Lieu" aide="La ville où vous écrivez la lettre." maxlength={50} autocomplete="address-level2" lang={lang} />
+      <Champ id="res-date-envoi" label="Envoi le" type="date" aide="La date de la lettre, et le jour où vous la postez. Les délais se calculent à partir d’elle." lang={lang} />
+    </div>
+
+    <div class="res__memo">
+      <label class="res__case"><input type="checkbox" id="res-memoriser" /><span>Mémoriser coordonnées</span></label>
+      <Note texte="Nom, adresse, ville et lieu sont gardés dans ce navigateur, sur cet appareil, et nulle part ailleurs. Décocher la case les efface." lang={lang} />
+    </div>
+  </div>
+
+  <div class="res__sortie">
+    <p class="res__statut" id="res-statut" role="status" aria-live="polite"></p>
+    <Resultat id="res-resultat" label="Votre lettre" copier lang={lang} />
+    <Telecharger id="res-telecharger" lang={lang} />
+    <ul class="res__reperes" id="res-reperes" aria-label="Dates à retenir"></ul>
+    <details class="res__savoir" id="res-savoir" hidden open>
+      <summary>À savoir</summary>
+      <div class="res__corps" id="res-savoir-corps"></div>
+    </details>
+  </div>
+
+  <p class="res__avis">Modèle de lettre fondé sur la loi en vigueur au {new Date(DATE_VERIFICATION + 'T12:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}. Ce n’est pas un conseil juridique : en cas de litige, voyez un conseil ou une association de consommateurs.</p>
+</div>
+
+<style is:global>
+  .res{display:grid;gap:18px;grid-template-columns:minmax(0,1fr)}
+  .res__saisie,.res__sortie{display:grid;gap:16px;align-content:start;min-width:0}
+  .res__bloc{display:grid;gap:12px;min-width:0}
+  .res__grille{grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:12px 14px;align-items:start}
+  .res__grille > [hidden]{display:none}
+  /* La bulle d'info se cale sur la largeur du champ (et non sur le « i ») : jamais hors de l'écran à 375 px. */
+  .res .o-champ__tete,.res__memo{position:relative}
+  .res .o-note{position:static}
+  .res .o-note__bulle{left:0;transform:none;width:max-content;max-width:min(300px,100%)}
+  .res__cas{margin:0;font-size:14px;color:var(--ink2);min-height:1.3em}
+  .res__memo{display:flex;align-items:center;gap:8px}
+  .res__case{display:inline-flex;align-items:center;gap:10px;font-size:15px;font-weight:600;color:var(--ink);cursor:pointer;min-height:44px}
+  .res__case input{width:20px;height:20px;accent-color:var(--o-accent);cursor:pointer;margin:0}
+  .res__case input:focus-visible{outline:3px solid var(--o-accent);outline-offset:3px}
+  .res__statut{margin:0;padding:10px 14px;border-radius:14px;font-size:15px;font-weight:600;background:var(--o-tinte);color:var(--ink);border:1px solid var(--line)}
+  .res__statut[data-etat="pret"]{border-color:var(--o-ok);color:var(--o-ok);background:transparent}
+  .res .o-resultat__sortie{max-height:none;font-size:15px}
+  .res__reperes{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+  .res__reperes:empty{display:none}
+  .res__repere{display:grid;gap:2px;padding:10px 14px;border-radius:14px;border:1px solid var(--line);border-left:5px solid var(--o-bord);background:var(--o-surface)}
+  .res__repere[data-niveau="ok"]{border-left-color:var(--o-ok)}
+  .res__repere[data-niveau="attention"]{border-left-color:#b45f00}
+  .res__repere[data-niveau="depasse"]{border-left-color:#c0262d}
+  .res__repere b{font-size:13px;font-weight:700;color:var(--ink2);text-transform:none}
+  .res__repere span{font-size:17px;font-weight:700;color:var(--ink)}
+  .res__repere small{font-size:14px;color:var(--ink2);line-height:1.45}
+  .res__tag{display:inline-block;margin-left:8px;padding:1px 8px;border-radius:999px;font-size:12px;font-weight:700;border:1.5px solid currentColor}
+  .res__repere[data-niveau="attention"] .res__tag{color:#8a4900}
+  .res__repere[data-niveau="depasse"] .res__tag{color:#b01f26}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .res__repere[data-niveau="attention"] .res__tag{color:#ffb454} :root:not([data-theme="light"]) .res__repere[data-niveau="attention"]{border-left-color:#ffb454} :root:not([data-theme="light"]) .res__repere[data-niveau="depasse"] .res__tag{color:#ff8a8f} :root:not([data-theme="light"]) .res__repere[data-niveau="depasse"]{border-left-color:#ff8a8f}}
+  :root[data-theme="dark"] .res__repere[data-niveau="attention"] .res__tag{color:#ffb454}
+  :root[data-theme="dark"] .res__repere[data-niveau="depasse"] .res__tag{color:#ff8a8f}
+  .res__savoir{border:1px solid var(--line);border-radius:14px;padding:4px 14px}
+  .res__savoir summary{cursor:pointer;font-weight:700;font-size:15px;padding:10px 0;color:var(--ink)}
+  .res__savoir summary:focus-visible{outline:3px solid var(--o-accent);outline-offset:2px;border-radius:6px}
+  .res__corps{display:grid;gap:12px;padding:2px 0 12px;font-size:15px;line-height:1.5;color:var(--ink)}
+  .res__corps h4{margin:0 0 4px;font-size:13px;font-weight:700;color:var(--ink2)}
+  .res__corps p,.res__corps ul{margin:0}
+  .res__corps ul{padding-left:18px;display:grid;gap:4px}
+  .res__corps a{color:var(--o-accent)}
+  .res__corps .res__art{font-size:14px;color:var(--ink2)}
+  .res__avis{margin:0;font-size:14px;color:var(--ink2);line-height:1.5}
+  @media (min-width:900px){
+    .res{grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:28px;align-items:start}
+    .res__avis{grid-column:1 / -1}
+  }
+</style>
+
+<script>
+  import { CAS, DONNEES_VIDES, casDef, champsActifs, nomFichier, preparer, varianteValide, type Donnees, type Niveau, type Preparation } from './outil';
+  import { aujourdhui } from './dates';
+  import { compter } from '../../lib/compteur';
+  import { afficherResultat, masquerTelechargement, proposerTelechargement } from '../../lib/ui';
+
+  const racine = document.querySelector<HTMLElement>('[data-outil-id="resiliation"]');
+  if (racine) {
+    const $ = <T extends HTMLElement>(id: string) => racine.querySelector<T>(`#${id}`)!;
+    const cas = $<HTMLSelectElement>('res-cas');
+    const dateRef = $<HTMLInputElement>('res-dateref');
+    const preavis = $<HTMLInputElement>('res-preavis');
+    const evenement = $<HTMLSelectElement>('res-evenement');
+    const achat = $<HTMLInputElement>('res-achat');
+    const pdl = $<HTMLInputElement>('res-pdl');
+    const reference = $<HTMLInputElement>('res-reference');
+    const organisme = $<HTMLInputElement>('res-organisme');
+    const adresseOrg = $<HTMLTextAreaElement>('res-adresse-org');
+    const nom = $<HTMLInputElement>('res-nom');
+    const adresse = $<HTMLInputElement>('res-adresse');
+    const ville = $<HTMLInputElement>('res-ville');
+    const lieu = $<HTMLInputElement>('res-lieu');
+    const dateEnvoi = $<HTMLInputElement>('res-date-envoi');
+    const memoriser = $<HTMLInputElement>('res-memoriser');
+    const statut = $<HTMLElement>('res-statut');
+    const reperesEl = $<HTMLUListElement>('res-reperes');
+    const savoir = $<HTMLDetailsElement>('res-savoir');
+    const savoirCorps = $<HTMLElement>('res-savoir-corps');
+    const casAide = $<HTMLElement>('res-cas-aide');
+    const CLE = 'lettre-resiliation:v1';
+
+    const champ = (nomChamp: string) => racine.querySelector<HTMLElement>(`[data-champ="${nomChamp}"]`)!;
+    const variantes = (id: string) => racine.querySelector<HTMLElement>(`[data-variantes="${id}"]`)!;
+    const varianteChoisie = (id: string) => racine.querySelector<HTMLInputElement>(`#res-var-${id} input:checked`)?.value ?? '';
+
+    // — mémorisation, seulement si l'utilisateur coche —
+    const lireStock = (): Record<string, string> | null => {
+      try { return JSON.parse(localStorage.getItem(CLE) ?? 'null'); } catch { return null; }
+    };
+    const ecrireStock = () => {
+      try {
+        if (memoriser.checked) localStorage.setItem(CLE, JSON.stringify({ nom: nom.value, adresse: adresse.value, ville: ville.value, lieu: lieu.value }));
+        else localStorage.removeItem(CLE);
+      } catch { /* navigation privée : on n'enregistre simplement pas */ }
+    };
+
+    dateEnvoi.value = aujourdhui();
+    const stock = lireStock();
+    if (stock) {
+      nom.value = stock.nom ?? ''; adresse.value = stock.adresse ?? ''; ville.value = stock.ville ?? ''; lieu.value = stock.lieu ?? '';
+      memoriser.checked = true;
+    }
+
+    const lire = (): Donnees => {
+      const c = casDef(cas.value).id;
+      return {
+        ...DONNEES_VIDES,
+        cas: c, variante: varianteValide(c, varianteChoisie(c)),
+        nom: nom.value, adresse: adresse.value, ville: ville.value, lieu: lieu.value,
+        organisme: organisme.value, adresseOrganisme: adresseOrg.value, reference: reference.value,
+        dateEnvoi: dateEnvoi.value, dateRef: dateRef.value, preavis: Number(preavis.value) || 0,
+        evenement: evenement.value || 'domicile', objetAchat: achat.value, pdl: pdl.value,
+      };
+    };
+
+    const changerLibelle = (id: string, label: string, aide: string) => {
+      const l = racine.querySelector<HTMLLabelElement>(`label[for="${id}"]`);
+      if (l) l.textContent = label;
+      const bulle = l?.closest('.o-champ')?.querySelector<HTMLElement>('.o-note__bulle');
+      if (bulle) bulle.textContent = aide;
+    };
+
+    const adapterChamps = (d: Donnees) => {
+      for (const c of CAS) variantes(c.id).hidden = c.id !== d.cas;
+      const a = champsActifs(d.cas, d.variante);
+      champ('dateRef').hidden = !a.dateRef;
+      if (a.dateRef) changerLibelle('res-dateref', a.dateRef.label, a.dateRef.aide);
+      champ('preavis').hidden = !a.preavis;
+      champ('evenement').hidden = !a.evenement;
+      champ('objetAchat').hidden = !a.objetAchat;
+      champ('pdl').hidden = !a.pdl;
+      changerLibelle('res-reference', a.reference.label, a.reference.aide);
+      const pdlLabel = d.variante === 'gaz' ? 'PCE' : 'PDL / PRM';
+      changerLibelle('res-pdl', pdlLabel, d.variante === 'gaz'
+        ? 'Point de comptage et d’estimation du gaz : 14 chiffres, sur votre facture.'
+        : 'Point de livraison ou de référence mesure de l’électricité : 14 chiffres, sur votre facture.');
+      const def = casDef(d.cas);
+      const v = def.variantes.find((x) => x.id === d.variante);
+      casAide.textContent = v ? v.aide : def.aide;
+    };
+
+    const TAG: Record<Niveau, string> = { ok: '', info: '', attention: 'Bientôt', depasse: 'À vérifier' };
+    const dessiner = (p: Preparation) => {
+      statut.dataset.etat = p.complet ? 'pret' : 'manque';
+      statut.textContent = p.complet
+        ? 'Lettre prête : relisez-la, puis téléchargez le PDF ou copiez le texte.'
+        : `À compléter pour obtenir le PDF : ${p.manquants.join(', ')}.`;
+      afficherResultat('res-resultat', p.lettre.texte);
+
+      reperesEl.replaceChildren();
+      for (const r of p.reperes) {
+        const li = document.createElement('li');
+        li.className = 'res__repere';
+        li.dataset.niveau = r.niveau;
+        const b = document.createElement('b'); b.textContent = r.libelle;
+        if (TAG[r.niveau]) { const t = document.createElement('em'); t.className = 'res__tag'; t.style.fontStyle = 'normal'; t.textContent = TAG[r.niveau]; b.append(t); }
+        const s = document.createElement('span'); s.textContent = r.valeur;
+        li.append(b, s);
+        if (r.detail) { const sm = document.createElement('small'); sm.textContent = r.detail; li.append(sm); }
+        reperesEl.append(li);
+      }
+
+      savoirCorps.replaceChildren();
+      const titre = (t: string) => { const h = document.createElement('h4'); h.textContent = t; return h; };
+      const para = (t: string) => { const e = document.createElement('p'); e.textContent = t; return e; };
+      const liste = (items: string[]) => { const u = document.createElement('ul'); for (const i of items) { const l = document.createElement('li'); l.textContent = i; u.append(l); } return u; };
+      const sec = (t: string, ...enfants: HTMLElement[]) => { const d = document.createElement('div'); d.append(titre(t), ...enfants); savoirCorps.append(d); };
+      sec('Mode d’envoi', para(p.envoi));
+      sec('Pièces à joindre', liste(p.pieces));
+      if (p.avertissements.length) sec('Attention', liste(p.avertissements));
+      const arts = document.createElement('ul');
+      for (const a of p.articles) {
+        const li = document.createElement('li'); li.className = 'res__art';
+        const lien = document.createElement('a'); lien.href = a.url; lien.target = '_blank'; lien.rel = 'noopener noreferrer';
+        lien.textContent = `Art. ${a.ref} du ${a.code}`;
+        li.append(lien, document.createTextNode(` — ${a.resume}`));
+        arts.append(li);
+      }
+      sec('Articles de loi (Légifrance)', arts);
+      savoir.hidden = false;
+    };
+
+    // — PDF : fabriqué dès que la lettre est complète, la bibliothèque n'est chargée qu'à ce moment —
+    let jeton = 0;
+    let minuteur: ReturnType<typeof setTimeout> | undefined;
+    let dernierTexte = '';
+    const fabriquer = (p: Preparation, d: Donnees) => {
+      clearTimeout(minuteur);
+      const mien = ++jeton;
+      if (!p.complet) { masquerTelechargement('res-telecharger'); return; }
+      minuteur = setTimeout(async () => {
+        try {
+          const { fabriquerPdf } = await import('./pdf');
+          const octets = await fabriquerPdf(p.lettre);
+          if (mien !== jeton) return;
+          await proposerTelechargement('res-telecharger', [{ nom: nomFichier(d.cas, d.variante), donnees: octets, type: 'application/pdf' }]);
+        } catch {
+          if (mien === jeton) { masquerTelechargement('res-telecharger'); statut.dataset.etat = 'manque'; statut.textContent = 'Le PDF n’a pas pu être fabriqué : copiez le texte de la lettre.'; }
+        }
+      }, 250);
+    };
+
+    const maj = () => {
+      const d = lire();
+      adapterChamps(d);
+      const p = preparer(d, aujourdhui());
+      dessiner(p);
+      fabriquer(p, d);
+      racine.dataset.texte = p.lettre.texte;
+    };
+
+    // une lettre produite = un téléchargement ou une copie, comptés une fois par texte
+    const compterLettre = () => {
+      const t = racine.dataset.texte ?? '';
+      if (t && t !== dernierTexte) { dernierTexte = t; compter('utilise', 'resiliation'); }
+    };
+    $('res-telecharger').addEventListener('click', (e) => { if ((e.target as HTMLElement).closest('a')) compterLettre(); });
+    $('res-resultat').addEventListener('click', (e) => { if ((e.target as HTMLElement).closest('[data-copier]')) compterLettre(); });
+
+    const surChamp = (e: Event) => {
+      const cible = e.target as HTMLElement;
+      if ([nom, adresse, ville, lieu].includes(cible as HTMLInputElement)) ecrireStock();
+      maj();
+    };
+    racine.addEventListener('input', surChamp);
+    racine.addEventListener('change', (e) => {
+      if (e.target === memoriser) ecrireStock();
+      surChamp(e);
+    });
+    maj();
+  }
+</script>
