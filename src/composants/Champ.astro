@@ -1,0 +1,39 @@
+---
+// Champ de saisie : texte, nombre, zone de texte ou liste. L'événement natif `input` / `change` suffit.
+import Note from './Note.astro';
+interface Option { valeur: string; libelle: string }
+interface Props {
+  id: string;
+  label: string;
+  type?: 'text' | 'number' | 'email' | 'url' | 'password' | 'date' | 'time' | 'textarea' | 'select';
+  valeur?: string | number;
+  placeholder?: string;
+  aide?: string;          // info au survol
+  unite?: string;         // « € », « % », « Mo »… affichée à droite
+  options?: Option[];     // pour type="select"
+  lignes?: number;        // pour type="textarea"
+  requis?: boolean;
+  min?: number | string;
+  max?: number | string;
+  step?: number | string;
+  maxlength?: number;
+  autocomplete?: string;
+  inputmode?: 'text' | 'numeric' | 'decimal' | 'email' | 'tel' | 'url' | 'search';
+  lang?: 'fr' | 'en';
+}
+const { id, label, type = 'text', valeur, placeholder, aide, unite, options = [], lignes = 6, requis = false, min, max, step, maxlength, autocomplete = 'off', inputmode, lang = 'fr' } = Astro.props;
+---
+<div class="o-champ">
+  <div class="o-champ__tete">
+    <label for={id}>{label}{requis && <span class="o-champ__req" aria-hidden="true"> *</span>}</label>
+    {aide && <Note texte={aide} lang={lang} />}
+  </div>
+  <div class="o-champ__ligne">
+    {type === 'textarea'
+      ? <textarea id={id} name={id} rows={lignes} placeholder={placeholder} required={requis} maxlength={maxlength} autocomplete={autocomplete} spellcheck="false">{valeur}</textarea>
+      : type === 'select'
+        ? <select id={id} name={id} required={requis}>{options.map((o) => <option value={o.valeur} selected={String(valeur) === o.valeur}>{o.libelle}</option>)}</select>
+        : <input id={id} name={id} type={type} value={valeur} placeholder={placeholder} required={requis} min={min} max={max} step={step} maxlength={maxlength} autocomplete={autocomplete} inputmode={inputmode} />}
+    {unite && <span class="o-champ__unite">{unite}</span>}
+  </div>
+</div>

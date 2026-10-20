@@ -1,0 +1,10 @@
+---
+// Info au survol (et au focus clavier) : « i » discret, la bulle s'ouvre au survol. Texte par prop ou par slot.
+import { idUnique } from '../lib/textes';
+interface Props { texte?: string; id?: string; lang?: 'fr' | 'en' }
+const { texte, id = idUnique('note'), lang = 'fr' } = Astro.props;
+---
+<span class="o-note">
+  <button type="button" class="o-note__i" aria-label={lang === 'en' ? 'Information' : 'Information'} aria-describedby={id}>i</button>
+  <span role="tooltip" id={id} class="o-note__bulle">{texte}<slot /></span>
+</span>

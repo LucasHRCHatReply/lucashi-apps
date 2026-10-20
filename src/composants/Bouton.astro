@@ -1,0 +1,15 @@
+---
+// Bouton ou lien-bouton. Les attributs en plus (id, data-*, aria-*, disabled) passent tels quels.
+interface Props {
+  variante?: 'principal' | 'secondaire' | 'discret';
+  href?: string;
+  type?: 'button' | 'submit' | 'reset';
+  class?: string;
+  [attr: string]: unknown;
+}
+const { variante = 'secondaire', href, type = 'button', class: classe = '', ...reste } = Astro.props;
+const cls = `o-btn o-btn--${variante} ${classe}`.trim();
+---
+{href
+  ? <a class={cls} href={href} {...reste}><slot /></a>
+  : <button class={cls} type={type} {...reste}><slot /></button>}

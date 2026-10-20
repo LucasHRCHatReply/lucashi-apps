@@ -1,0 +1,45 @@
+---
+// Hub des outils d'une langue : grille par catégorie.
+import Base from '../layouts/Base.astro';
+import TuileOutil from './TuileOutil.astro';
+import { fiches, parCategorie, LIBELLES_CATEGORIES, cheminHub, type Lang } from '../lib/outils';
+import { url } from '../lib/site';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const liste = await fiches(lang);
+const groupes = parCategorie(liste);
+const T = lang === 'fr'
+  ? { titre: 'Outils gratuits en ligne, sans envoi de fichier', desc: 'Convertir, compresser, calculer : des outils gratuits, sans compte ni publicité, qui travaillent dans votre navigateur. Vos fichiers ne quittent pas votre appareil.',
+      h1: 'Outils gratuits', phrase: 'Une page, une action, un résultat. Tout se passe dans votre navigateur : rien n’est envoyé.', vide: 'Les premiers outils arrivent bientôt.', accueil: 'Accueil', fil: 'Fil d’Ariane' }
+  : { titre: 'Free online tools, no file upload', desc: 'Convert, compress, calculate: free tools with no account and no ads, running in your browser. Your files never leave your device.',
+      h1: 'Free tools', phrase: 'One page, one action, one result. Everything happens in your browser: nothing is uploaded.', vide: 'The first tools are coming soon.', accueil: 'Home', fil: 'Breadcrumb' };
+const monChemin = cheminHub(lang);
+const jsonld = [{
+  '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: T.accueil, item: url('/') },
+    { '@type': 'ListItem', position: 2, name: T.h1, item: url(monChemin) },
+  ],
+}];
+---
+<Base lang={lang} titre={T.titre} description={T.desc} chemin={monChemin} alternates={{ fr: cheminHub('fr'), en: cheminHub('en') }} jsonld={jsonld} courant="outils">
+  <header class="o-entete wrap">
+    <div class="o-entete__panneau">
+      <nav class="o-fil" aria-label={T.fil}><ol><li><a href="/">{T.accueil}</a></li><li aria-current="page">{T.h1}</li></ol></nav>
+      <h1>{T.h1}</h1>
+      <p class="o-phrase">{T.phrase}</p>
+    </div>
+  </header>
+  <main class="o-plat" id="contenu">
+    <div class="wrap">
+      {groupes.length === 0
+        ? <p class="o-vide">{T.vide}</p>
+        : groupes.map((g) => (
+          <section class="o-categorie" aria-labelledby={`cat-${g.categorie}`}>
+            <h2 id={`cat-${g.categorie}`}>{LIBELLES_CATEGORIES[lang][g.categorie]}</h2>
+            <div class="o-grille">{g.fiches.map((f) => <TuileOutil fiche={f} />)}</div>
+          </section>
+        ))}
+    </div>
+  </main>
+</Base>

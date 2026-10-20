@@ -4,3 +4,8 @@ docs
 .projet
 CLAUDE.md
 AGENTS.md
+node_modules/
+dist/
+.astro/
+dist.new/
+dist.old/

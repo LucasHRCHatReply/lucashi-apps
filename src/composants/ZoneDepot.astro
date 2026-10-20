@@ -1,0 +1,70 @@
+---
+// Zone de dépôt : glisser-déposer, clic, coller (Cmd+V), plusieurs fichiers, au clavier (Entrée / Espace).
+// Émet sur l'élément #id un CustomEvent « fichiers » dont `detail` est un File[] (déjà filtré par `accept`).
+import { t } from '../lib/textes';
+interface Props {
+  id: string;
+  accept?: string;       // « image/*,.heic,.heif » (types MIME, jokers, extensions)
+  multiple?: boolean;
+  libelle?: string;
+  aide?: string;
+  lang?: 'fr' | 'en';
+}
+const { id, accept = '', multiple = true, libelle, aide, lang = 'fr' } = Astro.props;
+---
+<div class="o-depot" id={id} data-depot data-accept={accept} data-multiple={String(multiple)} data-lang={lang}
+     role="button" tabindex="0" aria-label={libelle ?? t(lang, 'deposer')} aria-describedby={`${id}-aide`}>
+  <input type="file" class="o-depot__input" hidden accept={accept || undefined} multiple={multiple} tabindex="-1" />
+  <svg class="o-depot__ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+  <strong>{libelle ?? t(lang, 'deposer')}</strong>
+  <span id={`${id}-aide`} class="o-depot__aide">{aide ?? t(lang, 'deposerAide')}</span>
+  <span class="o-depot__etat" data-etat role="status"></span>
+</div>
+<script>
+  import { fichierAccepte } from '../lib/ui';
+  import { t } from '../lib/textes';
+
+  const zones = Array.from(document.querySelectorAll<HTMLElement>('[data-depot]'));
+
+  function emettre(zone: HTMLElement, recus: File[]) {
+    const accept = zone.dataset.accept ?? '';
+    const lang = zone.dataset.lang === 'en' ? 'en' : 'fr';
+    let fichiers = recus.filter((f) => fichierAccepte(f, accept));
+    if (zone.dataset.multiple === 'false') fichiers = fichiers.slice(0, 1);
+    const etat = zone.querySelector<HTMLElement>('[data-etat]');
+    if (!fichiers.length) { if (etat) etat.textContent = t(lang, 'refus'); return; }
+    if (etat) etat.textContent = `${fichiers.length} ${t(lang, fichiers.length > 1 ? 'recuN' : 'recu1')}`;
+    zone.dispatchEvent(new CustomEvent<File[]>('fichiers', { detail: fichiers, bubbles: true }));
+  }
+
+  for (const zone of zones) {
+    const input = zone.querySelector<HTMLInputElement>('input[type=file]')!;
+    zone.addEventListener('click', () => input.click());
+    zone.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); input.click(); }
+    });
+    input.addEventListener('click', (e) => e.stopPropagation());
+    input.addEventListener('change', () => { emettre(zone, Array.from(input.files ?? [])); input.value = ''; });
+    let profondeur = 0;
+    zone.addEventListener('dragenter', (e) => { e.preventDefault(); profondeur++; zone.classList.add('est-survolee'); });
+    zone.addEventListener('dragover', (e) => e.preventDefault());
+    zone.addEventListener('dragleave', () => { if (--profondeur <= 0) { profondeur = 0; zone.classList.remove('est-survolee'); } });
+    zone.addEventListener('drop', (e) => {
+      e.preventDefault(); profondeur = 0; zone.classList.remove('est-survolee');
+      emettre(zone, Array.from(e.dataTransfer?.files ?? []));
+    });
+  }
+
+  // Coller : va à la zone qui a le focus, sinon à la première de la page ; ignoré dans un champ de saisie.
+  if (zones.length) {
+    document.addEventListener('paste', (e) => {
+      const cible = e.target as HTMLElement | null;
+      if (cible && cible.closest('input, textarea, select, [contenteditable]')) return;
+      const fichiers = Array.from(e.clipboardData?.files ?? []);
+      if (!fichiers.length) return;
+      const active = (document.activeElement as HTMLElement | null)?.closest<HTMLElement>('[data-depot]');
+      e.preventDefault();
+      emettre(active ?? zones[0], fichiers);
+    });
+  }
+</script>

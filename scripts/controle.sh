@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Contrôle bloquant avant tout push : aucune donnée privée dans les fichiers texte du site.
 # Refuse : noms de clients, chemins de la machine, jetons, adresses e-mail, liens vers un dépôt privé.
-# Usage : scripts/controle.sh   (code de sortie 1 = refus). Les motifs sont écrits avec des crochets
+# Usage : scripts/controle.sh [dist]   (code de sortie 1 = refus). Avec un dossier (dist/), contrôle aussi les fichiers construits. Les motifs sont écrits avec des crochets
 # pour que ce fichier ne contienne pas lui-même les mots qu'il interdit.
 set -u
 cd "$(dirname "$0")/.."
@@ -9,6 +9,10 @@ ECHEC=0
 refuse() { echo "REFUS ($1) :"; echo "$2" | cut -c1-200 | head -8; ECHEC=1; }
 
 FICHIERS=$(git ls-files -co --exclude-standard 2>/dev/null | grep -v '^\.git/')
+if [ -n "${1:-}" ]; then
+  [ -d "$1" ] || { echo "dossier introuvable : $1 (lancer d'abord npm run build)"; exit 1; }
+  FICHIERS=$(printf '%s\n%s' "$FICHIERS" "$(find "$1" -type f ! -name '.DS_Store')")
+fi
 [ -z "$FICHIERS" ] && { echo "aucun fichier à contrôler"; exit 1; }
 
 cherche() { # $1 = étiquette, $2 = motif (grep -E, insensible à la casse si $3=i)

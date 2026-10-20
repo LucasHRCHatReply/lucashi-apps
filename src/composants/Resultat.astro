@@ -1,0 +1,35 @@
+---
+// Bloc résultat avec bouton Copier. Caché tant qu'aucun résultat n'existe : l'outil appelle afficherResultat(id, texte).
+import Bouton from './Bouton.astro';
+import { t } from '../lib/textes';
+interface Props { id: string; label?: string; copier?: boolean; mono?: boolean; lang?: 'fr' | 'en' }
+const { id, label, copier = true, mono = false, lang = 'fr' } = Astro.props;
+---
+<div class="o-resultat" id={id} data-resultat data-lang={lang} hidden>
+  <div class="o-resultat__tete">
+    <span class="o-etiquette">{label ?? t(lang, 'resultat')}</span>
+    {copier && <Bouton variante="secondaire" data-copier>{t(lang, 'copier')}</Bouton>}
+  </div>
+  <pre class:list={['o-resultat__sortie', { 'o-mono': mono }]} data-sortie tabindex="0" aria-live="polite"></pre>
+</div>
+<script>
+  import { t } from '../lib/textes';
+  document.querySelectorAll<HTMLElement>('[data-resultat]').forEach((bloc) => {
+    const btn = bloc.querySelector<HTMLButtonElement>('[data-copier]');
+    const sortie = bloc.querySelector<HTMLElement>('[data-sortie]');
+    if (!btn || !sortie) return;
+    const lang = bloc.dataset.lang === 'en' ? 'en' : 'fr';
+    btn.addEventListener('click', async () => {
+      const avant = btn.textContent;
+      let ok = true;
+      try { await navigator.clipboard.writeText(sortie.textContent ?? ''); }
+      catch {
+        ok = false;
+        const r = document.createRange(); r.selectNodeContents(sortie);
+        const s = getSelection(); s?.removeAllRanges(); s?.addRange(r);
+      }
+      btn.textContent = t(lang, ok ? 'copie' : 'copieEchec');
+      setTimeout(() => { btn.textContent = avant; }, 2200);
+    });
+  });
+</script>

@@ -1,0 +1,51 @@
+---
+// Outil modèle : « compter les mots ». Montre le contrat — les composants communs, la logique dans outil.ts,
+// le compteur (« utilise » une fois par résultat) et le téléchargement. Note (info au survol) s'obtient aussi par la prop `aide` de Champ. Un vrai outil copie ce dossier.
+import ZoneDepot from '../../composants/ZoneDepot.astro';
+import Champ from '../../composants/Champ.astro';
+import Choix from '../../composants/Choix.astro';
+import Resultat from '../../composants/Resultat.astro';
+import Telecharger from '../../composants/Telecharger.astro';
+interface Props { lang?: 'fr' | 'en' }
+const { lang = 'fr' } = Astro.props;
+const fr = lang === 'fr';
+---
+<div class="modele" data-outil-id="modele" data-lang={lang}>
+  <ZoneDepot id="modele-depot" accept=".txt,.md,text/plain" multiple={false} lang={lang}
+    libelle={fr ? 'Ouvrir un fichier texte' : 'Open a text file'} aide={fr ? 'Ou écrire / coller le texte ci-dessous' : 'Or type / paste the text below'} />
+  <Champ id="modele-texte" label={fr ? 'Texte' : 'Text'} type="textarea" lignes={7} aide={fr ? 'Le texte reste dans cette page.' : 'The text stays on this page.'} lang={lang} />
+  <Choix id="modele-vitesse" label={fr ? 'Lecture' : 'Reading'}
+    options={[{ valeur: '180', libelle: fr ? 'Lente' : 'Slow', aide: '180' }, { valeur: '230', libelle: fr ? 'Normale' : 'Normal', aide: '230' }, { valeur: '300', libelle: fr ? 'Rapide' : 'Fast', aide: '300' }]} valeur="230" />
+  <Resultat id="modele-resultat" copier lang={lang} />
+  <Telecharger id="modele-telecharger" lang={lang} />
+</div>
+<script>
+  import { compterMots, resume } from './outil';
+  import { compter } from '../../lib/compteur';
+  import { afficherResultat, masquerResultat, masquerTelechargement, proposerTelechargement, lireTexte } from '../../lib/ui';
+
+  const racine = document.querySelector<HTMLElement>('[data-outil-id="modele"]');
+  if (racine) {
+    const lang = racine.dataset.lang === 'en' ? 'en' : 'fr';
+    const texte = racine.querySelector<HTMLTextAreaElement>('#modele-texte')!;
+    const depot = racine.querySelector<HTMLElement>('#modele-depot')!;
+    const vitesse = racine.querySelector<HTMLElement>('#modele-vitesse')!;
+    let dernier = '';
+
+    const calculer = async () => {
+      if (!texte.value.trim()) { masquerResultat('modele-resultat'); masquerTelechargement('modele-telecharger'); dernier = ''; return; }
+      const mpm = Number(vitesse.querySelector<HTMLInputElement>('input:checked')?.value ?? 230);
+      const r = resume(compterMots(texte.value, mpm), lang);
+      afficherResultat('modele-resultat', r);
+      await proposerTelechargement('modele-telecharger', [{ nom: 'comptes.txt', donnees: r, type: 'text/plain' }]);
+      if (r !== dernier) { dernier = r; compter('utilise', '_modele'); } // une fois par résultat produit
+    };
+    texte.addEventListener('input', calculer);
+    vitesse.addEventListener('change', calculer);
+    depot.addEventListener('fichiers', async (e) => {
+      const [f] = (e as CustomEvent<File[]>).detail;
+      texte.value = await lireTexte(f);
+      calculer();
+    });
+  }
+</script>

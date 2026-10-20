@@ -1,0 +1,70 @@
+---
+import '../styles/outils.css';
+import TuileOutil from '../composants/TuileOutil.astro';
+import { fiches } from '../lib/outils';
+import { INDEXABLE, url } from '../lib/site';
+const tuiles = await fiches('fr');
+---
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Apps de Lucas</title>
+<meta name="description" content="Des apps macOS que je construis pour moi : un presse-papiers, un limiteur de charge, un voile de focus. Gratuites, sans compte, sans télémétrie.">
+<meta name="color-scheme" content="light dark">
+{!INDEXABLE && <meta name="robots" content="noindex">}
+<link rel="canonical" href={url('/')}>
+<meta property="og:type" content="website">
+<meta property="og:title" content="Apps de Lucas">
+<meta property="og:description" content="Des apps macOS que je construis pour moi. Gratuites, sans compte, sans télémétrie.">
+<meta property="og:url" content={url('/')}>
+<meta property="og:image" content={url('/assets/og.png')}>
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:locale" content="fr_FR">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/pince-icon.png">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="alternate" hreflang="fr" href={url('/')}>
+<link rel="alternate" hreflang="x-default" href={url('/')}>
+</head>
+<body data-page="accueil">
+<div class="fond" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+<nav class="nav" aria-label="Navigation">
+  <b>Apps de Lucas</b>
+  <div class="liens"><a class="m cache" href="#apps">Les apps</a>{tuiles.length > 0 && <a class="m" href="outils/">Outils</a>}<a class="m" href="#construis">Ma démarche</a></div>
+</nav>
+<main>
+  <header class="hero wrap">
+    <h1>Des apps Mac, faites pour moi.</h1>
+    <p>Je construis les outils que j'aurais voulus. Je les partage, tels quels.</p>
+    <a class="cue" href="#apps">Voir les apps ↓</a>
+  </header>
+  <div class="wrap" id="apps">
+    <div class="grille" id="grille"><noscript><p style="color:#fff">Les apps : <a href="pince/">Pince</a>, <a href="jauge/">Jauge</a>, <a href="https://github.com/LucasHRCHatReply/penombre-releases">Penombre</a>.</p></noscript></div>
+  </div>
+  <section class="bande-zone" aria-label="Captures"><div class="bande" id="bande"></div></section>
+  <div class="plat">
+    {tuiles.length > 0 && (
+      <section id="outils"><div class="wrap">
+        <h2 class="t">Outils gratuits</h2>
+        <p class="lead">Une page, une action, un résultat. Tout se passe dans votre navigateur : rien n’est envoyé.</p>
+        <div class="o-grille" style="margin-top:28px">{tuiles.map((f) => <TuileOutil fiche={f} />)}</div>
+        <p style="margin-top:20px"><a class="o-btn o-btn--secondaire" href="outils/">Tous les outils</a></p>
+      </div></section>
+    )}
+    <section id="construis"><div class="wrap">
+      <h2 class="t rv">Ce que je construis</h2>
+      <p class="lead rv">Des répliques personnelles d'apps que j'aime, en mieux sur ce qui me manquait.</p>
+      <div class="trois">
+        <div class="rv"><b>Natif et léger</b><span>SwiftUI, Liquid Glass, rien qui tourne pour rien.</span></div>
+        <div class="rv" style="--d:90ms"><b>Sans compte</b><span>Aucune inscription, aucune télémétrie, aucun serveur.</span></div>
+        <div class="rv" style="--d:180ms"><b>Mises à jour intégrées</b><span>Chaque app se met à jour depuis ses réglages.</span></div>
+      </div>
+    </div></section>
+    <footer><div class="wrap"><span>© Lucas Hirschauer</span><span>Apps signées, non notarisées par Apple. Le script d'installation se lit en entier.</span></div></footer>
+  </div>
+</main>
+<script is:inline src="assets/app.js"></script>
+</body>
+</html>

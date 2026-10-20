@@ -1,0 +1,17 @@
+---
+import OutilLayout from '../../../layouts/OutilLayout.astro';
+import { fiches, type Fiche } from '../../../lib/outils';
+
+export async function getStaticPaths() {
+  const liste = await fiches('en');
+  return liste.map((fiche) => ({ params: { slug: fiche.data.slug }, props: { fiche } }));
+}
+interface Props { fiche: Fiche }
+const { fiche } = Astro.props;
+// Chargement paresseux : seul le composant de cet outil (et son script) entre dans la page.
+const composants = import.meta.glob<{ default: (props: { lang: 'fr' | 'en' }) => unknown }>('../../../outils/*/Outil.astro');
+const charger = composants[`../../../outils/${fiche.data.id}/Outil.astro`];
+if (!charger) throw new Error(`src/outils/${fiche.data.id}/Outil.astro introuvable`);
+const Outil = (await charger()).default as any;
+---
+<OutilLayout fiche={fiche}><Outil lang={fiche.data.lang} /></OutilLayout>

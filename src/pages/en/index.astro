@@ -1,0 +1,20 @@
+---
+import Base from '../../layouts/Base.astro';
+import Bouton from '../../composants/Bouton.astro';
+---
+<Base lang="en" titre="Lucas’s apps: free Mac apps and online tools" description="Small Mac apps I build for myself and free online tools that run in your browser. No account, no ads, nothing uploaded." chemin="/en/" alternates={{ fr: '/', en: '/en/' }}>
+  <header class="o-entete wrap">
+    <div class="o-entete__panneau">
+      <h1>Free Mac apps and online tools</h1>
+      <p class="o-phrase">Small Mac apps I build for myself, and free tools that run in your browser. No account, no ads, nothing uploaded.</p>
+    </div>
+  </header>
+  <main class="o-plat" id="contenu">
+    <div class="wrap">
+      <div class="boutons">
+        <Bouton variante="principal" href="/en/tools/">Free tools</Bouton>
+        <Bouton href="/#apps">Mac apps (in French)</Bouton>
+      </div>
+    </div>
+  </main>
+</Base>

@@ -1,0 +1,72 @@
+---
+// Squelette commun des pages « outils » : <head> complet (SEO), fond riche, barre, pied de page.
+import '../styles/outils.css';
+import { INDEXABLE, url, AUTEUR } from '../lib/site';
+import type { Lang } from '../lib/outils';
+
+interface Props {
+  lang: Lang;
+  titre: string;
+  description: string;
+  chemin: string;                       // chemin canonique, ex. /outils/heic-en-jpg/
+  alternates?: { fr?: string; en?: string }; // chemins des versions dans les deux langues (hreflang)
+  og?: string;                          // chemin de l'image OG
+  jsonld?: object[];
+  courant?: 'outils' | 'accueil' | 'apps';
+  outilId?: string;                     // id de l'outil : le compteur envoie « vue » pour cet id
+}
+const { lang, titre, description, chemin, alternates = {}, og = '/assets/og.png', jsonld = [], courant, outilId } = Astro.props;
+const canonique = url(chemin);
+const xdefaut = alternates.fr ?? alternates.en;
+const T = lang === 'fr'
+  ? { outils: 'Outils', apps: 'Apps Mac', autre: 'English', autreLang: 'en', nav: 'Navigation', saut: 'Aller à l’outil', pied: 'Aucun cookie. Un compteur anonyme, sans adresse IP, compte les visites.', fin: 'Gratuit, sans publicité, sans compte.' }
+  : { outils: 'Tools', apps: 'Mac apps', autre: 'Français', autreLang: 'fr', nav: 'Navigation', saut: 'Skip to the tool', pied: 'No cookies. An anonymous counter, without IP addresses, counts visits.', fin: 'Free, no ads, no account.' };
+const autreChemin = lang === 'fr' ? alternates.en : alternates.fr;
+const hub = lang === 'fr' ? '/outils/' : '/en/tools/';
+---
+<!doctype html>
+<html lang={lang}>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{titre}</title>
+<meta name="description" content={description}>
+<meta name="color-scheme" content="light dark">
+{!INDEXABLE && <meta name="robots" content="noindex">}
+<link rel="canonical" href={canonique}>
+{alternates.fr && <link rel="alternate" hreflang="fr" href={url(alternates.fr)}>}
+{alternates.en && <link rel="alternate" hreflang="en" href={url(alternates.en)}>}
+{xdefaut && <link rel="alternate" hreflang="x-default" href={url(xdefaut)}>}
+<meta property="og:type" content="website">
+<meta property="og:site_name" content={lang === 'fr' ? 'Apps de Lucas' : 'Lucas’s apps'}>
+<meta property="og:title" content={titre}>
+<meta property="og:description" content={description}>
+<meta property="og:url" content={canonique}>
+<meta property="og:image" content={url(og)}>
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:locale" content={lang === 'fr' ? 'fr_FR' : 'en_US'}>
+{autreChemin && <meta property="og:locale:alternate" content={lang === 'fr' ? 'en_US' : 'fr_FR'}>}
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content={titre}>
+<meta name="twitter:description" content={description}>
+<meta name="twitter:image" content={url(og)}>
+<meta name="author" content={AUTEUR}>
+<link rel="icon" href="/assets/pince-icon.png">
+<link rel="stylesheet" href="/assets/style.css">
+{jsonld.map((j) => <script type="application/ld+json" set:html={JSON.stringify(j)} />)}
+</head>
+<body class="o-page" data-outil={outilId}>
+<a class="o-saut" href="#contenu">{T.saut}</a>
+<div class="fond" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+<nav class="nav" aria-label={T.nav}>
+  <a class="marque" href="/"><b>{lang === 'fr' ? 'Apps de Lucas' : 'Lucas’s apps'}</b></a>
+  <div class="liens">
+    <a class="m" href={hub} aria-current={courant === 'outils' ? 'page' : undefined}>{T.outils}</a>
+    <a class="m" href="/#apps">{T.apps}</a>
+    {autreChemin && <a class="m cache" href={autreChemin} hreflang={T.autreLang} lang={T.autreLang}>{T.autre}</a>}
+  </div>
+</nav>
+<slot />
+<footer class="o-pied"><div class="wrap"><span>© {AUTEUR} · {T.fin}</span><span>{T.pied}</span></div></footer>
+</body>
+</html>

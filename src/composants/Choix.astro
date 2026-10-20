@@ -1,0 +1,17 @@
+---
+// Choix par segments (boutons radio). Écouter `change` sur l'élément #id (fieldset) ou lire `[name=<id>]:checked`.
+interface Option { valeur: string; libelle: string; aide?: string }
+interface Props { id: string; label: string; options: Option[]; valeur?: string }
+const { id, label, options, valeur = options[0]?.valeur } = Astro.props;
+---
+<fieldset class="o-choix" id={id}>
+  <legend>{label}</legend>
+  <div class="o-choix__segments">
+    {options.map((o) => (
+      <label title={o.aide}>
+        <input type="radio" name={id} value={o.valeur} checked={o.valeur === valeur} />
+        <span>{o.libelle}</span>
+      </label>
+    ))}
+  </div>
+</fieldset>

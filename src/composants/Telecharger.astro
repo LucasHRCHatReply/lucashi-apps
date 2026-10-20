@@ -1,0 +1,8 @@
+---
+// Zone de téléchargement. Cachée jusqu'à proposerTelechargement(id, fichiers) : un fichier = un bouton, plusieurs = un zip (fflate) + la liste.
+interface Props { id: string; lang?: 'fr' | 'en' }
+const { id, lang = 'fr' } = Astro.props;
+---
+<div class="o-telecharger" id={id} data-telecharger data-lang={lang} hidden>
+  <div class="o-telecharger__liste" data-liste></div>
+</div>

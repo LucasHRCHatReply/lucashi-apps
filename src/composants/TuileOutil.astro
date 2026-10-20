@@ -1,0 +1,11 @@
+---
+// Tuile d'un outil : icône, nom court, phrase. Utilisée par l'accueil, les hubs et « Autres outils ».
+import { svgIcone } from '../lib/icones';
+import { chemin, type Fiche } from '../lib/outils';
+interface Props { fiche: Fiche }
+const { fiche } = Astro.props;
+---
+<a class="o-tuile" href={chemin(fiche)} hreflang={fiche.data.lang}>
+  <span class="o-tuile__ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={svgIcone(fiche.data.icone)} /></span>
+  <span class="o-tuile__txt"><b>{fiche.data.nom_court}</b><span>{fiche.data.phrase}</span></span>
+</a>
