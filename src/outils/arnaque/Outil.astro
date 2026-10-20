@@ -1,0 +1,188 @@
+---
+// « Arnaque ou pas ? » : on colle un SMS, un mail ou un lien, l'analyse part seule.
+// Premier avis immédiat dans la page (liens, imitation de marque, indices du texte) ; le serveur suit le lien sans JavaScript,
+// lit l'âge du domaine (RDAP) et consulte les listes publiques d'hameçonnage. Rien du texte n'est conservé.
+import Champ from '../../composants/Champ.astro';
+import Bouton from '../../composants/Bouton.astro';
+interface Props { lang?: 'fr' | 'en' }
+const { lang = 'fr' } = Astro.props;
+---
+<div class="ar" data-outil-id="arnaque" data-lang={lang} data-api={import.meta.env.PUBLIC_ARNAQUE_API ?? '/api/arnaque'}>
+  <div class="ar-saisie">
+    <Champ id="ar-texte" label="Message à vérifier" type="textarea" lignes={6} maxlength={5000}
+      placeholder="Collez ici le SMS, le mail ou le lien : l'analyse part toute seule."
+      aide="Le texte est envoyé à notre serveur pour suivre le lien, puis oublié : rien n'est conservé." lang={lang} />
+    <div class="ar-actions">
+      <Bouton variante="principal" id="ar-analyser">Analyser</Bouton>
+      <Bouton variante="discret" id="ar-effacer">Effacer</Bouton>
+    </div>
+  </div>
+  <p class="ar-etat" id="ar-etat" role="status" aria-live="polite"></p>
+  <section class="ar-rendu" id="ar-rendu" aria-labelledby="ar-verdict" hidden>
+    <div class="ar-verdict" id="ar-carte" data-cle="">
+      <p class="ar-premier" id="ar-premier" hidden></p>
+      <h2 class="ar-phrase" id="ar-verdict" tabindex="-1"></h2>
+      <p class="ar-conseil" id="ar-conseil"></p>
+    </div>
+    <h3 class="ar-titre">Pourquoi</h3>
+    <ul class="ar-raisons" id="ar-raisons"></ul>
+    <div id="ar-chemins"></div>
+    <p class="ar-sources" id="ar-sources"></p>
+  </section>
+</div>
+
+<style is:global>
+  .ar{--ar-rouge:#b3261e;--ar-rouge-t:#fff;--ar-ambre:#8a5a00;--ar-ambre-t:#fff;--ar-vert:#1b6e3c;--ar-vert-t:#fff;--ar-gris:#4a5568;--ar-gris-t:#fff;display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
+  .ar-saisie,.ar-rendu,.ar-verdict{min-width:0}
+  .ar textarea{width:100%;box-sizing:border-box}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ar{--ar-rouge:#ff8a80;--ar-rouge-t:#330000;--ar-ambre:#ffcc66;--ar-ambre-t:#2b1d00;--ar-vert:#7ddc9a;--ar-vert-t:#00220e;--ar-gris:#a8b3c4;--ar-gris-t:#10151d}}
+  :root[data-theme="dark"] .ar{--ar-rouge:#ff8a80;--ar-rouge-t:#330000;--ar-ambre:#ffcc66;--ar-ambre-t:#2b1d00;--ar-vert:#7ddc9a;--ar-vert-t:#00220e;--ar-gris:#a8b3c4;--ar-gris-t:#10151d}
+  .ar-saisie{display:grid;gap:12px}
+  .ar-actions{display:flex;flex-wrap:wrap;gap:10px}
+  .ar-etat{font-size:14px;color:var(--ink2);min-height:1.3em;margin:0}
+  .ar-etat[data-ton="erreur"]{font-weight:600;color:var(--ar-rouge)}
+  .ar-rendu{display:grid;gap:12px}
+  .ar-rendu[hidden],.ar-premier[hidden]{display:none}
+  .ar-verdict{border:1.5px solid var(--line);border-left-width:10px;border-radius:16px;padding:18px 20px;background:var(--alt);display:grid;gap:8px}
+  .ar-verdict[data-cle="tres_probable"]{border-left-color:var(--ar-rouge)}
+  .ar-verdict[data-cle="douteux"]{border-left-color:var(--ar-ambre)}
+  .ar-verdict[data-cle="rien"]{border-left-color:var(--ar-vert)}
+  .ar-premier{margin:0;font-size:13px;font-weight:600;color:var(--ink2);text-transform:none}
+  .ar-phrase{margin:0;font-size:clamp(24px,4.5vw,32px);line-height:1.15;color:var(--ink)}
+  .ar-phrase:focus-visible{outline:3px solid var(--o-accent);outline-offset:4px;border-radius:6px}
+  .ar-conseil{margin:0;color:var(--ink2);font-size:16px;line-height:1.5}
+  .ar-titre{margin:6px 0 0;font-size:15px;letter-spacing:.02em;color:var(--ink2);font-weight:700}
+  .ar-raisons{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+  .ar-raison{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:start;font-size:16px;line-height:1.45;color:var(--ink);padding:10px 12px;border:1px solid var(--line);border-radius:12px}
+  .ar-badge{display:inline-block;min-width:6.2em;text-align:center;font-size:12px;font-weight:700;padding:3px 8px;border-radius:999px;margin-top:2px;background:var(--ar-gris);color:var(--ar-gris-t)}
+  .ar-badge[data-niveau="fort"]{background:var(--ar-rouge);color:var(--ar-rouge-t)}
+  .ar-badge[data-niveau="moyen"],.ar-badge[data-niveau="faible"]{background:var(--ar-ambre);color:var(--ar-ambre-t)}
+  .ar-badge[data-niveau="ok"]{background:var(--ar-vert);color:var(--ar-vert-t)}
+  .ar-chemin{border:1px solid var(--line);border-radius:12px;padding:12px;display:grid;gap:8px;margin-top:2px}
+  .ar-chemin h4{margin:0;font-size:14px;color:var(--ink2);font-weight:700;overflow-wrap:anywhere}
+  .ar-etapes{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+  .ar-etape{font:600 14px ui-monospace,SFMono-Regular,Menlo,monospace;padding:4px 9px;border-radius:8px;background:var(--alt);border:1px solid var(--line);color:var(--ink);overflow-wrap:anywhere}
+  .ar-etape small{font-weight:400;color:var(--ink2);margin-left:6px}
+  .ar-fleche{color:var(--ink2);font-weight:700}
+  .ar-sources{margin:0;font-size:13px;color:var(--ink2);line-height:1.5}
+  @media (max-width:480px){.ar-raison{grid-template-columns:minmax(0,1fr)}.ar-badge{justify-self:start}.ar-verdict{padding:14px 14px}.ar-actions .o-btn{flex:1}}
+</style>
+
+<script>
+  import { premierAvis, interroger, adresseApi, ErreurAnalyse, LIBELLE_NIVEAU, cheminHotes, dateFr, secondes, type Conclusion, type ReponseServeur } from './outil';
+  import { compter } from '../../lib/compteur';
+
+  const racine = document.querySelector<HTMLElement>('[data-outil-id="arnaque"]');
+  if (racine) {
+    const $ = <T extends HTMLElement>(s: string) => racine.querySelector<T>(s)!;
+    const texte = $<HTMLTextAreaElement>('#ar-texte');
+    const etat = $('#ar-etat');
+    const rendu = $('#ar-rendu');
+    const carte = $('#ar-carte');
+    const premier = $('#ar-premier');
+    const phrase = $('#ar-verdict');
+    const conseil = $('#ar-conseil');
+    const raisons = $('#ar-raisons');
+    const chemins = $('#ar-chemins');
+    const sources = $('#ar-sources');
+    const url = adresseApi(racine.dataset.api);
+    texte.setAttribute('autocapitalize', 'off');
+    texte.setAttribute('autocorrect', 'off');
+
+    let jeton = 0;
+    let ctl: AbortController | null = null;
+    let dernier = ''; // dernier texte analysé
+    let minuteur = 0;
+
+    const message = (t: string, ton: '' | 'erreur' = '') => { etat.textContent = t; if (ton) etat.dataset.ton = ton; else delete etat.dataset.ton; };
+    const el = (nom: string, classe?: string, t?: string) => { const e = document.createElement(nom); if (classe) e.className = classe; if (t !== undefined) e.textContent = t; return e; };
+
+    function afficher(c: Conclusion, opts: { premierAvis: boolean; serveur?: ReponseServeur }) {
+      rendu.hidden = false;
+      carte.dataset.cle = c.verdict.cle;
+      phrase.textContent = c.verdict.phrase;
+      conseil.textContent = c.verdict.conseil;
+      premier.hidden = !opts.premierAvis;
+      premier.textContent = opts.premierAvis ? 'Premier avis, avant de suivre le lien' : '';
+      raisons.replaceChildren(...c.raisons.map((r) => {
+        const li = el('li', 'ar-raison');
+        const b = el('span', 'ar-badge', LIBELLE_NIVEAU[r.niveau] ?? 'Info');
+        b.dataset.niveau = r.niveau;
+        li.append(b, el('span', undefined, r.texte));
+        return li;
+      }));
+      chemins.replaceChildren();
+      sources.textContent = '';
+      const s = opts.serveur;
+      if (s) {
+        for (const l of s.liens) {
+          const etapes = cheminHotes(l);
+          if (etapes.length < 2 && !l.age && !l.liste) continue;
+          const bloc = el('div', 'ar-chemin');
+          bloc.append(el('h4', undefined, `Chemin du lien : ${l.saisi}`));
+          const ligne = el('div', 'ar-etapes');
+          etapes.forEach((e, i) => {
+            if (i) ligne.append(el('span', 'ar-fleche', '→'));
+            const chip = el('span', 'ar-etape', e.hote);
+            if (e.statut) chip.append(el('small', undefined, String(e.statut)));
+            ligne.append(chip);
+          });
+          bloc.append(ligne);
+          const infos: string[] = [];
+          if (l.age) infos.push(`Domaine ${l.domaine} créé le ${dateFr(l.age.creeLe)}`);
+          if (l.liste) infos.push(`Listé : ${l.liste.source}`);
+          if (infos.length) bloc.append(el('p', 'ar-sources', infos.join(' · ')));
+          chemins.append(bloc);
+        }
+        const ls = s.listes.filter((x) => x.nombre > 0).map((x) => `${x.nom} : ${x.nombre.toLocaleString('fr-FR')} adresses, copie du ${dateFr(x.le)}`);
+        sources.textContent = `Vérifié en ${secondes(s.duree_ms)} par notre serveur. Listes consultées : ${ls.length ? ls.join(' ; ') : 'aucune pour le moment (pas encore téléchargées)'}. Âge du domaine : registres officiels (RDAP).`;
+      }
+    }
+
+    const vider = () => {
+      ctl?.abort(); jeton++; dernier = '';
+      rendu.hidden = true; message('');
+    };
+
+    async function analyser(force = false) {
+      const t = texte.value.trim();
+      if (!t) { vider(); return; }
+      if (!force && t === dernier) return;
+      dernier = t;
+      const mon = ++jeton;
+      ctl?.abort();
+      const avis = premierAvis(t);
+      if (avis.nbLiens === 0) {
+        // rien à suivre : le premier avis est l'avis, sans serveur
+        afficher(avis, { premierAvis: false });
+        message('Aucun lien dans ce texte : analyse faite sur votre appareil, rien n\'a été envoyé.');
+        compter('utilise', 'arnaque');
+        return;
+      }
+      afficher(avis, { premierAvis: true });
+      message(`Suivi de ${avis.nbLiens > 1 ? `${avis.nbLiens} liens` : 'ce lien'} par notre serveur (redirections, âge du domaine, listes publiques)…`);
+      ctl = new AbortController();
+      try {
+        const rep = await interroger(t, url, ctl.signal);
+        if (mon !== jeton) return;
+        afficher(rep, { premierAvis: false, serveur: rep });
+        message('');
+        compter('utilise', 'arnaque');
+      } catch (e) {
+        if (mon !== jeton || (e as Error).name === 'AbortError') return;
+        const m = e instanceof ErreurAnalyse ? e.message : 'L\'analyse a échoué : relancez-la.';
+        message(`${m} En attendant, voici un premier avis fait sur votre appareil : le lien n'a pas été suivi.`, 'erreur');
+        dernier = ''; // permet de relancer sur le même texte
+      }
+    }
+
+    const programmer = (delai: number) => { clearTimeout(minuteur); minuteur = window.setTimeout(() => analyser(), delai); };
+    texte.addEventListener('paste', () => programmer(30)); // coller suffit
+    texte.addEventListener('input', () => { if (!texte.value.trim()) vider(); else programmer(900); });
+    $('#ar-analyser').addEventListener('click', () => { clearTimeout(minuteur); analyser(true); });
+    $('#ar-effacer').addEventListener('click', () => { clearTimeout(minuteur); texte.value = ''; vider(); texte.focus(); });
+    // lien reçu depuis une autre application (partage) : ?texte=...
+    const initial = new URLSearchParams(location.search).get('texte');
+    if (initial) { texte.value = initial.slice(0, 5000); programmer(30); }
+  }
+</script>
