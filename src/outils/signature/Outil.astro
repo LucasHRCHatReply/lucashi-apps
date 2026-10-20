@@ -1,0 +1,227 @@
+---
+// Outil « signature d'e-mail » : formulaire à gauche, aperçu et copie à droite (au-dessus sur téléphone).
+// Tout se passe dans la page : la photo déposée est lue et réduite localement, rien n'est envoyé.
+import ZoneDepot from '../../composants/ZoneDepot.astro';
+import Champ from '../../composants/Champ.astro';
+import Choix from '../../composants/Choix.astro';
+import Resultat from '../../composants/Resultat.astro';
+import Telecharger from '../../composants/Telecharger.astro';
+import Note from '../../composants/Note.astro';
+import { DONNEES_EXEMPLE as D } from './outil';
+interface Props { lang?: 'fr' | 'en' }
+const { lang = 'fr' } = Astro.props;
+const fr = lang === 'fr';
+const L = fr
+  ? { nom: 'Nom complet', poste: 'Poste', entreprise: 'Entreprise', tel: 'Téléphone', email: 'E-mail', site: 'Site web', adresse: 'Adresse', reseaux: 'Réseaux', reseauxAide: 'Collez l’adresse du profil (https://…). Les réseaux vides ne sont pas affichés.',
+      photo: 'Photo ou logo', photoDepot: 'Ajouter une image', photoAide: 'PNG, JPG ou WebP. Elle est réduite dans cette page et ne part nulle part.', photoUrl: 'Adresse image', photoUrlAide: 'Recommandé : une image déjà en ligne (https://…). Gmail et Outlook bloquent souvent les images intégrées au texte.',
+      couleur: 'Couleur', couleurAide: 'Couleur des titres, des liens et du bandeau.', modele: 'Modèle', forme: 'Forme', ronde: 'Ronde', carree: 'Carrée', apercu: 'Aperçu', clair: 'Clair', sombre: 'Sombre', sombreAide: 'Simulation : les messageries inversent les couleurs en mode sombre.',
+      messagerie: 'Messagerie', copierSig: 'Copier la signature', copierCode: 'Copier le code', code: 'Code HTML', modeles: ['Classique', 'Moderne', 'Sobre', 'Bandeau'] }
+  : { nom: 'Full name', poste: 'Job title', entreprise: 'Company', tel: 'Phone', email: 'Email', site: 'Website', adresse: 'Address', reseaux: 'Social links', reseauxAide: 'Paste the profile address (https://…). Empty networks are left out.',
+      photo: 'Photo or logo', photoDepot: 'Add an image', photoAide: 'PNG, JPG or WebP. It is resized on this page and goes nowhere.', photoUrl: 'Image address', photoUrlAide: 'Recommended: an image already online (https://…). Gmail and Outlook often block images embedded in the text.',
+      couleur: 'Colour', couleurAide: 'Colour of titles, links and the banner.', modele: 'Template', forme: 'Shape', ronde: 'Round', carree: 'Square', apercu: 'Preview', clair: 'Light', sombre: 'Dark', sombreAide: 'Simulation: mail apps invert colours in dark mode.',
+      messagerie: 'Mail app', copierSig: 'Copy signature', copierCode: 'Copy code', code: 'HTML code', modeles: ['Classic', 'Modern', 'Plain', 'Banner'] };
+const reseaux = [['linkedin', 'LinkedIn', D.linkedin], ['x', 'X', D.x], ['instagram', 'Instagram', D.instagram], ['facebook', 'Facebook', D.facebook], ['youtube', 'YouTube', D.youtube]] as const;
+---
+<div class="sig" data-outil-id="signature" data-lang={lang}>
+  <div class="sig__form">
+    <div class="sig__grille">
+      <Champ id="sig-nom" label={L.nom} valeur={D.nom} autocomplete="name" lang={lang} />
+      <Champ id="sig-poste" label={L.poste} valeur={fr ? D.poste : 'Communications manager'} autocomplete="organization-title" lang={lang} />
+      <Champ id="sig-entreprise" label={L.entreprise} valeur={D.entreprise} autocomplete="organization" lang={lang} />
+      <Champ id="sig-telephone" label={L.tel} type="text" inputmode="tel" valeur={D.telephone} autocomplete="tel" lang={lang} />
+      <Champ id="sig-email" label={L.email} type="email" valeur={D.email} autocomplete="email" lang={lang} />
+      <Champ id="sig-site" label={L.site} type="text" inputmode="url" valeur={D.site} lang={lang} />
+    </div>
+    <Champ id="sig-adresse" label={L.adresse} valeur={fr ? D.adresse : '12 Lilac Street, 75011 Paris'} autocomplete="street-address" lang={lang} />
+    <details class="sig__reseaux">
+      <summary>{L.reseaux} <Note texte={L.reseauxAide} lang={lang} /></summary>
+      <div class="sig__grille">
+        {reseaux.map(([cle, nom, v]) => <Champ id={`sig-${cle}`} label={nom} type="text" inputmode="url" valeur={v} placeholder="https://" lang={lang} />)}
+      </div>
+    </details>
+    <div class="sig__photo">
+      <ZoneDepot id="sig-depot" accept="image/png,image/jpeg,image/webp,image/gif" multiple={false} lang={lang} libelle={L.photoDepot} aide={L.photoAide} />
+      <Champ id="sig-photo-url" label={L.photoUrl} type="text" inputmode="url" placeholder="https://" aide={L.photoUrlAide} lang={lang} />
+      <p class="sig__etat" id="sig-photo-etat" role="status"></p>
+    </div>
+    <div class="sig__options">
+      <Choix id="sig-modele" label={L.modele} options={L.modeles.map((libelle, i) => ({ valeur: ['classique', 'moderne', 'sobre', 'bandeau'][i], libelle }))} valeur="classique" />
+      <div class="o-champ">
+        <div class="o-champ__tete"><label for="sig-couleur">{L.couleur}</label><Note texte={L.couleurAide} lang={lang} /></div>
+        <div class="o-champ__ligne sig__couleur"><input id="sig-couleur" type="color" value={D.couleur} /><output id="sig-couleur-hex" for="sig-couleur">{D.couleur}</output></div>
+      </div>
+      <Choix id="sig-forme" label={L.forme} options={[{ valeur: 'rond', libelle: L.ronde }, { valeur: 'carre', libelle: L.carree }]} valeur="rond" />
+    </div>
+  </div>
+
+  <div class="sig__sortie">
+    <div class="sig__apercu-tete">
+      <span class="o-etiquette">{L.apercu}</span>
+      <Choix id="sig-theme" label={L.apercu} options={[{ valeur: 'clair', libelle: L.clair }, { valeur: 'sombre', libelle: L.sombre, aide: L.sombreAide }]} valeur="clair" />
+    </div>
+    <div class="sig__apercu" id="sig-apercu" data-theme="clair" aria-live="polite"></div>
+    <p class="sig__etat" id="sig-vide" hidden>{fr ? 'Rien à afficher : remplissez au moins un champ.' : 'Nothing to show: fill in at least one field.'}</p>
+    <div class="sig__actions">
+      <button type="button" class="o-btn o-btn--principal" id="sig-copier">{L.copierSig}</button>
+      <button type="button" class="o-btn o-btn--secondaire" id="sig-copier-code">{L.copierCode}</button>
+      <Telecharger id="sig-telecharger" lang={lang} />
+    </div>
+    <p class="sig__etat" id="sig-copie-etat" role="status" aria-live="polite"></p>
+    <Choix id="sig-messagerie" label={L.messagerie} options={[{ valeur: 'gmail', libelle: 'Gmail' }, { valeur: 'outlook', libelle: 'Outlook' }, { valeur: 'apple', libelle: 'Apple Mail' }]} valeur="gmail" />
+    <p class="sig__etapes" id="sig-etapes"></p>
+    <details class="sig__code">
+      <summary>{L.code}</summary>
+      <Resultat id="sig-code" label={L.code} copier={false} mono lang={lang} />
+    </details>
+  </div>
+</div>
+
+<style is:global>
+  .sig{display:grid;gap:22px;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);align-items:start}
+  .sig__form,.sig__sortie{display:grid;gap:16px;min-width:0}
+  .sig__grille{display:grid;gap:14px;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .sig__reseaux{border:1px solid var(--line);border-radius:14px;padding:4px 14px 14px}
+  .sig__reseaux summary{cursor:pointer;font-weight:600;font-size:14px;min-height:40px;display:flex;align-items:center;gap:8px}
+  .sig__reseaux .sig__grille{margin-top:6px}
+  .sig__photo{display:grid;gap:12px}
+  .sig__photo .o-depot{padding:16px 14px}
+  .sig__options{display:grid;gap:14px}
+  .sig__couleur{gap:12px}
+  .sig__couleur input[type=color]{width:56px;height:44px;padding:3px;border-radius:12px;cursor:pointer}
+  .sig__couleur output{font:14px var(--mono);color:var(--ink2)}
+  .sig__apercu-tete{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .sig__apercu-tete .o-choix legend{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  .sig__apercu{border:1px solid var(--line);border-radius:16px;padding:20px;background:#fff;min-height:150px;overflow-x:auto}
+  .sig__apercu[data-theme="sombre"]{background:#1c1c1e}
+  .sig__apercu[data-theme="sombre"] > table{filter:invert(1) hue-rotate(180deg)}
+  .sig__apercu[data-theme="sombre"] img{filter:invert(1) hue-rotate(180deg)}
+  .sig__actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  .sig__actions .o-telecharger{display:contents}
+  .sig__actions .o-telecharger__liste{display:contents}
+  .sig__etat{font-size:14px;color:var(--ink2);min-height:1.3em;margin:0}
+  .sig__etat.est-ok{color:var(--o-ok);font-weight:600}
+  .sig__etat.est-alerte{color:var(--ink);font-weight:600}
+  .sig__etapes{font-size:15px;line-height:1.5;margin:0;color:var(--ink)}
+  .sig__code summary{cursor:pointer;font-weight:600;font-size:14px;min-height:36px;display:flex;align-items:center}
+  @media (max-width:820px){
+    .sig{grid-template-columns:minmax(0,1fr)}
+    .sig__sortie{order:-1}
+  }
+  @media (max-width:480px){
+    .sig__grille{grid-template-columns:minmax(0,1fr)}
+    .sig__actions .o-btn{width:100%}
+  }
+</style>
+
+<script>
+  import { DONNEES_EXEMPLE, construireHtml, construireTexte, documentHtml, poidsImageIntegree, type Donnees, type Modele } from './outil';
+  import { compter } from '../../lib/compteur';
+  import { afficherResultat, masquerResultat, masquerTelechargement, proposerTelechargement } from '../../lib/ui';
+
+  const racine = document.querySelector<HTMLElement>('[data-outil-id="signature"]');
+  if (racine) {
+    const lang = racine.dataset.lang === 'en' ? 'en' : 'fr';
+    const $ = <T extends HTMLElement>(id: string) => racine.querySelector<T>(`#${id}`)!;
+    const champs = ['nom', 'poste', 'entreprise', 'telephone', 'email', 'site', 'adresse', 'linkedin', 'x', 'instagram', 'facebook', 'youtube'] as const;
+    const texte = (k: string) => $<HTMLInputElement>(`sig-${k}`).value;
+    const choix = (id: string) => $(id).querySelector<HTMLInputElement>('input:checked')?.value ?? '';
+    const T = lang === 'fr'
+      ? { ok: 'Copié avec la mise en forme. Collez dans votre messagerie (Cmd+V ou Ctrl+V).', okTexte: 'Copié en texte seul : votre navigateur ne copie pas la mise en forme. Utilisez le fichier .html.', echec: 'Copie impossible ici : sélectionnez l’aperçu puis Cmd+C.', codeOk: 'Code HTML copié.',
+          integree: (ko: number) => `Image intégrée (${ko} Ko) : Gmail et Outlook la bloquent souvent. Pour un résultat fiable, mettez une adresse d’image ci-dessus.`, urlOk: 'Image en ligne : elle s’affichera chez les destinataires.', photoRefus: 'Image illisible.',
+          gmail: 'Gmail : Paramètres (roue dentée) > Voir tous les paramètres > Signature > Créer, puis collez dans le cadre et enregistrez.', outlook: 'Outlook : Paramètres > Comptes > Signatures (web), ou Outlook > Réglages > Signatures (Mac) ; collez dans l’éditeur.', apple: 'Apple Mail : Mail > Réglages > Signatures > +, décochez « Toujours utiliser la police par défaut », collez.' }
+      : { ok: 'Copied with formatting. Paste into your mail app (Cmd+V or Ctrl+V).', okTexte: 'Copied as plain text: your browser cannot copy formatting. Use the .html file.', echec: 'Copy not possible here: select the preview, then press Cmd+C.', codeOk: 'HTML code copied.',
+          integree: (ko: number) => `Embedded image (${ko} KB): Gmail and Outlook often block it. For a reliable result, enter an image address above.`, urlOk: 'Online image: it will show for recipients.', photoRefus: 'Unreadable image.',
+          gmail: 'Gmail: Settings (gear) > See all settings > Signature > Create new, then paste in the box and save.', outlook: 'Outlook: Settings > Accounts > Signatures (web), or Outlook > Settings > Signatures (Mac); paste in the editor.', apple: 'Apple Mail: Mail > Settings > Signatures > +, untick "Always match my default message font", paste.' };
+
+    let photoLocale = '';
+    let html = '';
+
+    const donnees = (): Donnees => {
+      const d = { ...DONNEES_EXEMPLE } as Donnees;
+      for (const k of champs) d[k] = texte(k);
+      d.photo = texte('photo-url').trim() || photoLocale;
+      d.couleur = $<HTMLInputElement>('sig-couleur').value;
+      d.modele = (choix('sig-modele') || 'classique') as Modele;
+      d.rond = choix('sig-forme') !== 'carre';
+      return d;
+    };
+
+    const dire = (id: string, msg: string, classe = '') => { const e = $(id); e.textContent = msg; e.className = `sig__etat ${classe}`.trim(); };
+    const etapes = () => { $('sig-etapes').textContent = T[(choix('sig-messagerie') || 'gmail') as 'gmail' | 'outlook' | 'apple']; };
+
+    const rafraichir = async () => {
+      const d = donnees();
+      $('sig-couleur-hex').textContent = d.couleur;
+      html = construireHtml(d);
+      const apercu = $('sig-apercu');
+      apercu.innerHTML = html;
+      $('sig-vide').hidden = html !== '';
+      dire('sig-copie-etat', '');
+      const etatPhoto = d.photo ? (d.photo.startsWith('data:') ? T.integree(Math.max(1, Math.round(poidsImageIntegree(d.photo) / 1024))) : T.urlOk) : '';
+      dire('sig-photo-etat', etatPhoto, d.photo.startsWith('data:') ? 'est-alerte' : '');
+      ($('sig-copier') as HTMLButtonElement).disabled = !html;
+      ($('sig-copier-code') as HTMLButtonElement).disabled = !html;
+      if (html) {
+        afficherResultat('sig-code', html);
+        await proposerTelechargement('sig-telecharger', [{ nom: 'signature.html', donnees: documentHtml(html, lang), type: 'text/html' }]);
+      } else { masquerResultat('sig-code'); masquerTelechargement('sig-telecharger'); }
+    };
+
+    const produit = (_cle: string) => compter('utilise', 'signature'); // une fois par copie réussie ou fichier pris
+
+    racine.addEventListener('input', rafraichir);
+    racine.addEventListener('change', (e) => {
+      const cible = e.target as HTMLElement;
+      if (cible.closest('#sig-theme')) $('sig-apercu').dataset.theme = choix('sig-theme');
+      if (cible.closest('#sig-messagerie')) etapes();
+      rafraichir();
+    });
+
+    $('sig-copier').addEventListener('click', async () => {
+      if (!html) return;
+      const brut = construireTexte(donnees());
+      try {
+        const Item = (window as unknown as { ClipboardItem?: typeof ClipboardItem }).ClipboardItem;
+        if (!Item || !navigator.clipboard?.write) throw new Error('pas de ClipboardItem');
+        await navigator.clipboard.write([new Item({ 'text/html': new Blob([html], { type: 'text/html' }), 'text/plain': new Blob([brut], { type: 'text/plain' }) })]);
+        dire('sig-copie-etat', T.ok, 'est-ok');
+        produit(html);
+      } catch {
+        // repli : on sélectionne l'aperçu et on demande une copie native, qui garde la mise en forme
+        const zone = $('sig-apercu');
+        const r = document.createRange(); r.selectNodeContents(zone);
+        const s = getSelection(); s?.removeAllRanges(); s?.addRange(r);
+        let ok = false;
+        try { ok = document.execCommand('copy'); } catch { ok = false; }
+        dire('sig-copie-etat', ok ? T.ok : T.echec, ok ? 'est-ok' : 'est-alerte');
+        if (ok) produit(html);
+      }
+    });
+
+    $('sig-copier-code').addEventListener('click', async () => {
+      if (!html) return;
+      try { await navigator.clipboard.writeText(html); dire('sig-copie-etat', T.codeOk, 'est-ok'); produit(html); }
+      catch { dire('sig-copie-etat', T.echec, 'est-alerte'); }
+    });
+
+    $('sig-telecharger').addEventListener('click', (e) => { if ((e.target as HTMLElement).closest('a')) compter('utilise', 'signature'); });
+
+    // photo déposée : lue, réduite à 240 px et gardée en mémoire de la page
+    $('sig-depot').addEventListener('fichiers', async (e) => {
+      const [f] = (e as CustomEvent<File[]>).detail;
+      try {
+        const bmp = await createImageBitmap(f);
+        const t = Math.min(1, 240 / Math.max(bmp.width, bmp.height));
+        const c = document.createElement('canvas');
+        c.width = Math.max(1, Math.round(bmp.width * t)); c.height = Math.max(1, Math.round(bmp.height * t));
+        c.getContext('2d')!.drawImage(bmp, 0, 0, c.width, c.height);
+        photoLocale = f.type === 'image/png' || f.type === 'image/gif' || f.type === 'image/webp' ? c.toDataURL('image/png') : c.toDataURL('image/jpeg', 0.88);
+        $<HTMLInputElement>('sig-photo-url').value = '';
+        rafraichir();
+      } catch { dire('sig-photo-etat', T.photoRefus, 'est-alerte'); }
+    });
+
+    etapes();
+    rafraichir();
+  }
+</script>
