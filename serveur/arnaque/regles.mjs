@@ -33,7 +33,9 @@ export function decouperDomaine(hote) {
   if (labels.length === 1) return { hote: h, suffixe: h, domaine: h, nom: h, sous: [] };
   let n = 1;
   const deux = labels.slice(-2).join('.');
-  if (labels.length >= 3 && (SUFFIXES_DOUBLES.has(deux) || HEBERGEURS_PUBLICS.has(deux))) n = 2;
+  // com.ml, net.br, gov.xx… : un second niveau générique sous une extension de pays est un suffixe double, même hors liste
+  const generique = /^(com|net|org|co|gov|gouv|edu|ac)$/.test(labels[labels.length - 2]) && labels[labels.length - 1].length === 2;
+  if (labels.length >= 3 && (SUFFIXES_DOUBLES.has(deux) || HEBERGEURS_PUBLICS.has(deux) || generique)) n = 2;
   for (const hp of HEBERGEURS_PUBLICS) if (hp.split('.').length === 3 && h.endsWith(`.${hp}`)) n = 3;
   if (labels.length <= n) return { hote: h, suffixe: h, domaine: h, nom: labels[0], sous: [] };
   const domaine = labels.slice(-(n + 1)).join('.');

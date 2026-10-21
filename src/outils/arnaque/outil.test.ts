@@ -53,6 +53,9 @@ describe('domaines', () => {
     expect(decouperDomaine('www.service.gov.uk').domaine).toBe('service.gov.uk');
     expect(decouperDomaine('impots.gouv.fr').domaine).toBe('impots.gouv.fr');
     expect(decouperDomaine('monsite.github.io').domaine).toBe('monsite.github.io');
+    // relevé en ligne le 21/10 : roblox.com.ml donnait « le nom com est celui de Amazon »
+    expect(decouperDomaine('roblox.com.ml')).toMatchObject({ domaine: 'roblox.com.ml', nom: 'roblox', suffixe: 'com.ml' });
+    expect(imitations('roblox.com.ml').some((r) => /Amazon/.test(JSON.stringify(r)))).toBe(false);
   });
   it('lit le punycode', () => {
     expect(hoteUnicode('xn--bcher-kva.example')).toBe('bücher.example');

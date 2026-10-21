@@ -76,6 +76,37 @@ puis `npm run build` dans `dist.new/`, échangé d'un coup avec `dist/`.
 Passage en production (quand `app.lucashi.fr` pointe sur le VPS) : dans `/etc/lucashi-apps.env`, `SITE_URL=https://app.lucashi.fr`
 et `INDEXABLE=true`, puis `/usr/local/bin/lucashi-apps-maj` après avoir supprimé `dist/` (ou pousser un commit).
 
+## 3 bis. Outils automatiques : fichiers lourds, serveur arnaque, multi-fil (21/10/2026)
+
+Ajouté à la main sur le VPS Hostinger (pas encore dans `vps.sh`) ; copie de la conf d'avant : `/etc/nginx/lucashi-apps.avant-vague2`.
+
+Fichiers lourds (> 5 Mo, jamais dans Git) : chaque outil qui en a fournit `src/outils/<id>/lourds.sh` (URL épinglée + sha256).
+
+```
+bash src/outils/vocal-texte/lourds.sh  /srv/lucashi-lourds/vocal-texte    # Whisper base q8 + onnxruntime, 97 Mo
+bash src/outils/video-legere/lourds.sh /srv/lucashi-lourds/video-legere   # ffmpeg-core.wasm, 31 Mo (repli seulement)
+```
+
+Serveur arnaque (pm2, Node 22 à part) :
+
+```
+mkdir -p /var/lib/lucashi-arnaque
+cd /srv/lucashi-apps/serveur/arnaque
+PORT=8241 DONNEES=/var/lib/lucashi-arnaque pm2 start arnaque.mjs --name lucashi-arnaque --interpreter /opt/node22/bin/node
+pm2 save
+```
+
+Blocs nginx, à côté de `location /api/compte` :
+
+```
+location /api/arnaque { proxy_pass http://127.0.0.1:8241; proxy_set_header X-Real-IP $remote_addr; client_max_body_size 24k; proxy_read_timeout 25s; }
+location /lourds/ { alias /srv/lucashi-lourds/; types { application/wasm wasm; text/javascript mjs js; application/json json; } default_type application/octet-stream; add_header Cache-Control "public, max-age=2592000"; add_header X-Content-Type-Options nosniff always; add_header Cross-Origin-Resource-Policy same-origin always; add_header Cross-Origin-Embedder-Policy require-corp always; }
+location ~ ^/(outils/vocal-en-texte|en/tools/voice-note-to-text)/ { add_header Cross-Origin-Opener-Policy same-origin always; add_header Cross-Origin-Embedder-Policy require-corp always; add_header X-Content-Type-Options nosniff always; add_header Referrer-Policy strict-origin-when-cross-origin always; try_files $uri $uri/ $uri.html =404; }
+```
+
+et, dans `location /_astro/` **et** `location /outils-assets/`, `add_header Cross-Origin-Embedder-Policy require-corp always; add_header Cross-Origin-Resource-Policy same-origin always;` (les workers de la page vocal doivent porter COEP ; sans lui sur `/outils-assets/`, Chromium bloque le worker : `ERR_BLOCKED_BY_RESPONSE`, vu le 21/10).
+COOP/COEP isolent la page vocal (`crossOriginIsolated`) : onnxruntime peut alors calculer sur plusieurs fils. Le motif de `location` n'a pas de `$` final : `try_files` redirige en interne vers `index.html`, qui doit rester dans le bloc.
+
 ## 4. Pare-feu (étape à part)
 
 ```
