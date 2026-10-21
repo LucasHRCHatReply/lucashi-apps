@@ -29,12 +29,24 @@
         '<p class="lk-note">Ne jamais désactiver Gatekeeper pour installer une app. Ces vignettes sont dessinées d\'après macOS, ce ne sont pas des captures.</p>' : "") +
       (requis.length ? '<h3>Configuration requise</h3><ul class="lk-req">' + requis.map(function (r) { return "<li>" + esc(r) + "</li>"; }).join("") + "</ul>" : "") +
       '<p class="lk-note"><b>' + nom + ' n\'est pas notarisée par Apple.</b> Elle est signée, mais la notarisation demande un compte développeur payant : macOS la juge non vérifiée au premier lancement. Le script retire ce blocage sur ' + nom + '.app seulement. Il se lit en entier : <a href="https://github.com/' + esc(depot) + '/blob/main/installer.sh" rel="noopener">installer.sh</a>. Toutes les versions : <a href="https://github.com/' + esc(depot) + '/releases" rel="noopener">releases</a>.</p>';
-    var b = el.querySelector("button");
+    var b = el.querySelector("button"), tmr = 0;
+    // Retour visuel : le libellé change pendant 2 s puis revient à « Copier » (un second clic relance le délai sans fausser le libellé de départ).
+    function dire(txt, ok) { clearTimeout(tmr); b.textContent = txt; b.classList.toggle("lk-ok", !!ok); tmr = setTimeout(function () { b.textContent = "Copier"; b.classList.remove("lk-ok"); }, 2000); }
+    function selectionner() { var r = document.createRange(); r.selectNodeContents(el.querySelector("pre")); var s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+    // Repli sans API presse-papiers : textarea caché, sélection, execCommand("copy"). Renvoie vrai si le navigateur a copié.
+    function repli() {
+      var t = document.createElement("textarea"), fait = false;
+      t.value = cmd; t.setAttribute("readonly", ""); t.setAttribute("aria-hidden", "true");
+      t.style.cssText = "position:fixed;left:-9999px;top:0;opacity:0";
+      document.body.appendChild(t); t.focus(); t.select(); t.setSelectionRange(0, cmd.length);
+      try { fait = document.execCommand("copy"); } catch (e) { fait = false; }
+      document.body.removeChild(t); return fait;
+    }
+    function secours() { if (repli()) dire("Copié ✓", true); else { selectionner(); dire("Sélectionnée : ⌘C", false); } }
     b.addEventListener("click", function () {
-      var ok = function () { var t = b.textContent; b.textContent = "Copié"; b.classList.add("lk-ok"); setTimeout(function () { b.textContent = t; b.classList.remove("lk-ok"); }, 2200); };
-      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(cmd).then(ok, function () { sel(); });
-      else sel();
-      function sel() { var r = document.createRange(); r.selectNodeContents(el.querySelector("pre")); var s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+      var api = navigator.clipboard && navigator.clipboard.writeText;
+      if (api) { try { navigator.clipboard.writeText(cmd).then(function () { dire("Copié ✓", true); }, secours); } catch (e) { secours(); } }
+      else secours();
     });
   }
   // Arrivée par l'ancre (…/#installer) : le navigateur a calculé sa position avant que le bloc existe, et les images
