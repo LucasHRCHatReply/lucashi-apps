@@ -1,0 +1,284 @@
+---
+// Vidéo légère : on dépose une vidéo, un MP4 assez léger pour WhatsApp (≤ 16 Mo) ou le mail (≤ 25 Mo) sort tout seul.
+// WebCodecs d'abord (mediabunny) ; ffmpeg.wasm en repli, chargé seulement si besoin.
+import ZoneDepot from '../../composants/ZoneDepot.astro';
+import Choix from '../../composants/Choix.astro';
+import Resultat from '../../composants/Resultat.astro';
+import Telecharger from '../../composants/Telecharger.astro';
+import Note from '../../composants/Note.astro';
+import Bouton from '../../composants/Bouton.astro';
+interface Props { lang?: 'fr' | 'en' }
+const { lang = 'fr' } = Astro.props;
+const fr = lang === 'fr';
+const T = fr
+  ? { depot: 'Ouvrir une vidéo', depotAide: 'MOV, MP4 ou WebM : glisser, cliquer ou coller. Le calcul part tout seul.',
+      options: 'Options', destination: 'Destination', contenu: 'Contenu', video: 'Vidéo', son: 'Son seul', mail: 'Mail',
+      aideDestination: 'WhatsApp : 16 Mo au plus. Mail : 25 Mo au plus. L’outil règle seul la définition et le débit pour tenir sous ce poids.',
+      aideContenu: 'Son seul : extrait la piste audio en .m4a (AAC), sans l’image.',
+      duree: 'Durée', actuel: 'Poids actuel', estime: 'Poids estimé', temps: 'Temps estimé', annuler: 'Annuler', apercu: 'Vidéo produite' }
+  : { depot: 'Open a video', depotAide: 'MOV, MP4 or WebM: drag, click or paste. It starts on its own.',
+      options: 'Options', destination: 'Target', contenu: 'Content', video: 'Video', son: 'Audio only', mail: 'Email',
+      aideDestination: 'WhatsApp: 16 MB at most. Email: 25 MB at most. The tool sets resolution and bitrate by itself to fit under that size.',
+      aideContenu: 'Audio only: extracts the audio track to .m4a (AAC), without the picture.',
+      duree: 'Length', actuel: 'Current size', estime: 'Estimated size', temps: 'Estimated time', annuler: 'Cancel', apercu: 'Resulting video' };
+---
+<div class="video-legere" data-outil-id="video-legere" data-lang={lang}>
+  <ZoneDepot id="video-legere-depot" multiple={false} accept="video/*,audio/*,.mov,.mp4,.m4v,.webm,.mkv,.3gp,.m4a" lang={lang} libelle={T.depot} aide={T.depotAide} />
+
+  <details class="vl-options">
+    <summary>{T.options}</summary>
+    <div class="vl-reglages">
+      <div class="vl-groupe">
+        <Choix id="video-legere-destination" label={T.destination}
+          options={[{ valeur: 'whatsapp', libelle: 'WhatsApp' }, { valeur: 'mail', libelle: T.mail }]} valeur="whatsapp" />
+        <Note texte={T.aideDestination} lang={lang} />
+      </div>
+      <div class="vl-groupe">
+        <Choix id="video-legere-contenu" label={T.contenu}
+          options={[{ valeur: 'video', libelle: T.video }, { valeur: 'son', libelle: T.son }]} valeur="video" />
+        <Note texte={T.aideContenu} lang={lang} />
+      </div>
+    </div>
+  </details>
+
+  <dl class="vl-infos" id="video-legere-infos" hidden>
+    <div><dt>{T.duree}</dt><dd id="video-legere-duree"></dd></div>
+    <div><dt>{T.actuel}</dt><dd id="video-legere-actuel"></dd></div>
+    <div><dt>{T.estime}</dt><dd id="video-legere-estime"></dd></div>
+    <div><dt>{T.temps}</dt><dd id="video-legere-temps"></dd></div>
+  </dl>
+
+  <div class="vl-avance" id="video-legere-avance" hidden>
+    <progress id="video-legere-barre" max="1" value="0" aria-label={fr ? 'Avancement' : 'Progress'}></progress>
+    <p class="vl-avance__texte" id="video-legere-avance-texte" role="status" aria-live="off"></p>
+    <Bouton variante="secondaire" type="button" id="video-legere-annuler">{T.annuler}</Bouton>
+  </div>
+
+  <p class="vl-etat" id="video-legere-etat" role="status" aria-live="polite" hidden></p>
+
+  <video id="video-legere-lecteur" class="vl-lecteur" controls playsinline preload="metadata" hidden aria-label={T.apercu}></video>
+
+  <Resultat id="video-legere-resultat" label={fr ? 'Bilan' : 'Summary'} copier={false} lang={lang} />
+  <Telecharger id="video-legere-telecharger" lang={lang} />
+</div>
+
+<style is:global>
+  .video-legere{display:grid;gap:18px}
+  .vl-options summary{cursor:pointer;font-weight:600;color:var(--ink2);min-height:44px;display:flex;align-items:center;width:max-content}
+  .vl-options summary:focus-visible{outline:2px solid var(--o-accent);outline-offset:2px;border-radius:6px}
+  .vl-reglages{display:flex;flex-wrap:wrap;gap:14px 24px;padding-top:6px}
+  .vl-groupe{position:relative;padding-right:28px}
+  .vl-groupe>.o-note{position:absolute;top:0;right:0}
+  .vl-groupe .o-note__bulle{left:auto;right:0;transform:none}
+  .vl-groupe .o-choix__segments{flex-wrap:nowrap}
+  .vl-infos{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:0}
+  .vl-infos[hidden],.vl-avance[hidden],.vl-etat[hidden],.vl-lecteur[hidden]{display:none}
+  .vl-infos>div{padding:10px 14px;border:1.5px solid var(--line);border-radius:14px;background:var(--o-surface)}
+  .vl-infos dt{font-size:13px;color:var(--ink2)}
+  .vl-infos dd{margin:2px 0 0;font-weight:700;font-size:18px;font-variant-numeric:tabular-nums;color:var(--ink)}
+  .vl-avance{display:grid;gap:8px}
+  .vl-avance progress{width:100%;height:10px;border-radius:999px;appearance:none;-webkit-appearance:none;border:0;background:var(--alt)}
+  .vl-avance progress::-webkit-progress-bar{background:var(--alt);border-radius:999px}
+  .vl-avance progress::-webkit-progress-value{background:var(--o-accent);border-radius:999px}
+  .vl-avance progress::-moz-progress-bar{background:var(--o-accent);border-radius:999px}
+  .vl-avance__texte{margin:0;font-size:15px;color:var(--ink2);font-variant-numeric:tabular-nums}
+  .vl-avance .o-btn{justify-self:start}
+  .vl-etat{margin:0;font-size:15px;font-weight:600;color:var(--o-accent)}
+  .vl-etat.vl-erreur{color:#b3261e}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .vl-etat.vl-erreur{color:#ff8a80}}
+  :root[data-theme="dark"] .vl-etat.vl-erreur{color:#ff8a80}
+  .vl-lecteur{width:100%;max-height:70vh;border-radius:16px;background:#000;border:1px solid var(--line)}
+  @media (max-width:640px){.vl-infos{grid-template-columns:repeat(2,minmax(0,1fr))}.vl-groupe{width:100%}.vl-reglages>*{flex:1 1 100%}}
+  @media (prefers-reduced-motion:no-preference){.vl-avance progress::-webkit-progress-value{transition:width .25s linear}}
+</style>
+
+<script>
+  import { CIBLES, EXTENSIONS, formaterDuree, formaterPoids, nomSortie, planifier, repasse, tempsEstime, type Destination, type Plan } from './outil';
+  import { sonder as sonderRapide, convertirVideo, extraireSon, Illisible as FichierIllisible, Annule as ConversionCanceledError, Echec } from './rapide';
+  import type { Sonde } from './webcodecs';
+  import { compter } from '../../lib/compteur';
+  import { afficherResultat, masquerResultat, masquerTelechargement, proposerTelechargement } from '../../lib/ui';
+
+  const racine = document.querySelector<HTMLElement>('[data-outil-id="video-legere"]');
+  if (racine) {
+    const cadre: HTMLElement = racine;
+    const lang = racine.dataset.lang === 'en' ? 'en' : 'fr';
+    const fr = lang === 'fr';
+    const $ = <T extends HTMLElement>(s: string) => racine.querySelector<T>(s)!;
+    const depot = $('#video-legere-depot');
+    const infos = $('#video-legere-infos');
+    const avance = $('#video-legere-avance');
+    const barre = $<HTMLProgressElement>('#video-legere-barre');
+    const avanceTexte = $('#video-legere-avance-texte');
+    const etat = $('#video-legere-etat');
+    const lecteur = $<HTMLVideoElement>('#video-legere-lecteur');
+    const radio = (id: string) => racine.querySelector<HTMLInputElement>(`#${id} input:checked`)?.value ?? '';
+    const nb = (n: number) => n.toLocaleString(fr ? 'fr-FR' : 'en-US');
+
+    const L = fr
+      ? { lecture: 'Lecture du fichier…', secours: 'Méthode de secours (plus lente) : chargement…',
+          illisible: 'Ce fichier n’est pas une vidéo lisible : essayez le MP4 d’origine ou une autre vidéo.',
+          echec: 'La conversion a échoué sur ce fichier. Essayez le MP4 d’origine, ou fermez d’autres onglets puis redéposez la vidéo.',
+          annule: 'Conversion annulée.', pasSon: 'Ce fichier n’a pas de piste audio : il n’y a pas de son à extraire.',
+          sonSeul: 'Cette vidéo n’a pas d’image : le son est extrait en .m4a.',
+          passe: (i: number, n: number) => (n > 1 ? `Passe ${i} sur ${n} · ` : ''), images: (a: number, b: number) => `${nb(a)} / ${nb(b)} images`,
+          rapide: 'méthode rapide du navigateur (WebCodecs)', lente: 'méthode de secours (ffmpeg, plus lente)',
+          reste: 'Encore trop lourde : nouvelle passe plus légère…', depasse: (p: string, c: string) => `Le fichier pèse ${p}, au-dessus de ${c} : la vidéo est trop longue pour ce poids. Coupez-la ou choisissez Mail.`,
+          dejaLegere: 'Déjà plus légère que la cible : conversion en MP4 compatible.', illisibleSortie: 'La vidéo produite ne se lit pas dans ce navigateur : réessayez ou utilisez le téléchargement.' }
+      : { lecture: 'Reading the file…', secours: 'Fallback method (slower): loading…',
+          illisible: 'This file is not a readable video: try the original MP4 or another video.',
+          echec: 'The conversion failed on this file. Try the original MP4, or close other tabs and drop the video again.',
+          annule: 'Conversion cancelled.', pasSon: 'This file has no audio track: there is no sound to extract.',
+          sonSeul: 'This video has no picture: the sound is extracted to .m4a.',
+          passe: (i: number, n: number) => (n > 1 ? `Pass ${i} of ${n} · ` : ''), images: (a: number, b: number) => `${nb(a)} / ${nb(b)} frames`,
+          rapide: 'fast browser method (WebCodecs)', lente: 'fallback method (ffmpeg, slower)',
+          reste: 'Still too heavy: running a lighter pass…', depasse: (p: string, c: string) => `The file weighs ${p}, above ${c}: the video is too long for that size. Trim it or choose Email.`,
+          dejaLegere: 'Already lighter than the target: converting to a compatible MP4.', illisibleSortie: 'The resulting video can’t be played in this browser: try again or use the download.' };
+
+    let fichier: File | null = null;
+    let jeton = 0;
+    let annuleur: (() => unknown) | null = null;
+    let urlSortie: string | null = null;
+
+    const montrerEtat = (t: string, erreur = false) => { etat.textContent = t; etat.hidden = !t; etat.classList.toggle('vl-erreur', erreur); };
+    const remettre = () => {
+      infos.hidden = true; avance.hidden = true; montrerEtat('');
+      lecteur.hidden = true; lecteur.removeAttribute('src'); lecteur.load();
+      if (urlSortie) { URL.revokeObjectURL(urlSortie); urlSortie = null; }
+      masquerResultat('video-legere-resultat'); masquerTelechargement('video-legere-telecharger');
+    };
+    const texteInfo = (id: string, t: string) => { $(`#video-legere-${id}`).textContent = t; };
+    const prog = (ratio: number, texte: string) => { barre.value = ratio; avanceTexte.textContent = texte; };
+
+    async function demarrer() {
+      const moi = ++jeton;
+      const f = fichier;
+      await annuleur?.(); annuleur = null;
+      remettre();
+      if (!f) return;
+      const vivant = () => moi === jeton;
+      const destination = (radio('video-legere-destination') || 'whatsapp') as Destination;
+      const cible = CIBLES[destination];
+      let modeSon = radio('video-legere-contenu') === 'son';
+      try {
+        // 1. lecture des métadonnées
+        montrerEtat(L.lecture);
+        let sonde: Sonde;
+        let chemin: 'webcodecs' | 'ffmpeg' = 'webcodecs';
+        let repli: typeof import('./repli-ffmpeg') | null = null;
+        const chargerRepli = async () => {
+          montrerEtat(L.secours);
+          const adresse = new URL('/outils-assets/video-legere/repli.js', location.href).href; // adresse absolue : le serveur de dev ne la réécrit pas
+          return (await import(/* @vite-ignore */ adresse)) as NonNullable<typeof repli>;
+        };
+        const optionsRepli = (onProgres: (r: number, i: number) => void, signal?: AbortSignal) => ({
+          coreURL: '/outils-assets/video-legere/ffmpeg-core.js', wasmURL: '/lourds/video-legere/ffmpeg-core.wasm',
+          workerURL: '/outils-assets/video-legere/ffmpeg-worker.js', fichier: f, onProgres, signal,
+        });
+        const webcodecs = typeof VideoEncoder !== 'undefined' && typeof AudioEncoder !== 'undefined' && typeof Worker !== 'undefined';
+        try {
+          if (!webcodecs) throw new Echec('pas de WebCodecs');
+          sonde = await sonderRapide(f);
+          if (!sonde.rapide) chemin = 'ffmpeg';
+        } catch (e) {
+          const lisible = EXTENSIONS.test(f.name) || f.type.startsWith('video/');
+          if (!(e instanceof FichierIllisible || e instanceof Echec) || !lisible) throw new FichierIllisible();
+          repli = await chargerRepli();
+          const s = await repli.sonder(optionsRepli(() => {})).catch(() => { throw new FichierIllisible(); });
+          sonde = { ...s, rapide: false, aVideo: true };
+          chemin = 'ffmpeg';
+        }
+        if (!vivant()) return;
+        if (!sonde.aVideo) modeSon = true;
+        if (modeSon && !sonde.aAudio) { montrerEtat(L.pasSon, true); return; }
+
+        // 2. plan et estimation affichés avant le calcul
+        let plan: Plan = planifier(sonde, cible);
+        const estimerSon = (sonde.duree * 128_000) / 8;
+        texteInfo('duree', formaterDuree(sonde.duree, fr));
+        texteInfo('actuel', formaterPoids(f.size, fr));
+        texteInfo('estime', '≈ ' + formaterPoids(modeSon ? estimerSon : plan.octetsEstimes, fr));
+        texteInfo('temps', '≈ ' + formaterDuree(modeSon ? Math.max(2, sonde.duree / 40) : tempsEstime(sonde, plan, chemin), fr));
+        infos.hidden = false;
+        montrerEtat(!sonde.aVideo ? L.sonSeul : !modeSon && f.size <= cible ? L.dejaLegere : '');
+
+        // 3. calcul
+        const ctrl = new AbortController();
+        annuleur = async () => { ctrl.abort(); await courant?.annuler(); };
+        let courant: { annuler: () => Promise<void> } | null = null;
+        avance.hidden = false; prog(0, '');
+        const t0 = performance.now();
+        let blob: Blob | null = null;
+        let facteur = 1;
+        let passes = 1;
+        const tailles: { octets: number; debit: number; petitCote: number }[] = [];
+        const maxPasses = 3;
+        for (let p = 1; p <= maxPasses; p++) {
+          const images = Math.max(1, Math.round(sonde.duree * Math.min(sonde.fps, plan.fps)));
+          const suivi = (r: number, i: number) => { if (vivant()) prog(r, modeSon ? `${Math.round(r * 100)} %` : L.passe(p, passes) + L.images(Math.min(i, images), images)); };
+          let sortie: Blob;
+          try {
+            if (chemin === 'webcodecs') {
+              const l = modeSon ? extraireSon(f, (r) => suivi(r, 0)) : convertirVideo(f, { plan, sonde, onProgres: suivi });
+              courant = l;
+              sortie = await l.fin;
+            } else throw new Error('repli');
+          } catch (e) {
+            if (e instanceof ConversionCanceledError || ctrl.signal.aborted || !vivant()) throw e;
+            // échec du chemin rapide : on passe au repli
+            if (chemin === 'webcodecs') console.info('WebCodecs a échoué, repli ffmpeg', e);
+            chemin = 'ffmpeg';
+            repli ??= await chargerRepli();
+            avance.hidden = false;
+            texteInfo('temps', '≈ ' + formaterDuree(modeSon ? sonde.duree / 3 : tempsEstime(sonde, plan, 'ffmpeg'), fr));
+            const o = optionsRepli(suivi, ctrl.signal);
+            const octets = modeSon ? await repli.extraireSon(o, sonde.duree)
+              : await repli.convertirVideo(o, { largeur: plan.largeur, hauteur: plan.hauteur, fps: plan.fps, debitVideo: plan.debitVideo, debitAudio: plan.debitAudio, aAudio: sonde.aAudio, duree: sonde.duree });
+            sortie = new Blob([octets as BlobPart], { type: modeSon ? 'audio/mp4' : 'video/mp4' });
+          }
+          if (!vivant()) return;
+          tailles.push({ octets: sortie.size, debit: plan.debitVideo, petitCote: plan.petitCote });
+          const meilleur = !blob ? true : blob.size > cible ? sortie.size < blob.size : sortie.size <= cible && sortie.size > blob.size;
+          if (meilleur) blob = sortie;
+          if (modeSon || sortie.size <= cible || p === maxPasses) break;
+          // trop lourd : nouvelle passe, budget réduit d'après le dépassement mesuré
+          montrerEtat(L.reste);
+          passes = Math.min(maxPasses, passes + 1);
+          const r = repasse(sonde, cible, plan, sortie.size, facteur);
+          plan = r.plan; facteur = r.facteur;
+          texteInfo('estime', '≈ ' + formaterPoids(plan.octetsEstimes, fr));
+          prog(0, '');
+        }
+        if (!vivant() || !blob) return;
+        const secondes = (performance.now() - t0) / 1000;
+        avance.hidden = true; montrerEtat('');
+        annuleur = null;
+
+        // 4. résultat : lecture dans la page, bilan, téléchargement
+        const nom = nomSortie(f.name, modeSon);
+        urlSortie = URL.createObjectURL(blob);
+        lecteur.src = urlSortie;
+        lecteur.hidden = false;
+        lecteur.addEventListener('error', () => { if (vivant()) montrerEtat(L.illisibleSortie, true); }, { once: true });
+        const gain = Math.round((1 - blob.size / f.size) * 100);
+        const dims = modeSon ? '' : ` · ${plan.largeur}×${plan.hauteur}`;
+        const ligne = `${formaterPoids(f.size, fr)} → ${formaterPoids(blob.size, fr)}${f.size > 0 ? ` (${gain > 0 ? '−' : '+'}${Math.abs(gain)} %)` : ''}${dims} · ${formaterDuree(secondes, fr)} · ${chemin === 'webcodecs' ? L.rapide : L.lente}`;
+        afficherResultat('video-legere-resultat', ligne);
+        cadre.dataset.fini = JSON.stringify({ octets: blob.size, avant: f.size, secondes: Math.round(secondes * 10) / 10, chemin, passes, tailles, largeur: plan.largeur, hauteur: plan.hauteur, son: modeSon });
+        await proposerTelechargement('video-legere-telecharger', [{ nom, donnees: blob, type: modeSon ? 'audio/mp4' : 'video/mp4' }]);
+        compter('utilise', 'video-legere');
+        if (!modeSon && blob.size > cible) montrerEtat(L.depasse(formaterPoids(blob.size, fr), formaterPoids(cible, fr)), true);
+      } catch (e) {
+        if (!vivant()) return;
+        avance.hidden = true;
+        if (e instanceof ConversionCanceledError || (e instanceof DOMException && e.name === 'AbortError')) { montrerEtat(L.annule); infos.hidden = true; }
+        else { console.error(e); montrerEtat(e instanceof FichierIllisible ? L.illisible : L.echec, true); }
+        annuleur = null;
+      }
+    }
+
+    depot.addEventListener('fichiers', (e) => { fichier = (e as CustomEvent<File[]>).detail[0] ?? null; void demarrer(); });
+    racine.querySelectorAll('#video-legere-destination input, #video-legere-contenu input').forEach((i) => i.addEventListener('change', () => { if (fichier) void demarrer(); }));
+    $('#video-legere-annuler').addEventListener('click', () => { jeton++; void annuleur?.(); annuleur = null; avance.hidden = true; infos.hidden = true; montrerEtat(L.annule); });
+  }
+</script>
