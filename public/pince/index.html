@@ -50,9 +50,8 @@ kbd{font:600 .85em var(--font);padding:.15em .55em;border-radius:7px;background:
 .keys small{display:block;font-weight:500;font-size:11px;color:var(--ink2)}
 .mob{display:none;margin:18px auto 0;max-width:34ch;color:var(--ink2);font-size:15px}.mob a{color:var(--accent)}
 .card .more{font-size:15px;margin:8px 0 0}
-.scan{position:absolute;left:1.5%;top:26%;width:11.8%;height:66%;border-radius:12px;box-shadow:0 0 0 3px var(--accent2);animation:scan 8s 1.4s infinite ease-in-out;pointer-events:none}
 @keyframes key{0%,8%{opacity:.85;transform:none}12%,30%{opacity:1;transform:translateY(-6px) scale(1.07);color:var(--accent)}36%,100%{opacity:.85;transform:none}}
-@keyframes scan{0%,12%{left:1.5%}22%,34%{left:14.6%}46%,58%{left:27.6%}70%,82%{left:40.6%}94%,100%{left:1.5%}}
+
 @keyframes rise{from{opacity:0;transform:translateY(60px) scale(.96)}to{opacity:1;transform:none}}
 @keyframes pop{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
 /* 2 trois visuels */
@@ -107,7 +106,7 @@ kbd{font:600 .85em var(--font);padding:.15em .55em;border-radius:7px;background:
 .trust{border:1px solid var(--line);border-radius:16px;background:var(--card);padding:14px 18px;color:var(--ink2);font-size:15px;margin:0 0 -10px}.trust a{color:var(--accent)}.inst{padding:clamp(40px,7vh,70px) 0}
 /* pied */
 .foot{text-align:center;padding:30px 20px 50px;color:var(--ink2);font-size:14px}.foot a{color:var(--ink2)}
-@media (max-width:820px){.three,.steps,.diff{grid-template-columns:1fr}.nav .r a.h{display:none}.sec{min-height:0}.keys{top:-30px;gap:6px}.keys span{padding:6px 9px;font-size:13px}.hero{min-height:0;padding-bottom:30px}.stage .bar{border-radius:14px}.sec{padding:40px 0}.ill{height:130px}.step{padding:16px}.step h3{margin:10px 0 2px}.hero .ic{width:64px;height:64px}.mob{display:block}.stage .bar img{width:100%;max-width:340px;margin:0 auto}.stage .bar{border:0;box-shadow:none;border-radius:0;background:none}.diff .pic,.three .card:first-child .im{display:none}.card .im{max-height:none}.pt{padding:12px}.scan{display:none}}
+@media (max-width:820px){.three,.steps,.diff{grid-template-columns:1fr}.nav .r a.h{display:none}.sec{min-height:0}.keys{top:-30px;gap:6px}.keys span{padding:6px 9px;font-size:13px}.hero{min-height:0;padding-bottom:30px}.stage .bar{border-radius:14px}.sec{padding:40px 0}.ill{height:130px}.step{padding:16px}.step h3{margin:10px 0 2px}.hero .ic{width:64px;height:64px}.mob{display:block}.stage .bar img{width:100%;max-width:340px;margin:0 auto}.stage .bar{border:0;box-shadow:none;border-radius:0;background:none}.card .im{max-height:170px}.diff .pic{max-height:260px}.diff .pic img{object-fit:cover;object-position:top}.card .im{max-height:none}.pt{padding:12px}.scan{display:none}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}.keys span{opacity:1}.fr{transform:none}.ok,.doc span,.pic .tag{opacity:1}}
 /* lucashi-kit · site/installation · bloc « Installer » commun aux pages de vente. Se recopie tel quel. */
 .lk-inst{--lk-c:#009EFF;--lk-ink:#1d1d1f;--lk-ink2:#5f5f66;--lk-line:rgba(0,0,0,.12);--lk-bg:#fbfbfd;--lk-alt:#f2f2f5;--lk-code:#1c1c1e;
@@ -170,7 +169,7 @@ kbd{font:600 .85em var(--font);padding:.15em .55em;border-radius:7px;background:
   <p class="ver">Pince 1.4.1 · app pour Mac (macOS 15 ou plus) · téléchargement direct, sans compte · rien ne quitte votre Mac</p>
   <p class="mob">Pince est une app pour Mac. <a href="mailto:?subject=Pince%20pour%20Mac&body=https%3A%2F%2Fapps.srv875929.hstgr.cloud%2Fpince%2F">Envoyez-vous le lien</a>, ouvrez-le sur votre Mac.</p>
   <div class="stage"><div class="keys" aria-hidden="true"><span>⌘ C<small>Copier</small></span><span>⇧ ⌘ V<small>Ouvrir</small></span><span>↩<small>Coller</small></span></div>
-    <div class="scroll"><div class="bar"><picture><source media="(max-width:820px) and (prefers-color-scheme:dark)" srcset="captures/pile-sombre.jpg"><source media="(max-width:820px)" srcset="captures/pile-clair.jpg"><source media="(prefers-color-scheme:dark)" srcset="captures/panneau-sombre.jpg"><img src="captures/panneau-clair.jpg" alt="La frise de Pince : chaque copie est une carte, du plus récent au plus ancien" width="1800" height="334"></picture></div></div></div>
+    <div class="scroll"><div class="bar"><picture><source media="(max-width:820px) and (prefers-color-scheme:dark)" srcset="captures/pile-sombre.jpg"><source media="(max-width:820px)" srcset="captures/pile-clair.jpg"><source media="(prefers-color-scheme:dark)" srcset="captures/panneau-sombre.jpg"><img src="captures/panneau-clair.jpg" alt="Pince : chaque copie est une carte, du plus récent au plus ancien" width="1800" height="334"></picture></div></div></div>
 </div></header>
 
 <!-- 2 · ce que ça fait -->
@@ -213,14 +212,14 @@ kbd{font:600 .85em var(--font);padding:.15em .55em;border-radius:7px;background:
 <section class="inst alt" id="install" style="background:var(--alt)">
 <div class="wrap" style="max-width:980px"><p class="trust">Une commande à copier dans Terminal : elle vérifie la signature de l'app, l'installe dans votre dossier Applications, ne demande aucun mot de passe administrateur, et se relance pour mettre à jour. <a href="https://github.com/LucasHRCHatReply/pince-releases/blob/main/installer.sh">Lire le script</a> avant de l'exécuter.</p></div>
 <div id="installer" data-lucashi-installation data-nom="Pince" data-depot="LucasHRCHatReply/pince-releases" data-couleur="#0068BF" data-icone="captures/icone.png" data-dmg="Pince.dmg" data-requis='["macOS 15 ou plus (Liquid Glass natif sous macOS 26)","Mac à puce Apple (M1 ou plus récent)","Aucun compte à créer"]'></div>
-<noscript><div class="wrap" style="padding:20px"><p><b>Installer sans JavaScript :</b> dans Terminal, <code>curl -fsSL https://raw.githubusercontent.com/LucasHRCHatReply/pince-releases/main/installer.sh | zsh</code>, ou téléchargez <a href="https://github.com/LucasHRCHatReply/pince-releases/releases/latest/download/Pince.dmg">le .dmg</a>. Il faut un Mac à puce Apple, macOS 15 ou plus.</p></div></noscript>
+<noscript><style>.rv{opacity:1!important;transform:none!important}</style><div class="wrap" style="padding:20px"><p><b>Installer sans JavaScript :</b> dans Terminal, <code>curl -fsSL https://raw.githubusercontent.com/LucasHRCHatReply/pince-releases/main/installer.sh | zsh</code>, ou téléchargez <a href="https://github.com/LucasHRCHatReply/pince-releases/releases/latest/download/Pince.dmg">le .dmg</a>. Il faut un Mac à puce Apple, macOS 15 ou plus.</p></div></noscript>
 </section>
 <footer class="foot">Pince 1.4.1 · <a href="https://apps.srv875929.hstgr.cloud/">Toutes les apps</a> · <a href="https://github.com/LucasHRCHatReply/pince-releases/releases/latest">Notes de version</a></footer>
 <script>
 (function(){var els=document.querySelectorAll('.rv');if(!('IntersectionObserver'in window)){els.forEach(function(e){e.classList.add('in')});return}
 var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.15});
 els.forEach(function(e,i){e.style.transitionDelay=(i%4)*90+'ms';io.observe(e)})})();
-var n=document.querySelector('.nav');
+
 </script>
 <script>/* lucashi-kit · site/installation · bloc « Installer » commun. Sans dépendance. Se recopie tel quel.
    <div data-lucashi-installation data-nom="Pince" data-depot="LucasHRCHatReply/pince-releases"
