@@ -55,7 +55,6 @@
 /* avant le montage, le conteneur réserve la place : l'ancre ne saute pas */
 [data-lucashi-installation]:empty{min-height:90vh}
 
-.prep{margin:10px 0 0;max-width:62ch;font-size:13px;color:var(--ink2)}.sha,.onmac{display:block;margin-top:6px;font-size:12px;color:var(--ink3)}.inst-top .sha,.inst-top .onmac{align-self:center;margin:0}.onmac{display:none}@media(max-width:767px){.onmac{display:block}}
 </style>
 <style>
 :root{
@@ -415,9 +414,9 @@ abbr[title]{text-decoration:underline dotted;text-underline-offset:3px;cursor:he
   <div>
   <img class="hl" src="captures/icone.png" alt="Logo de Jauge : un J de verre vert, rempli comme une batterie" width="84" height="84">
   <h1>Votre MacBook branché ne reste plus à 100&nbsp;%.</h1>
-  <p class="lead">Pour les MacBook à puce Apple : Jauge arrête la charge au niveau choisi, comme AlDente. En plus, elle montre les watts que consomme chaque app.</p>
+  <p class="lead">Pour les MacBook à puce Apple : Jauge arrête la charge au niveau que vous choisissez, et montre quelle app consomme.</p>
   <div class="row"><a class="btn big dl-d" href="https://github.com/LucasHRCHatReply/jauge-releases/releases/latest/download/Jauge.dmg">Télécharger Jauge</a><a class="btn big btn-send" data-send href="mailto:?subject=Jauge%20pour%20Mac&amp;body=Jauge%20pour%20Mac%20%3A%20https%3A%2F%2Fapps.srv875929.hstgr.cloud%2Fjauge%2F">M'envoyer le lien pour mon Mac</a><a class="btn-o" href="#voir">Voir en 30 secondes</a></div>
-  <p class="prep">Mac à puce Apple (M1 ou plus) · macOS 26 ou plus. Au premier lancement, macOS affiche un avertissement : c'est normal pour une app gratuite hors App Store. Réglages › Confidentialité et sécurité › Ouvrir quand même, une fois.</p><span class="sha" title="vérifier : shasum -a 256 ~/Downloads/Jauge.dmg">SHA-256 : 25a3bd23…d3810b1</span><span class="onmac">S'installe sur un Mac, pas sur l'iPhone.</span><div class="free"><span><b>Gratuit</b>, sans compte</span><span>·</span><span>Version 1.7.3</span><span>·</span><span>macOS 26 ou plus</span></div>
+  <div class="free"><span><b>Gratuit</b>, sans compte</span><span>·</span><span>Version 1.7.3</span><span>·</span><span>macOS 26 ou plus</span></div>
   <p class="def">Rester à 100&nbsp;% sur secteur use la batterie. Moins de <abbr title="Un cycle = l'équivalent d'une charge de 0 à 100 %">cycles</abbr> de charge (une charge de 0 à 100&nbsp;%), c'est moins d'usure.</p>
   </div>
   <div class="stagecol"><span class="mbar" aria-hidden="true"><b></b>80 %<small style="color:var(--pink2)">&nbsp;· en haut de l'écran, dans la <abbr title="La ligne d'icônes en haut de l'écran du Mac">barre des menus</abbr></small></span>
@@ -475,7 +474,7 @@ abbr[title]{text-decoration:underline dotted;text-underline-offset:3px;cursor:he
 <section class="s alt" id="installer"><div class="wrap">
   <div class="rv"><div class="eyebrow">Installer</div><h2>Le .dmg, trois gestes, une seule fois.</h2></div>
   <p class="inst-sub">Gratuit, sans compte. Il faut un MacBook à puce Apple (M1 ou plus récent) et macOS 26 ou plus. Si AlDente tourne, quittez-le d'abord.</p>
-  <div class="inst-top"><a class="btn big dl-d" href="https://github.com/LucasHRCHatReply/jauge-releases/releases/latest/download/Jauge.dmg">Télécharger Jauge.dmg</a><a class="btn big btn-send" data-send href="mailto:?subject=Jauge%20pour%20Mac&amp;body=Jauge%20pour%20Mac%20%3A%20https%3A%2F%2Fapps.srv875929.hstgr.cloud%2Fjauge%2F">M'envoyer le lien pour mon Mac</a><span class="sz">Version 1.7.3 · 6,7 Mo</span><span class="sha" title="vérifier : shasum -a 256 ~/Downloads/Jauge.dmg">SHA-256 : 25a3bd23…d3810b1</span><span class="onmac">S'installe sur un Mac, pas sur l'iPhone.</span></div>
+  <div class="inst-top"><a class="btn big dl-d" href="https://github.com/LucasHRCHatReply/jauge-releases/releases/latest/download/Jauge.dmg">Télécharger Jauge.dmg</a><a class="btn big btn-send" data-send href="mailto:?subject=Jauge%20pour%20Mac&amp;body=Jauge%20pour%20Mac%20%3A%20https%3A%2F%2Fapps.srv875929.hstgr.cloud%2Fjauge%2F">M'envoyer le lien pour mon Mac</a><span class="sz">Version 1.7.3 · 6,7 Mo</span></div>
   <p class="risk"><b>Une confirmation la première fois.</b> Jauge est signée, mais pas vérifiée par Apple (compte payant) : macOS demande une confirmation au premier lancement.</p>
   <details class="steps-d" open><summary>Voir les trois gestes pas à pas</summary>
   <div class="lk-inst pg" style="--lk-c:#16702D">
@@ -487,11 +486,11 @@ abbr[title]{text-decoration:underline dotted;text-underline-offset:3px;cursor:he
   </div>
   <p style="margin:18px 0 6px;font-weight:650">Pourquoi le troisième geste ?</p>
   <ul class="three">
-    <li>Pour tenir la limite même Jauge fermée, elle met en place un petit programme de fond.</li>
-    <li>macOS vous demande de l'approuver une fois ; aucun mot de passe d'administrateur, aucune donnée envoyée.</li>
+    <li>Pour tenir la limite même Jauge fermée, elle met en place un petit programme de fond (un « démon »).</li>
+    <li>macOS vous demande de l'approuver une fois, dans les Réglages Système ; Jauge elle-même ne demande aucun mot de passe d'administrateur.</li>
+    <li>Ce programme n'obéit qu'à Jauge signée par son auteur. Aucun compte, aucune donnée envoyée.</li>
   </ul>
   </details>
-  <ul class="three"><li>Le script télécharge Jauge.zip depuis la version publiée.</li><li>Il vérifie l'empreinte du fichier et la signature de l'app, sinon il refuse d'installer.</li><li>Il ne modifie que ~/Applications/Jauge.app : réglages et historique intacts, aucun mot de passe.</li></ul>
   <details class="term-d"><summary>Par Terminal (installe et met à jour tout seul) · si macOS bloque</summary>
     <p style="color:var(--ink2);margin:0 0 6px">Une commande qui installe, puis met à jour aux fois suivantes. Le script se lit en entier : <a href="https://github.com/LucasHRCHatReply/jauge-releases/blob/main/installer.sh" rel="noopener">installer.sh</a>.</p>
     <div id="terminal" data-lucashi-installation data-nom="Jauge" data-depot="LucasHRCHatReply/jauge-releases" data-couleur="#16702D" data-icone="captures/icone.png" data-dmg="Jauge.dmg" data-requis='["MacBook à puce Apple (M1 ou plus récent)","macOS 26 ou plus","Quitter AlDente ou toute autre app de limite de charge","Aucun compte. Une approbation, une fois, dans Réglages Système › Ouverture et arrière-plan"]'></div>
