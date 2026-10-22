@@ -246,8 +246,8 @@ duo(document.getElementById('maj'),[
 (function(){var sh=document.querySelector('.shot'),dg=document.getElementById('zoom');if(sh&&dg&&dg.showModal){sh.addEventListener('click',function(){var im=sh.querySelector('img.'+(matchMedia('(prefers-color-scheme: dark)').matches?'dark-only':'light-only'));dg.querySelector('img').src=im.src;dg.showModal()});dg.addEventListener('click',function(){dg.close()})}})();
 document.querySelectorAll('[data-mini]').forEach(function(el){var m=el.getAttribute('data-mini');
  mini(el,m==='caler'?[{z:[0,0,50,100],c:'½ gauche'},{z:[50,0,50,100],c:'½ droite'},{z:[0,0,33.3,100],c:'⅓ gauche'},{z:[50,0,50,50],c:'¼ en haut à droite'}]
- :m==='grand'?[{z:BASE,c:'Taille de départ',t:1200},{z:[0,0,100,100],c:'Agrandie (↑)'},{z:BASE,c:'Double tap : la taille d\'avant'}]
- :[{z:BASE,c:'Taille de départ',t:1200},{z:[38,88,24,12],c:'Réduite (↓)'},{z:BASE,c:'Pincer…',t:1000},{z:BASE,o:0,c:'…fermée',t:1300}])});
+ :m==='grand'?[{z:BASE,c:'Au départ : taille normale',t:1200},{z:[0,0,100,100],c:'Deux doigts ↑ : agrandie'},{z:BASE,c:'Double tap : retour à la taille d\'avant'}]
+ :[{z:BASE,c:'Au départ : fenêtre ouverte',t:1200},{z:[38,88,24,12],c:'Deux doigts ↓ : réduite'},{z:BASE,c:'Pincement…',t:1000},{z:BASE,o:0,c:'…fenêtre fermée',t:1300}])});
 })();
 </script>
 <script>/* lucashi-kit · site/installation · bloc « Installer » commun. Sans dépendance. Se recopie tel quel.
