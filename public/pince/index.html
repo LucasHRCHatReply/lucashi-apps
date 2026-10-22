@@ -79,8 +79,8 @@ abbr[title]{text-decoration:underline dotted;text-underline-offset:3px;cursor:he
 @keyframes sel{0%,10%{background:transparent}25%,100%{background:color-mix(in srgb,var(--accent2) 45%,transparent)}}
 @keyframes ok{0%,40%{opacity:0;transform:scale(.6)}50%,90%{opacity:1;transform:none}100%{opacity:0}}
 .fr{position:absolute;left:0;right:0;bottom:0;padding:10px;display:flex;gap:8px;background:color-mix(in srgb,var(--accent) 22%,var(--card));border-radius:16px 16px 0 0;transform:translateY(100%);animation:up 5s infinite}
-.fr i{flex:1;height:70px;border-radius:10px;background:var(--card);border:1px solid var(--line);position:relative}
-.fr i::after{content:"";position:absolute;left:8px;right:8px;top:12px;height:6px;border-radius:3px;background:var(--line);box-shadow:0 14px 0 var(--line),0 28px 0 var(--line)}
+.fr i{flex:1;border-radius:10px;background:var(--card);border:1px solid var(--line);position:relative}
+.fr i{font-style:normal;font-size:11px;line-height:1.3;padding:8px;color:var(--ink);text-align:left;overflow:hidden;height:58px}.fr i b{display:block;font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);margin-bottom:3px}.hero .plus{max-width:46ch;margin:0 auto 18px;font-size:16px;color:var(--ink2)}.hero .plus b{color:var(--ink)}.hero .cta+.plus{margin-top:16px}.help{border-bottom:1px dotted currentColor;cursor:help}.sha{max-width:62ch;margin:0 auto 18px;text-align:center;font-size:12px;color:var(--ink2);word-break:break-all}.sha code{font-size:11px}.mac{text-align:center;color:var(--ink2);font-size:14px;margin:8px 0 0}.fait{max-width:62ch;margin:0 auto 10px;padding-left:20px;color:var(--ink2);font-size:15px}
 .fr i:first-child{box-shadow:0 0 0 2.5px var(--accent2)}
 @keyframes up{0%,12%{transform:translateY(100%)}28%,86%{transform:none}100%{transform:translateY(100%)}}
 .ill kbd{position:absolute;top:14px}
@@ -196,8 +196,9 @@ details.t .lk-inst .lk-lead{margin-top:0}
   <img class="ic" src="captures/logo.png" alt="Pince" width="72" height="72">
   <h1>Le presse-papiers de votre Mac, <span class="grad">avec une mémoire.</span></h1>
   <p class="sub">Pince garde tout ce que vous copiez : vous cherchez, vous collez d'une touche. Pour qui copie-colle toute la journée.</p>
+  <p class="plus"><b>Ce que Pince ajoute à Paste ou Maccy :</b> la <span class="help" title="Une pile : vous copiez plusieurs choses à la suite, puis chaque ⌘V colle la suivante, dans l'ordre.">pile</span> (coller dans l'ordre) et les secrets masqués.</p>
   <div class="cta"><a class="btn only-d" href="https://github.com/LucasHRCHatReply/pince-releases/releases/latest/download/Pince.dmg">Télécharger Pince pour Mac</a><button class="btn only-m" type="button" data-envoyer>M'envoyer le lien pour mon Mac</button><a class="btn o only-d" href="#installer">Comment l'installer</a></div>
-  <p class="ver"><b>Gratuit, sans compte.</b> Pince 1.4.1 · Mac à puce Apple, macOS 15 ou plus · rien ne quitte votre Mac</p>
+  <p class="ver"><span class="help" title="Un .dmg est un fichier d'installation Mac : vous l'ouvrez, puis vous glissez l'app dans Applications.">Fichier .dmg</span> · <b>Gratuit, sans compte.</b> Pince 1.4.1 · Mac à puce Apple, macOS 15 ou plus · rien ne quitte votre Mac</p>
   <div class="pile" role="img" aria-label="Animation : trois copies s'empilent dans Pince avec Commande C, puis trois Commande V les collent une par une, dans l'ordre.">
     <div class="col"><span class="k kc">⌘ C<small>Commande + C</small></span><b>Pile de Pince</b>
       <div class="cd cd1"><i>1</i>Adresse<span>copiée</span></div><div class="cd cd2"><i>2</i>N° de dossier<span>copié</span></div><div class="cd cd3"><i>3</i>Montant<span>copié</span></div></div>
@@ -212,7 +213,7 @@ details.t .lk-inst .lk-lead{margin-top:0}
   <div class="head"><span class="eyebrow">Comment ça marche</span><h2>Trois gestes. <span class="grad">C'est tout.</span></h2></div>
   <div class="steps">
     <div class="step rv"><div class="ill"><p class="t1">Rendez-vous <mark>demain 10 h, salle B</mark>.</p><span class="ok">✓ gardé</span></div><h3><b>1</b>Copiez</h3><p><kbd>⌘</kbd> <kbd>C</kbd> (Commande + C), comme toujours.</p></div>
-    <div class="step rv"><div class="ill"><kbd>⇧ ⌘ V</kbd><div class="fr"><i></i><i></i><i></i><i></i></div></div><h3><b>2</b>Ouvrez</h3><p><kbd>⇧</kbd> <kbd>⌘</kbd> <kbd>V</kbd> (Majuscule + Commande + V), puis tapez pour chercher.</p></div>
+    <div class="step rv"><div class="ill"><kbd>⇧ ⌘ V</kbd><div class="fr"><i><b>Texte</b>Rendez-vous demain 10 h, salle B</i><i><b>Lien</b>https://exemple.fr/dossier</i><i><b>Image</b>capture.png</i><i><b>Texte</b>N° 4821-B</i></div></div><h3><b>2</b>Ouvrez</h3><p><kbd>⇧</kbd> <kbd>⌘</kbd> <kbd>V</kbd> (Majuscule + Commande + V), puis tapez pour chercher.</p></div>
     <div class="step rv"><div class="ill"><div class="doc"><u style="width:70%"></u><u style="width:92%"></u><span>Rendez-vous demain 10 h, salle B</span></div></div><h3><b>3</b>Collez</h3><p><kbd>↩</kbd> (Retour) colle la carte là où vous écriviez.</p></div>
   </div>
 </div></section>
@@ -247,9 +248,11 @@ details.t .lk-inst .lk-lead{margin-top:0}
 <section class="inst" id="installer">
 <div class="wrap">
   <h2>Installer.</h2>
-  <p class="lead">Un fichier, trois gestes. Gratuit, sans compte.</p>
+  <p class="lead">Un fichier (un <span class="help" title="Un .dmg est un fichier d'installation Mac : vous l'ouvrez, puis vous glissez l'app dans Applications.">.dmg</span>), trois gestes. Gratuit, sans compte.</p>
   <div class="dlbtn"><a class="btn only-d" href="https://github.com/LucasHRCHatReply/pince-releases/releases/latest/download/Pince.dmg">Télécharger Pince.dmg</a><button class="btn only-m" type="button" data-envoyer>M'envoyer le lien pour mon Mac</button></div>
-  <p class="dlmeta">Pince 1.4.1 · Mac à puce Apple (M1 ou plus récent), macOS 15 ou plus</p>
+  <p class="mac only-m">S'installe sur un Mac, pas sur l'iPhone.</p>
+  <p class="dlmeta">Pince 1.4.1 · Mac à puce Apple (M1 ou plus récent), macOS 15 ou plus · au premier lancement, macOS affiche un avertissement : c'est normal pour une app gratuite hors App Store (Réglages › Confidentialité et sécurité › Ouvrir quand même, une fois).</p>
+  <p class="sha" title="Vérifier : shasum -a 256 ~/Downloads/Pince.dmg">Empreinte SHA-256 du .dmg : <code>d309ff74c1d9b2661012cc281174f528d505f6cb1c5f3caa7649100d6a595800</code></p>
   <details class="t" id="gestes" open style="margin-bottom:22px"><summary>Les trois gestes</summary>
   <div class="g3" style="padding:0 16px 8px">
     <div class="g"><div class="gv"><div class="gi">Pince.dmg</div></div><h3><b>1</b>Ouvrir</h3><p>Double-clic sur le .dmg téléchargé.</p></div>
@@ -258,6 +261,7 @@ details.t .lk-inst .lk-lead{margin-top:0}
   </div>
   </details>
   <p class="risk"><b>Signée, mais pas vérifiée par Apple</b> (compte payant) : macOS demande une confirmation, et le mot de passe de votre Mac, la première fois.</p>
+  <ul class="fait"><li>Télécharge Pince.zip depuis la page de versions GitHub de Pince.</li><li>Vérifie l'empreinte SHA-256 et la signature de l'app (équipe JT9FY7PP7K).</li><li>Installe Pince dans votre dossier Applications, sans mot de passe administrateur.</li></ul>
   <details class="t"><summary>Par Terminal (installe et met à jour tout seul) · si macOS bloque</summary>
     <p class="tn">Une commande à copier : elle vérifie la signature de l'app, l'installe dans votre dossier Applications sans mot de passe administrateur, et se relance pour mettre à jour. <a href="https://github.com/LucasHRCHatReply/pince-releases/blob/main/installer.sh">Lire le script</a> avant de l'exécuter.</p>
 <div id="terminal" data-lucashi-installation data-nom="Pince" data-depot="LucasHRCHatReply/pince-releases" data-couleur="#0068BF" data-icone="captures/icone.png" data-dmg="Pince.dmg" data-requis='["macOS 15 ou plus","Mac à puce Apple (M1 ou plus récent)","Aucun compte à créer"]'></div>
