@@ -2107,6 +2107,13 @@ kbd{font:600 12px var(--font-sans);padding:3px 8px;border-radius:7px;background:
 .x-trust span{display:block;margin-top:6px;font-size:14.5px;color:var(--ink2)}
 .x-chips{margin-top:22px}
 #installer{margin-top:clamp(40px,7vh,72px)}
+.x-keysline{margin-top:22px;font-size:15px;color:var(--ink2);display:flex;gap:8px 10px;flex-wrap:wrap;align-items:center}
+.x-keysline b{color:var(--ink)}
+.x-limits{margin-top:16px;font-size:14.5px;color:var(--ink2);max-width:88ch}
+.x-limits b{color:var(--ink)}
+.x-limits a{color:var(--lagon-ink)}
+@media(max-width:700px){.x-also.t6>div:nth-child(n+4){display:none}.x-real figure:nth-child(3){display:none}.x-real{grid-template-columns:1fr}.x-keysline{font-size:14px}}
+
 @media(max-width:1000px){.x-cards.c3{grid-template-columns:1fr}.x-trust{grid-template-columns:1fr}.x-also.t6{grid-template-columns:1fr 1fr}}
 @media(max-width:700px){.x-real{grid-template-columns:1fr 1fr}.x-real figure:first-child{grid-column:1/-1}.x-name{font-size:13px;padding:8px 14px;max-width:92vw}}
 @media(max-width:520px){.x-also.t6{grid-template-columns:1fr}}
@@ -2129,20 +2136,19 @@ kbd{font:600 12px var(--font-sans);padding:3px 8px;border-radius:7px;background:
     <img class="x-icon" src="data:image/webp;base64,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" alt="Icône de Filoir" width="104" height="104">
     <h1>Filoir</h1>
     <p class="x-tag">Secouez. Déposez.</p>
-    <p class="x-lead">Un filoir de verre s'ouvre sous votre curseur : posez-y vos fichiers le temps de les déplacer, de les traiter ou de les envoyer.</p>
+    <p class="x-lead">Filoir garde vos fichiers à portée de souris : un petit filoir de verre s'ouvre sous le curseur, vous y posez ce qu'il faut ranger, convertir ou envoyer.</p>
     <p class="x-name" title="Le nom : « fil » + « fichier ». Un filoir est la petite fenêtre où l'on garde, un instant, le fil de ses fichiers."><b>fil</b><i>+</i><b>fichier</b><i>=</i>l'endroit où l'on garde le fil de ses fichiers</p>
     <div class="x-cta">
       <a class="x-btn p" href="https://github.com/LucasHRCHatReply/filoir-releases/releases/latest">Télécharger</a>
       <a class="x-btn s" href="#gestes">Voir comment ça marche</a>
     </div>
-    <small class="x-note">Gratuit · Mac à puce Apple · macOS 26 ou plus · version 1.3.0 · rien ne quitte le Mac sans votre geste</small>
+    <small class="x-note">Mac à puce Apple · macOS 26 ou plus · version 1.3.0 · rien ne quitte le Mac sans votre geste</small>
   </div>
   <div class="x-float" aria-hidden="true">
     <div class="x-r1"><div data-shelf="t=Devis;v=pdf,pdf,pdf;n=3;p=3,4 Mo"></div></div>
     <div class="x-r2"><div data-shelf="empty=1;c=est-cible"></div></div>
     <div class="x-r3"><div data-shelf="t=Images · 8;v=image,image,capture;n=9;p=31 Mo"></div></div>
   </div>
-  <div class="x-edge" aria-hidden="true"><div class="glass languette languette--droite est-survole"><span class="languette__grip"></span><span class="languette__nb">9</span></div></div>
 </header>
 
 <nav class="x-index" aria-label="Chapitres">
@@ -2223,6 +2229,8 @@ kbd{font:600 12px var(--font-sans);padding:3px 8px;border-radius:7px;background:
         <p>La flèche, ou <kbd>⌘E</kbd> : AirDrop, Mail, compresser, convertir… ou <b>glissez</b> le fichier dehors.</p></div>
       </article>
     </div>
+    <p class="x-keysline rv"><b>Raccourcis :</b> <kbd>⌘K</kbd> commandes · <kbd>⌘E</kbd> actions · <kbd>⌘←</kbd> <kbd>⌘→</kbd> ranger au bord · <kbd>⌥⇧Espace</kbd> nouveau filoir vide · <kbd>⌥⇧A</kbd> avec le presse-papiers</p>
+    <div class="x-cta rv" style="margin-top:26px"><a class="x-btn p" href="https://github.com/LucasHRCHatReply/filoir-releases/releases/latest">Télécharger Filoir</a></div>
   </div>
 </section>
 
@@ -2292,7 +2300,7 @@ kbd{font:600 12px var(--font-sans);padding:3px 8px;border-radius:7px;background:
   <div class="p x-pill zap64" style="left:130px;top:340px;--s:64">Durée du lien : 1 h · 1 j · 3 j · 7 j</div>
 </div></div></div><figcaption>Illustration dessinée d'après l'app</figcaption></figure>
         <div><h3>Il partage par lien</h3>
-        <p>Un clic envoie le fichier dans <b>votre seau S3</b> et copie un lien signé qui expire (1 h à 7 jours).</p></div>
+        <p>Un clic envoie le fichier dans <b>votre propre espace en ligne (S3)</b> et copie un lien signé qui expire (1 h à 7 jours).</p></div>
       </article>
     </div>
     <div class="x-real rv" aria-label="Le filoir dans l'app">
@@ -2327,20 +2335,18 @@ kbd{font:600 12px var(--font-sans);padding:3px 8px;border-radius:7px;background:
   <div class="x-wrap">
     <span class="x-eyebrow rv">Ce qui le distingue</span>
     <h2 class="x-h2 s rv">Rien ne part sans votre geste.</h2>
+    <p class="x-sub rv" style="max-width:62ch">Même idée que Dropover ou Yoink (secouer, déposer sur un filoir flottant). Ce que Filoir met en avant : des dossiers surveillés à règles, le texte des images, un lien vers votre propre espace en ligne, la barre de commandes.</p>
     <div class="x-trust rv">
-      <div><div class="ic" aria-hidden="true">🔒</div><b>Reste sur votre Mac</b><span>Le seul accès au réseau lit la liste publique des versions. Le partage par lien est le seul envoi, vers votre seau, quand vous le demandez.</span></div>
+      <div><div class="ic" aria-hidden="true">🔒</div><b>Reste sur votre Mac</b><span>Lecture du texte et conversions : faites sur le Mac. Seul accès réseau : la liste publique des versions. Le seul envoi de fichier est le lien de partage, vers votre espace, quand vous le demandez. macOS demande l'accès aux dossiers surveillés (Téléchargements).</span></div>
       <div><div class="ic" aria-hidden="true">◐</div><b>Liquid Glass natif</b><span>Écrit pour macOS 26 : le verre laisse voir ce qu'il y a derrière, en clair comme en sombre.</span></div>
       <div><div class="ic" aria-hidden="true">↻</div><b>Se met à jour seul</b><span>Réglages › Général › Mises à jour : signature contrôlée, retour arrière si besoin. Ex-Filoir : vos filoirs et réglages sont repris.</span></div>
     </div>
     <div class="x-chips rv">
-      <span class="x-chip ok">Mac à puce Apple (M1 ou plus récent)</span>
+      <span class="x-chip ok">Mac à puce Apple (M1 ou plus)</span>
       <span class="x-chip ok">macOS 26 ou plus</span>
-      <span class="x-chip">Signée (équipe Apple JT9FY7PP7K), non notarisée</span>
-      <span class="x-chip">Français seulement</span>
-      <span class="x-chip">Lien de partage : vos clés S3 ; pas encore essayé sur un vrai seau</span>
-      <span class="x-chip">Ni extension de partage, ni widgets</span>
-      <span class="x-chip">Écran externe et encoche : peu testés</span>
+      <span class="x-chip">En français</span>
     </div>
+    <p class="x-limits rv"><b>Limites connues :</b> signée mais non notarisée par Apple (macOS demande une confirmation au premier lancement, expliquée plus bas) · lien de partage essayé contre un faux serveur, pas encore contre un vrai espace S3 · écran externe et encoche peu testés · ni extension de partage ni widgets. <a href="https://github.com/LucasHRCHatReply/filoir-releases/releases">Notes de version</a></p>
   </div>
 </section>
 
