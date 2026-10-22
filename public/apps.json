@@ -102,39 +102,39 @@
       "description": "Penombre assombrit tout l'écran, sauf la fenêtre sur laquelle vous travaillez. Le reste s'efface dans un voile réglable : vous restez concentré sur une seule chose."
     },
     {
-      "id": "tiroir",
-      "nom": "Tiroir",
-      "phrase": "Des tiroirs flottants en verre, pour déposer vos fichiers.",
+      "id": "filoir",
+      "nom": "Filoir",
+      "phrase": "Des filoirs flottants en verre, pour déposer vos fichiers.",
       "couleur": "#16A8BC",
       "icone": "assets/tiroir-icon.png?v=20261016",
       "captures": [
         {
-          "src": "tiroir/captures/replie.jpg",
-          "alt": "Deux tiroirs Tiroir : un replié, un déplié avec ses fichiers"
+          "src": "filoir/captures/replie.jpg",
+          "alt": "Deux filoirs Filoir : un replié, un déplié avec ses fichiers"
         },
         {
-          "src": "tiroir/captures/grille.jpg",
-          "alt": "Un tiroir ouvert : sélection de fichiers en grille"
+          "src": "filoir/captures/grille.jpg",
+          "alt": "Un filoir ouvert : sélection de fichiers en grille"
         },
         {
-          "src": "tiroir/captures/menu.jpg",
-          "alt": "Le menu « plus d'actions » d'un tiroir"
+          "src": "filoir/captures/menu.jpg",
+          "alt": "Le menu « plus d'actions » d'un filoir"
         }
       ],
-      "page": "tiroir/",
-      "depot": "LucasHRCHatReply/tiroir-releases",
-      "zip": "Tiroir.zip",
-      "version": "1.1.1",
+      "page": "filoir/",
+      "depot": "LucasHRCHatReply/filoir-releases",
+      "zip": "Filoir.zip",
+      "version": "1.3.0",
       "source_page": "~/Tiroir/site",
       "build_page": "python3 build.py",
-      "page_construite": "~/Downloads/Tiroir.html",
+      "page_construite": "~/Downloads/Filoir.html",
       "requis": [
         "Mac à puce Apple (M1 ou plus récent)",
         "macOS 15 ou plus (Liquid Glass natif sous macOS 26)",
         "Aucun compte, aucune télémétrie, aucun mot de passe administrateur"
       ],
-      "dmg": "Tiroir.dmg",
-      "description": "Secouez le curseur pendant que vous déplacez un fichier : un tiroir apparaît. Déposez-y vos fichiers en attendant de savoir où les mettre, puis reprenez-les d'un glisser quand vous en avez besoin."
+      "dmg": "Filoir.dmg",
+      "description": "Secouez le curseur pendant que vous déplacez un fichier : un filoir apparaît. Déposez-y vos fichiers en attendant de savoir où les mettre, puis reprenez-les d'un glisser quand vous en avez besoin."
     },
     {
       "id": "autofoldericon",
