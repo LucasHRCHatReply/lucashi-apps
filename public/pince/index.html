@@ -47,7 +47,7 @@ abbr[title]{text-decoration:underline dotted;text-underline-offset:3px;cursor:he
 /* pile animée : 3 copies empilées, 3 ⌘V qui les consomment (boucle 10 s) */
 .pile{--t:10s;position:relative;max-width:640px;margin:30px auto 0;display:grid;grid-template-columns:1fr 1fr;gap:18px;text-align:left}
 .pile .col{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:14px;box-shadow:var(--shadow);min-height:228px;position:relative}
-.pile .col>b{display:block;font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink2);margin-bottom:10px}
+.pile .col>b{display:block;margin-top:12px;font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink2);margin-bottom:10px}
 .pile .k{position:absolute;top:-16px;right:14px;padding:6px 12px;border-radius:12px;background:var(--card);border:1px solid var(--line);box-shadow:0 10px 24px -10px rgba(0,0,0,.45);font-weight:700;font-size:14px;white-space:nowrap}
 .pile .k small{font-weight:500;color:var(--ink2);margin-left:6px;font-size:12px}
 .pile .kc{animation:kc var(--t) infinite}.pile .kv{animation:kv var(--t) infinite}
@@ -117,10 +117,10 @@ abbr[title]{text-decoration:underline dotted;text-underline-offset:3px;cursor:he
 .g .gv{height:124px;border-radius:14px;background:var(--alt);display:grid;place-items:center;overflow:hidden;position:relative}
 .g h3{font-size:19px;margin:12px 0 2px;letter-spacing:-.01em}.g h3 b{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--ink);color:var(--bg);font-size:13px;margin-right:6px;vertical-align:1px}
 .g p{margin:0;color:var(--ink2);font-size:14px}
-.gi{width:52px;height:52px;border-radius:12px;background:linear-gradient(160deg,#9aa3b2,#5d6573);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:700}
+.gi{min-width:52px;height:52px;padding:0 8px;border-radius:12px;background:linear-gradient(160deg,#9aa3b2,#5d6573);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:700}
 .gi.app{background:none}.gi.app img{width:52px;height:52px;border-radius:12px}
 .drag{display:flex;align-items:center;gap:14px}
-.drag .fo{width:52px;height:52px;border-radius:12px;background:#4aa8ff;display:grid;place-items:center;color:#fff;font-size:10px;font-weight:700;text-align:center;line-height:1.1}
+.drag .fo{min-width:52px;height:52px;padding:0 8px;border-radius:12px;background:#4aa8ff;display:grid;place-items:center;color:#fff;font-size:10px;font-weight:700;text-align:center;line-height:1.1}
 .drag .gi.app{animation:go 4s infinite}
 @keyframes go{0%,15%{transform:translateX(-34px)}55%,100%{transform:translateX(26px);opacity:.4}}
 .rs{font-size:12px;line-height:1.35;text-align:left;padding:10px;background:#ececf0;border-radius:10px;color:#1d1d1f;max-width:170px}
@@ -256,8 +256,8 @@ details.t .lk-inst .lk-lead{margin-top:0}
     <div class="g"><div class="gv"><div class="drag"><div class="gi app"><img src="captures/icone.png" alt="" width="52" height="52"></div><div class="fo">Applications</div></div></div><h3><b>2</b>Glisser</h3><p>Pince dans Applications.</p></div>
     <div class="g"><div class="gv"><div class="rs">Réglages Système › Confidentialité et sécurité<i>Ouvrir quand même</i></div></div><h3><b>3</b>Confirmer</h3><p>Une seule fois, au premier lancement.</p></div>
   </div>
-  <p class="risk" style="padding:0 16px 8px"><b>Signée, mais pas vérifiée par Apple</b> (compte payant) : macOS demande une confirmation, et le mot de passe de votre Mac, la première fois.</p>
   </details>
+  <p class="risk"><b>Signée, mais pas vérifiée par Apple</b> (compte payant) : macOS demande une confirmation, et le mot de passe de votre Mac, la première fois.</p>
   <details class="t"><summary>Par Terminal (installe et met à jour tout seul) · si macOS bloque</summary>
     <p class="tn">Une commande à copier : elle vérifie la signature de l'app, l'installe dans votre dossier Applications sans mot de passe administrateur, et se relance pour mettre à jour. <a href="https://github.com/LucasHRCHatReply/pince-releases/blob/main/installer.sh">Lire le script</a> avant de l'exécuter.</p>
 <div id="terminal" data-lucashi-installation data-nom="Pince" data-depot="LucasHRCHatReply/pince-releases" data-couleur="#0068BF" data-icone="captures/icone.png" data-dmg="Pince.dmg" data-requis='["macOS 15 ou plus","Mac à puce Apple (M1 ou plus récent)","Aucun compte à créer"]'></div>
