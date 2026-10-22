@@ -314,7 +314,9 @@ section.s{padding:48px 0}
 .macnote{display:none}
 @media(max-width:600px){.macnote{display:block;margin-top:12px;font-size:14px;color:var(--ink2)}.steps .step .vis{min-height:30px}section.s{padding:36px 0}.show .tabs button{flex:1 1 40%}}
 @media(prefers-reduced-motion:reduce){.mbar b::before,.show .pane.on{animation:none}.show .tabs button.on.run i{animation:none;width:100%}}
+@media(max-width:860px){.show .shot{overflow:hidden}.show .shot img{width:100%;min-width:0;max-width:100%}}
 @media(max-width:600px){.why{grid-template-columns:1fr 1fr;gap:10px}.why .tile{padding:14px}.why .tile p{font-size:13px}.why .tile h3{font-size:15px}.why .ic2{width:30px;height:30px}.compat .card{padding:16px}.step{padding:16px}}
+.lk-rep{margin:22px 0;border:1px solid var(--lk-line);border-radius:14px;padding:4px 18px}.lk-rep summary{cursor:pointer;font-weight:650;padding:12px 0;font-size:17px}.lk-rep[open] summary{margin-bottom:6px}
 </style>
 </head>
 <body id="top">
@@ -329,7 +331,7 @@ section.s{padding:48px 0}
   <p class="lead">Jauge arrête la charge au niveau que vous choisissez, et montre quelle app consomme. Une batterie qui s'use moins vite.</p>
   <div class="row"><a class="btn" href="#installer">Installer Jauge</a><a class="btn-o" href="#voir">Voir en 30 secondes</a></div>
   <div class="free"><span><b>Gratuit</b>, sans compte</span><span>·</span><span>Version 1.7.3</span><span>·</span><span>MacBook à puce Apple, macOS 26+</span></div>
-  <p class="def">Rester à 100&nbsp;% sur secteur use la batterie. <b>Un cycle</b> = l'équivalent d'une charge complète ; Jauge en évite.</p>
+  <p class="def">Rester à 100&nbsp;% sur secteur use la batterie. <b>Un cycle</b> = l'équivalent d'une charge de 0 à 100 %. Moins de cycles, c'est moins d'usure.</p>
   <p class="macnote">Jauge est une app Mac : ouvrez cette page sur votre MacBook pour l'installer.</p>
   </div>
   <div class="stagecol"><span class="mbar" aria-hidden="true"><b></b>80 %<small style="color:var(--pink2)">&nbsp;· barre des menus</small></span>
@@ -379,11 +381,12 @@ section.s{padding:48px 0}
 <section class="s alt" id="aussi"><div class="wrap">
   <div class="rv"><div class="eyebrow">Ce qui la rend différente</div><h2>Discrète, honnête, et elle garde la main.</h2></div>
   <div class="why">
-    <div class="tile rv"><div class="ic2"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="16" height="10" rx="2"/><path d="M21 10v4M7 12h6"/></svg></div><h3>Elle tient la limite, app fermée</h3><p>Un petit démon applique la limite en arrière-plan ; macOS vous demande de l'approuver une fois.</p></div>
+    <div class="tile rv"><div class="ic2"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="16" height="10" rx="2"/><path d="M21 10v4M7 12h6"/></svg></div><h3>Elle tient la limite, app fermée</h3><p>Un petit programme de fond (un « démon ») applique la limite, même Jauge fermée. macOS vous demande de l'approuver une fois.</p></div>
     <div class="tile rv"><div class="ic2"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div><h3>Rien ne sort du Mac</h3><p>Aucun compte, aucune donnée envoyée. L'historique reste lisible par vous seul.</p></div>
     <div class="tile rv"><div class="ic2"><svg viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0-6 6c0 4 6 11 6 11s6-7 6-11a6 6 0 0 0-6-6z"/><circle cx="12" cy="9" r="2"/></svg></div><h3>Une alerte, un geste</h3><p>App lourde, veille empêchée, chaleur : chaque alerte propose <b>Quitter l'app</b> ou <b>Ne plus prévenir</b>.</p></div>
     <div class="tile rv"><div class="ic2"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><h3>Des plages horaires</h3><p>Une limite pour la semaine, une autre pour le dimanche soir.</p></div>
   </div>
+  <p class="safe rv" style="margin-top:22px"><b>Vous utilisez AlDente ?</b> Jauge garde l'essentiel (limite de charge, plages horaires, calibration) et y ajoute qui consomme et un cours de vingt fiches. Une seule app de limite à la fois : quittez l'autre.</p>
   <div class="chips2 rv"><small>Et aussi :</small>
     <span tabindex="0" data-tip="Pause de la charge au-dessus d'une température réglable, de 25 à 45 °C.">Protection thermique</span>
     <span tabindex="0" data-tip="La LED du connecteur suit ce que vous choisissez : macOS, la limite de Jauge, ou éteinte.">LED MagSafe</span>
@@ -522,6 +525,10 @@ Panel($('#heroPanel'),{limit:80,pct:64,controls:true,loop:true});
  sec.addEventListener('mouseenter',function(){clearTimeout(timer);tabs.forEach(function(b){b.classList.remove('run')})});
  sec.addEventListener('mouseleave',function(){if(!stopped&&!reduce)go(cur,false)});
  if('IntersectionObserver' in window&&!reduce){new IntersectionObserver(function(e){if(e[0].isIntersecting){if(!seen){seen=true;go(0,false)}}else{clearTimeout(timer)}},{threshold:.3}).observe(sec)}})();
+
+/* le kit monte son bloc ; on replie, côté page, la procédure « si macOS bloque » pour que la commande reste l'essentiel */
+(function(){function replier(){var el=$('#installer.lk-inst');if(!el||el.dataset.rep)return;var hs=$$('h3',el);if(hs.length<2)return;var deb=hs[1],fin=null;$$('h3',el).forEach(function(h){if(/Configuration requise/.test(h.textContent))fin=h});if(!fin)return;el.dataset.rep=1;var d=document.createElement('details');d.className='lk-rep';d.innerHTML='<summary>Plutôt le .dmg ? Si macOS bloque l\'app</summary>';var n=deb;while(n&&n!==fin){var nx=n.nextSibling;d.appendChild(n);n=nx}el.insertBefore(d,fin)}
+ replier();addEventListener('load',replier);setTimeout(replier,300)})();
 /* révélation immédiate des blocs visibles, au chargement et après une ancre */
 function reveal(){$$('.rv:not(.in)').forEach(function(n){var r=n.getBoundingClientRect();if(r.top<innerHeight*1.1&&r.bottom>-innerHeight*0.2){n.style.transition='none';n.classList.add('in');requestAnimationFrame(function(){n.style.transition=''})}})}
 reveal();addEventListener('hashchange',function(){reveal();setTimeout(reveal,60);setTimeout(reveal,400)});addEventListener('scroll',reveal,{passive:true});
