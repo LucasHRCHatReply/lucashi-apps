@@ -54,6 +54,10 @@
 
 /* avant le montage, le conteneur réserve la place : l'ancre ne saute pas */
 [data-lucashi-installation]:empty{min-height:90vh}
+.lk-inst.lk-compact{padding:0;max-width:none}
+.lk-inst.lk-compact .lk-hint{margin:0 0 8px;color:var(--lk-ink2);font-size:15px}
+.lk-inst.lk-compact .lk-cmd{margin:0}
+.lk-inst.lk-compact pre{font-size:12.5px;padding:13px 15px}
 
 </style>
 <style>
@@ -316,44 +320,24 @@ section.s{padding:48px 0}
 @media(prefers-reduced-motion:reduce){.mbar b::before,.show .pane.on{animation:none}.show .tabs button.on.run i{animation:none;width:100%}}
 @media(max-width:860px){.show .shot{overflow:hidden}.show .shot img{width:100%;min-width:0;max-width:100%}}
 @media(max-width:600px){.why{grid-template-columns:1fr 1fr;gap:10px}.why .tile{padding:14px}.why .tile p{font-size:13px}.why .tile h3{font-size:15px}.why .ic2{width:30px;height:30px}.compat .card{padding:16px}.step{padding:16px}}
-.lk-rep{margin:22px 0;border:1px solid var(--lk-line);border-radius:14px;padding:4px 18px}.lk-rep summary{cursor:pointer;font-weight:650;padding:12px 0;font-size:17px}.lk-rep[open] summary{margin-bottom:6px}
 @media(max-width:860px){.show .shot{cursor:zoom-in}.show .shot.z{max-height:none;overflow-x:auto;cursor:zoom-out}.show .shot.z img{width:auto;min-width:880px;max-width:none}.show .shot.z::after{display:none}}
 @media(min-width:861px){.tz{display:none}}
 @media(max-width:600px){.lk-cmd pre{white-space:pre-wrap!important;word-break:break-all;font-size:12px}}
 /* ── passe du 22/10/2026 (2) : .dmg d'abord, téléphone, boutons montrés ── */
 .btn-send{display:none}
-@media(max-width:767px){.dl-d{display:none!important}.btn-send{display:inline-block}.hero .row .btn-o{display:none}}
+@media(max-width:767px){.dl-d{display:none!important}.btn-send{display:inline-block}.hero .row .voir{display:none}}
+.hero .lk-compact{margin:4px 0 12px;max-width:640px;padding:0}
+.hero .lk-compact .lk-cmd pre{white-space:pre-wrap!important;word-break:break-all;font-size:13px}
+.lk-rep2{margin:18px 0;border:1px solid var(--line);border-radius:14px;padding:4px 16px}.lk-rep2 summary{cursor:pointer;font-weight:650;padding:12px 0}
+.hero .row.sec{margin-top:0;gap:10px 18px;align-items:center}
+.hero .row.sec a{font-size:15px}
+.inst-note{margin:0 auto;max-width:70ch;border-left:3px solid var(--accent-text);padding:4px 0 4px 14px;color:var(--ink2);font-size:16px}
+@media(max-width:860px){.hero .lk-compact{margin-left:auto;margin-right:auto}}
 .btn.big{padding:14px 28px;font-size:18px}
 .sz{align-self:center;color:var(--ink3);font-size:14px}
 abbr[title]{text-decoration:underline dotted;text-underline-offset:3px;cursor:help}
-.inst-sub{color:var(--ink2);max-width:62ch;margin:0 0 18px}
-.inst-top{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin:6px 0 14px}
-.steps-d>summary{cursor:pointer;font-weight:650;color:var(--accent-text);padding:6px 0}
-@media(min-width:768px){.steps-d>summary{display:none}}
-.lk-inst.pg{padding:0;max-width:none;font-size:16px}
-.lk-inst.pg .lk-steps{margin:18px 0 8px}
-.dmgv{display:flex;align-items:center;gap:14px;color:#1d1d1f;font-size:12px;position:relative}
-.dmgv img{width:56px;height:56px;border-radius:13px;box-shadow:0 6px 16px -6px rgba(0,0,0,.5);animation:dglis 3.6s ease-in-out infinite}
-.dmgv .fold{width:86px;height:52px;border-radius:10px;background:#5fb0f5;color:#fff;font-weight:600;display:grid;place-items:end center;padding-bottom:4px;font-size:11px;box-shadow:0 6px 16px -8px rgba(0,0,0,.5)}
-.dmgv .gap{width:30px;border-top:2px dashed #8e8e93}
-@keyframes dglis{0%,15%{transform:translateX(0)}65%,100%{transform:translateX(96px) scale(.8);opacity:.4}}
-.tg{width:40px;height:23px;border-radius:12px;background:#c9c9ce;position:relative;animation:tgbg 4s ease-in-out infinite;flex:none}
-.tg::after{content:"";position:absolute;top:2px;left:2px;width:19px;height:19px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.4);animation:tgdot 4s ease-in-out infinite}
-@keyframes tgbg{0%,30%{background:#c9c9ce}50%,100%{background:#34c759}}
-@keyframes tgdot{0%,30%{left:2px}50%,100%{left:19px}}
-.lk-inst .tgrow{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px;border-radius:10px;background:#fff;font-weight:600;font-size:12.5px}
-@media(prefers-color-scheme:dark){.lk-inst .tgrow{background:#3a3a3f}.dmgv{color:#f5f5f7}}
 .risk{margin:6px 0 18px;max-width:70ch;border-left:3px solid var(--accent-text);padding:4px 0 4px 14px;color:var(--ink2);font-size:16px}
 .risk b{color:var(--ink)}
-.three{list-style:none;margin:6px 0 4px;padding:0;display:grid;gap:8px;color:var(--ink2);font-size:16px}
-.three li{position:relative;padding-left:24px}
-.three li::before{content:"";position:absolute;left:0;top:.5em;width:10px;height:10px;border-radius:50%;background:var(--accent-text)}
-.three+.il2{font-size:13px;color:var(--ink3)}
-.term-d{margin-top:22px;border:1px solid var(--line);border-radius:16px;background:var(--bg2);padding:4px 16px}
-.term-d>summary{cursor:pointer;font-weight:650;padding:12px 0}
-.term-d[open]>summary{border-bottom:1px solid var(--line);margin-bottom:10px}
-.term-d .lk-inst{padding:0}
-.term-d .lk-inst h2{font-size:24px}
 /* « Qui consomme » : écran refait en vrai texte, lisible à taille réelle */
 .qc{width:min(520px,100%);padding:18px;display:flex;flex-direction:column;gap:14px;font-size:15px;border-radius:18px}
 .qh{display:flex;justify-content:space-between;align-items:baseline;font-size:15px}.qh b{font-size:17px}.qh span{font:600 22px ui-rounded,-apple-system,sans-serif}
@@ -387,7 +371,7 @@ abbr[title]{text-decoration:underline dotted;text-underline-offset:3px;cursor:he
 @keyframes l3{0%,47%{opacity:.35}55%,92%{opacity:1}100%{opacity:.35}}
 @keyframes l4{0%,72%{opacity:.35}80%,92%{opacity:1}100%{opacity:.35}}
 .bd.cal .dots span:nth-child(-n+2)::before{background:var(--holding)}
-@media(prefers-reduced-motion:reduce){.dmgv img,.tg,.tg::after,.bd.full .bar2 i,.bd.dis .bar2 i,.bd.cal .dots span{animation:none}.tg{background:#34c759}.tg::after{left:19px}.bd.full .bar2 i{width:100%}.bd.dis .bar2 i{width:80%}.bd.cal .dots span{opacity:1}}
+@media(prefers-reduced-motion:reduce){.bd.full .bar2 i,.bd.dis .bar2 i,.bd.cal .dots span{animation:none}.bd.full .bar2 i{width:100%}.bd.dis .bar2 i{width:80%}.bd.cal .dots span{opacity:1}}
 /* concurrent */
 .vs{margin-top:26px;background:var(--bg);border:1px solid var(--line);border-radius:18px;padding:18px 22px}
 .vs h3{margin:0 0 10px;font-size:19px}
@@ -415,7 +399,9 @@ abbr[title]{text-decoration:underline dotted;text-underline-offset:3px;cursor:he
   <img class="hl" src="captures/icone.png" alt="Logo de Jauge : un J de verre vert, rempli comme une batterie" width="84" height="84">
   <h1>Votre MacBook branché ne reste plus à 100&nbsp;%.</h1>
   <p class="lead">Pour les MacBook à puce Apple : Jauge arrête la charge au niveau que vous choisissez, et montre quelle app consomme.</p>
-  <div class="row"><a class="btn big dl-d" href="https://github.com/LucasHRCHatReply/jauge-releases/releases/latest/download/Jauge.dmg">Télécharger Jauge</a><a class="btn big btn-send" data-send href="mailto:?subject=Jauge%20pour%20Mac&amp;body=Jauge%20pour%20Mac%20%3A%20https%3A%2F%2Fapps.srv875929.hstgr.cloud%2Fjauge%2F">M'envoyer le lien pour mon Mac</a><a class="btn-o" href="#voir">Voir en 30 secondes</a></div>
+  <div data-lucashi-installation data-compact data-nom="Jauge" data-depot="LucasHRCHatReply/jauge-releases" data-couleur="#16702D"></div>
+  <noscript><p class="def">Dans Terminal : <code>curl -fsSL https://raw.githubusercontent.com/LucasHRCHatReply/jauge-releases/main/installer.sh | zsh</code></p></noscript>
+  <div class="row sec"><a class="btn-o dl-d" href="https://github.com/LucasHRCHatReply/jauge-releases/releases/latest/download/Jauge.dmg">ou télécharger le .dmg</a><a class="btn-o btn-send" data-send href="mailto:?subject=Jauge%20pour%20Mac&amp;body=Jauge%20pour%20Mac%20%3A%20https%3A%2F%2Fapps.srv875929.hstgr.cloud%2Fjauge%2F">M'envoyer le lien pour mon Mac</a><a class="btn-o voir" href="#voir">Voir en 30 secondes</a></div>
   <div class="free"><span><b>Gratuit</b>, sans compte</span><span>·</span><span>Version 1.7.3</span><span>·</span><span>macOS 26 ou plus</span></div>
   <p class="def">Rester à 100&nbsp;% sur secteur use la batterie. Moins de <abbr title="Un cycle = l'équivalent d'une charge de 0 à 100 %">cycles</abbr> de charge (une charge de 0 à 100&nbsp;%), c'est moins d'usure.</p>
   </div>
@@ -471,30 +457,9 @@ abbr[title]{text-decoration:underline dotted;text-underline-offset:3px;cursor:he
   </div>
 </div></section>
 
-<section class="s alt" id="installer"><div class="wrap">
-  <div class="rv"><div class="eyebrow">Installer</div><h2>Le .dmg, trois gestes, une seule fois.</h2></div>
-  <p class="inst-sub">Gratuit, sans compte. Il faut un MacBook à puce Apple (M1 ou plus récent) et macOS 26 ou plus. Si AlDente tourne, quittez-le d'abord.</p>
-  <div class="inst-top"><a class="btn big dl-d" href="https://github.com/LucasHRCHatReply/jauge-releases/releases/latest/download/Jauge.dmg">Télécharger Jauge.dmg</a><a class="btn big btn-send" data-send href="mailto:?subject=Jauge%20pour%20Mac&amp;body=Jauge%20pour%20Mac%20%3A%20https%3A%2F%2Fapps.srv875929.hstgr.cloud%2Fjauge%2F">M'envoyer le lien pour mon Mac</a><span class="sz">Version 1.7.3 · 6,7 Mo</span></div>
-  <p class="risk"><b>Une confirmation la première fois.</b> Jauge est signée, mais pas vérifiée par Apple (compte payant) : macOS demande une confirmation au premier lancement.</p>
-  <details class="steps-d" open><summary>Voir les trois gestes pas à pas</summary>
-  <div class="lk-inst pg" style="--lk-c:#16702D">
-    <ol class="lk-steps">
-      <li tabindex="0"><div class="lk-vig" aria-hidden="true"><div class="dmgv"><img src="captures/icone.png" alt=""><span class="gap"></span><span class="fold">Applications</span></div></div><div class="lk-leg"><span class="lk-n">1</span>Ouvrir le .dmg, glisser Jauge dans Applications</div><p class="lk-det">Le .dmg s'ouvre comme un disque : tirez Jauge sur le dossier Applications.</p></li>
-      <li tabindex="0"><div class="lk-vig" aria-hidden="true"><div class="lk-mac lk-reg"><small>Confidentialité et sécurité</small><div class="lk-lg"><span>« Jauge » a été bloquée pour protéger votre Mac.</span><span class="lk-d">Ouvrir quand même</span></div></div></div><div class="lk-leg"><span class="lk-n">2</span>Au premier lancement : « Ouvrir quand même »</div><p class="lk-det">macOS refuse d'ouvrir l'app. Réglages Système › Confidentialité et sécurité, tout en bas : bouton « Ouvrir quand même » (macOS peut demander le mot de passe du Mac). Une seule fois.</p></li>
-      <li tabindex="0"><div class="lk-vig" aria-hidden="true"><div class="lk-mac lk-reg"><small>Ouverture et arrière-plan</small><div class="tgrow"><span>Jauge</span><span class="tg"></span></div></div></div><div class="lk-leg"><span class="lk-n">3</span>Activer Jauge en arrière-plan</div><p class="lk-det">Le panneau de Jauge affiche « Autoriser Jauge » avec un bouton qui ouvre les réglages. Sinon : Réglages Système › Général › Ouverture et arrière-plan, activer « Jauge ». Une seule fois.</p></li>
-    </ol>
-  </div>
-  <p style="margin:18px 0 6px;font-weight:650">Pourquoi le troisième geste ?</p>
-  <ul class="three">
-    <li>Pour tenir la limite même Jauge fermée, elle met en place un petit programme de fond (un « démon »).</li>
-    <li>macOS vous demande de l'approuver une fois, dans les Réglages Système ; Jauge elle-même ne demande aucun mot de passe d'administrateur.</li>
-    <li>Ce programme n'obéit qu'à Jauge signée par son auteur. Aucun compte, aucune donnée envoyée.</li>
-  </ul>
-  </details>
-  <details class="term-d"><summary>Par Terminal (installe et met à jour tout seul) · si macOS bloque</summary>
-    <p style="color:var(--ink2);margin:0 0 6px">Une commande qui installe, puis met à jour aux fois suivantes. Le script se lit en entier : <a href="https://github.com/LucasHRCHatReply/jauge-releases/blob/main/installer.sh" rel="noopener">installer.sh</a>.</p>
-    <div id="terminal" data-lucashi-installation data-nom="Jauge" data-depot="LucasHRCHatReply/jauge-releases" data-couleur="#16702D" data-icone="captures/icone.png" data-dmg="Jauge.dmg" data-requis='["MacBook à puce Apple (M1 ou plus récent)","macOS 26 ou plus","Quitter AlDente ou toute autre app de limite de charge","Aucun compte. Une approbation, une fois, dans Réglages Système › Ouverture et arrière-plan"]'></div>
-  </details>
+<section class="s alt" id="installation"><div class="wrap">
+  <div id="installer" data-lucashi-installation data-nom="Jauge" data-depot="LucasHRCHatReply/jauge-releases" data-couleur="#16702D" data-icone="captures/icone.png" data-dmg="Jauge.dmg" data-requis='["MacBook à puce Apple (M1 ou plus récent)","macOS 26 ou plus","Quitter AlDente ou toute autre app de limite de charge","Aucun compte. Une approbation, une fois, avec le mot de passe du Mac, dans Réglages Système › Ouverture et arrière-plan"]'></div>
+  <p class="inst-note"><b>Pourquoi cette approbation ?</b> Pour tenir la limite même Jauge fermée, elle ajoute un petit programme de fond. macOS demande de l'approuver une fois, dans Réglages Système, avec le mot de passe du Mac. Il n'obéit qu'à Jauge. Aucune donnée n'est envoyée.</p>
 </div></section>
 
 <section class="s" id="aussi"><div class="wrap">
@@ -553,7 +518,10 @@ abbr[title]{text-decoration:underline dotted;text-underline-offset:3px;cursor:he
         '<div class="lk-mac">' + ico + '<b>Ouvrir « ' + nom + ' » ?</b><p>Votre Mac ne peut pas vérifier cette app.</p><div class="lk-bt"><span>Annuler</span><span class="lk-d">Ouvrir quand même</span></div></div>']
     ];
     el.classList.add("lk-inst"); if (d.couleur) el.style.setProperty("--lk-c", d.couleur);
-    el.innerHTML =
+    // data-compact : la commande seule et son bouton Copier (premier écran de la page), sans titre ni .dmg ni notes.
+    if (d.compact !== undefined) el.classList.add("lk-compact");
+    el.innerHTML = d.compact !== undefined ?
+      '<p class="lk-hint">Dans Terminal, collez et appuyez sur Entrée. ' + nom + ' s\'installe seule.</p><div class="lk-cmd"><pre>' + esc(cmd) + '</pre><button class="lk-btn" type="button">Copier</button></div>' :
       '<h2>Installer.</h2><p class="lk-lead">Une commande, dans Terminal. Elle installe, et met à jour les fois suivantes.</p>' +
       (dmg ? '<h3><span class="lk-num">1</span> La commande <span class="lk-tag">Recommandée</span></h3>' : "") +
       '<div class="lk-cmd"><pre>' + esc(cmd) + '</pre><button class="lk-btn" type="button">Copier</button></div>' +
@@ -647,12 +615,10 @@ $$('.show .shot').forEach(function(x){x.addEventListener('click',function(){if(i
  sec.addEventListener('mouseleave',function(){if(!stopped&&!reduce)go(cur,false)});
  if('IntersectionObserver' in window&&!reduce){new IntersectionObserver(function(e){if(e[0].isIntersecting){if(!seen){seen=true;go(0,false)}}else{clearTimeout(timer)}},{threshold:.3}).observe(sec)}})();
 
+/* téléphone : les trois étapes du .dmg (vignettes) restent repliées, la commande reste l'essentiel */
+document.addEventListener('DOMContentLoaded',function(){if(!(window.matchMedia&&matchMedia('(max-width:767px)').matches))return;var o=$('#installer .lk-steps');if(!o)return;var d=document.createElement('details');d.className='lk-rep2';d.innerHTML='<summary>Voir les trois étapes du .dmg</summary>';o.parentNode.insertBefore(d,o);var n=o,fin=null;while(n){var nx=n.nextSibling;d.appendChild(n);if(n.classList&&n.classList.contains('lk-note'))break;n=nx}});
 /* partage du lien (téléphone) : navigator.share si disponible, sinon le lien mailto: du bouton */
 $$('[data-send]').forEach(function(a){a.addEventListener('click',function(e){if(navigator.share){e.preventDefault();navigator.share({title:'Jauge pour Mac',text:'Jauge pour Mac',url:location.origin+location.pathname}).catch(function(){})}})});
-/* téléphone : les gestes pas à pas restent repliés */
-(function(){var d=$('.steps-d');if(d&&window.matchMedia&&matchMedia('(max-width:767px)').matches)d.removeAttribute('open')})();
-/* arrivée par une ancre dans le bloc Terminal replié : on l'ouvre */
-(function(){if(location.hash==='#terminal'){var t=$('.term-d');if(t)t.open=true}})();
 /* révélation immédiate des blocs visibles, au chargement et après une ancre */
 function reveal(){$$('.rv:not(.in)').forEach(function(n){var r=n.getBoundingClientRect();if(r.top<innerHeight*1.1&&r.bottom>-innerHeight*0.2){n.style.transition='none';n.classList.add('in');requestAnimationFrame(function(){n.style.transition=''})}})}
 reveal();addEventListener('hashchange',function(){reveal();setTimeout(reveal,60);setTimeout(reveal,400)});addEventListener('scroll',reveal,{passive:true});

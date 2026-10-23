@@ -2083,6 +2083,10 @@ kbd{font:600 12px var(--font-sans);padding:3px 8px;border-radius:7px;background:
 
 /* avant le montage, le conteneur réserve la place : l'ancre ne saute pas */
 [data-lucashi-installation]:empty{min-height:90vh}
+.lk-inst.lk-compact{padding:0;max-width:none}
+.lk-inst.lk-compact .lk-hint{margin:0 0 8px;color:var(--lk-ink2);font-size:15px}
+.lk-inst.lk-compact .lk-cmd{margin:0}
+.lk-inst.lk-compact pre{font-size:12.5px;padding:13px 15px}
 
 
 /* ───────── Refonte 1.3.0 : page de 6 écrans ───────── */
@@ -2151,40 +2155,6 @@ kbd{font:600 12px var(--font-sans);padding:3px 8px;border-radius:7px;background:
 .x-know ul{margin:0;padding-left:20px;display:grid;gap:7px;color:var(--ink2);font-size:15.5px}
 .x-know b{color:var(--ink)}
 .x-know a{color:var(--lagon-ink)}
-#installer-dmg{margin-top:clamp(40px,7vh,72px);padding-bottom:clamp(48px,8vh,84px)}
-.x-dlrow{margin-top:22px;display:flex;gap:10px 18px;flex-wrap:wrap;align-items:center}
-.x-dlrow small{color:var(--ink2);font-size:14px}
-.x-btn.big{padding:17px 34px;font-size:19px}
-.x-gestes{margin-top:26px}
-.x-gestes>summary{font-weight:700;font-size:17px;cursor:pointer;list-style:none;display:none}
-.x-g3{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(14px,2.4vw,30px)}
-.x-g3 li{display:flex;flex-direction:column;gap:6px}
-.x-g3 b{font-size:17px;letter-spacing:-.01em}
-.x-g3 span{font-size:14.5px;color:var(--ink2)}
-.x-vg{aspect-ratio:16/10;border-radius:18px;background:var(--page);border:1px solid var(--line);display:grid;place-items:center;padding:12px;overflow:hidden}
-.x-disc{width:64px;height:78px;border-radius:12px;background:linear-gradient(#e9ecf2,#c9cfdb);border:1px solid #aab1c1;position:relative;box-shadow:0 8px 18px -8px rgba(8,12,40,.4)}
-.x-disc i{position:absolute;left:12px;right:12px;top:14px;height:34px;border-radius:8px;background:var(--lagon-fort)}
-.x-disc::after{content:".dmg";position:absolute;left:0;right:0;bottom:8px;text-align:center;font:700 12px var(--font-sans);color:#4a5163}
-.x-drag{display:flex;align-items:center;gap:10px}
-.x-app{width:52px;height:52px;border-radius:13px;background:linear-gradient(135deg,var(--lagon),var(--lagon-fort));box-shadow:0 6px 14px -6px rgba(8,12,40,.5);animation:x-glisse 3.2s ease-in-out infinite}
-.x-drag em{width:34px;height:3px;background:var(--ink2);border-radius:2px;position:relative;opacity:.7}
-.x-drag em::after{content:"";position:absolute;right:-2px;top:-5px;border-left:9px solid var(--ink2);border-top:6.5px solid transparent;border-bottom:6.5px solid transparent}
-.x-fold{padding:14px 12px 10px;border-radius:8px 8px 10px 10px;background:#7fb2f0;color:#06214a;font:700 11px var(--font-sans);position:relative}
-.x-fold::before{content:"";position:absolute;left:0;top:-7px;width:26px;height:9px;border-radius:5px 5px 0 0;background:#7fb2f0}
-@keyframes x-glisse{0%,15%{transform:translateX(0)}60%,100%{transform:translateX(30px);opacity:.85}}
-.x-mac{width:100%;max-width:210px;border-radius:12px;background:#ececf0;color:#1d1d1f;box-shadow:0 10px 24px -10px rgba(0,0,0,.45);padding:12px;font:11px/1.35 var(--font-sans);text-align:center}
-.x-mac b{display:block;font-size:12px;margin-bottom:8px;color:#1d1d1f;font-weight:700;letter-spacing:0}
-.x-mac .x-d{display:inline-block;padding:5px 10px;border-radius:7px;background:#0a7cff;color:#fff;font-size:11px;font-weight:600}
-.x-risk{margin-top:16px;font-size:15.5px;color:var(--ink);max-width:68ch}
-.x-risk span{border-bottom:1px dotted var(--ink2);cursor:help}
-.x-cli{margin-top:22px;border:1px solid var(--line);border-radius:16px;background:var(--page);padding:0 18px}
-.x-cli>summary{padding:15px 0;font-weight:600;cursor:pointer;font-size:16px}
-.x-cli[open]>summary{border-bottom:1px solid var(--line);margin-bottom:6px}
-.x-clilink{margin:10px 0 0;font-size:15px}
-.x-clilink a{color:var(--lagon-ink);font-weight:600}
-.x-cli [data-lucashi-installation]{margin:0 -20px;padding-bottom:10px}
-.x-cli [data-lucashi-installation]:empty{min-height:0}
-#installer-dmg .x-upgrade{margin:22px 0 0;max-width:62ch}
 @media(max-width:1000px){
   .x-hero-grid{grid-template-columns:1fr;padding-top:78px;gap:22px}
   .x-hero-grid .x-heart{align-items:center;text-align:center}
@@ -2203,14 +2173,19 @@ kbd{font:600 12px var(--font-sans);padding:3px 8px;border-radius:7px;background:
   .x-hero-grid .x-cta{margin-top:12px}
   .x-free{margin-top:10px}
   .x-hero-scene .x-sim{height:330px}
-  .x-gestes>summary{display:list-item;cursor:pointer;padding:12px 16px;border:1px solid var(--line);border-radius:14px;background:var(--page)}
-  .x-gestes[open]>summary{margin-bottom:14px}
-  .x-g3{grid-template-columns:1fr}
   .x-vs>div{grid-template-columns:1fr;gap:2px}
-  .x-cli{padding:0 14px}
-  .x-cli [data-lucashi-installation]{margin:0 -14px}
 }
-@media(prefers-reduced-motion:reduce){.x-app{animation:none}}
+.x-herocmd{margin-top:18px;max-width:520px;width:100%;text-align:left}
+.x-herocmd [data-lucashi-installation]:empty{min-height:0}
+.x-herocmd .lk-inst{--lk-ink:#fff;--lk-ink2:rgba(255,255,255,.88);--lk-code:rgba(6,16,32,.72);text-shadow:0 1px 10px rgba(0,0,30,.6)}
+.x-herocmd .lk-inst.lk-compact .lk-hint{color:#fff;font-weight:500}
+.x-herocmd .lk-inst pre{box-shadow:inset 0 0 0 1px rgba(255,255,255,.28);text-shadow:none}
+.x-herocmd noscript pre{margin:0;padding:13px 15px;border-radius:14px;background:rgba(6,16,32,.72);color:#fff;font:12.5px/1.5 ui-monospace,"SF Mono",Menlo,monospace;white-space:pre-wrap;word-break:break-all}
+.x-hero-grid .x-herocmd+.x-cta{margin-top:14px}
+.x-dmglink{color:#fff;font-weight:600;font-size:15px;text-decoration:underline;text-underline-offset:3px;text-shadow:0 1px 8px rgba(0,0,30,.6)}
+#installer-bloc{padding:clamp(40px,7vh,72px) 0 clamp(48px,8vh,84px)}
+#installer-bloc noscript pre{margin:0 20px;padding:16px 18px;border-radius:14px;background:#1c1c1e;color:#f5f5f7;font:13.5px/1.5 ui-monospace,"SF Mono",Menlo,monospace;white-space:pre-wrap;word-break:break-all}
+#installer-bloc .x-upgrade{margin:22px auto 0;max-width:980px;padding:0 20px;box-sizing:border-box}
 .x-card .x-fig{width:100%}
 .x-photo{width:100%}
 </style>
@@ -2222,10 +2197,9 @@ kbd{font:600 12px var(--font-sans);padding:3px 8px;border-radius:7px;background:
   <nav class="x-nav" aria-label="Navigation">
     <span style="font-size:16px;font-weight:700;letter-spacing:-.02em">Filoir</span>
     <span class="x-links">
-      <a href="https://app.lucashi.fr/">Toutes les apps</a>
+      <a href="../">Toutes les apps</a>
       <a href="#gestes">Comment ça marche</a>
-      <a href="#installer-dmg">Installer</a>
-      <a class="x-dl x-desk" href="https://github.com/LucasHRCHatReply/filoir-releases/releases/latest/download/Filoir.dmg">Télécharger</a>
+      <a class="x-dl" href="#installer">Installer</a>
     </span>
   </nav>
   <div class="x-hero-grid">
@@ -2235,9 +2209,10 @@ kbd{font:600 12px var(--font-sans);padding:3px 8px;border-radius:7px;background:
       <p class="x-tag">Secouez. Déposez.</p>
       <p class="x-lead">Pour Mac : secouez un fichier, une petite fenêtre de verre (le « filoir ») s'ouvre sous le curseur. Déposez-y vos fichiers, puis rangez-les, convertissez-les ou envoyez-les en un clic.</p>
       <span class="x-free">Gratuit, sans compte</span>
+      <div class="x-herocmd"><div id="installer-cmd" data-lucashi-installation data-compact data-nom="Filoir" data-depot="LucasHRCHatReply/filoir-releases" data-couleur="#0a7f90"></div><noscript><pre>curl -fsSL https://raw.githubusercontent.com/LucasHRCHatReply/filoir-releases/main/installer.sh | zsh</pre></noscript></div>
       <div class="x-cta">
-        <a class="x-btn p x-desk" href="https://github.com/LucasHRCHatReply/filoir-releases/releases/latest/download/Filoir.dmg">Télécharger pour Mac</a>
-        <a class="x-btn p x-mob x-envoi" href="mailto:?subject=Filoir%20pour%20Mac&amp;body=https%3A%2F%2Fapps.srv875929.hstgr.cloud%2Ffiloir%2F">M'envoyer le lien pour mon Mac</a>
+        <a class="x-dmglink x-desk" href="#installer">ou télécharger le .dmg</a>
+        <a class="x-btn s x-mob x-envoi" href="mailto:?subject=Filoir%20pour%20Mac&amp;body=https%3A%2F%2Fapps.srv875929.hstgr.cloud%2Ffiloir%2F">M'envoyer le lien</a>
         <a class="x-btn s x-desk" href="#gestes">Voir comment ça marche</a>
       </div>
       <small class="x-note">Mac à puce Apple · macOS 26 ou plus · version 1.3.0</small>
@@ -2259,7 +2234,7 @@ kbd{font:600 12px var(--font-sans);padding:3px 8px;border-radius:7px;background:
     <a href="#gestes">Comment ça marche</a>
     <a href="#dropover">Si vous utilisez Dropover</a>
     <a href="#confiance">À savoir</a>
-    <a href="#installer-dmg">Installer</a>
+    <a href="#installer">Installer</a>
   </div>
 </nav>
 
@@ -2434,39 +2409,18 @@ kbd{font:600 12px var(--font-sans);padding:3px 8px;border-radius:7px;background:
   </div>
 </section>
 
-<!-- ═════════ 5 · Installer : le .dmg d'abord ═════════ -->
-<section class="x-sec alt" id="installer-dmg">
-  <div class="x-wrap">
-    <span class="x-eyebrow rv">Installer</span>
-    <h2 class="x-h2 s rv">Prêt en deux minutes.</h2>
-    <div class="x-dlrow rv">
-      <a class="x-btn p big x-desk" href="https://github.com/LucasHRCHatReply/filoir-releases/releases/latest/download/Filoir.dmg">Télécharger Filoir.dmg</a>
-      <a class="x-btn p big x-mob x-envoi" href="mailto:?subject=Filoir%20pour%20Mac&amp;body=https%3A%2F%2Fapps.srv875929.hstgr.cloud%2Ffiloir%2F">M'envoyer le lien pour mon Mac</a>
-      <small>Gratuit, sans compte · version 1.3.0</small>
-    </div>
-    <details class="x-gestes rv" open>
-      <summary>Les trois gestes</summary>
-      <ol class="x-g3">
-        <li><div class="x-vg" aria-hidden="true"><div class="x-disc"><i></i></div></div><b>Ouvrez le .dmg</b><span>Double-clic sur Filoir.dmg dans Téléchargements.</span></li>
-        <li><div class="x-vg" aria-hidden="true"><div class="x-drag"><span class="x-app"></span><em></em><span class="x-fold">Applications</span></div></div><b>Glissez dans Applications</b><span>Un geste, comme pour toute app.</span></li>
-        <li><div class="x-vg" aria-hidden="true"><div class="x-mac"><b>« Filoir » n'a pas été ouverte</b><span class="x-d">Ouvrir quand même</span></div></div><b>La première fois : « Ouvrir quand même »</b><span>Réglages Système › Confidentialité et sécurité, une seule fois.</span></li>
-      </ol>
-      <p class="x-risk">Filoir est signée, mais <span title="Apple contrôle les apps de ses développeurs inscrits (compte payant) et leur donne un tampon, la « notarisation ». Filoir est signée, sans ce tampon.">pas vérifiée par Apple (compte payant)</span> : macOS demande une confirmation la première fois.</p>
-    </details>
-    <details class="x-cli" id="terminal">
-      <summary>Par Terminal (installe et met à jour tout seul) · si macOS bloque</summary>
-      <p class="x-clilink">Le script se lit en entier : <a href="https://github.com/LucasHRCHatReply/filoir-releases/blob/main/installer.sh" rel="noopener">installer.sh</a></p>
+<!-- ═════════ 5 · Installer : bloc commun lucashi-kit, tel quel (la commande avant le .dmg) ═════════ -->
+<section class="x-sec alt" id="installer-bloc">
 <div id="installer" data-lucashi-installation
      data-nom="Filoir" data-depot="LucasHRCHatReply/filoir-releases" data-couleur="#0a7f90"
      data-icone="data:image/webp;base64,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" data-dmg="Filoir.dmg"
      data-requis='["macOS 26 ou plus","Mac à puce Apple (M1 ou plus récent)"]'></div>
-    </details>
-    <p class="x-upgrade rv"><b>Vous aviez Tiroir (1.0) ?</b> Filoir reprend vos filoirs et réglages au premier lancement.</p>
-  </div>
+<noscript><pre>curl -fsSL https://raw.githubusercontent.com/LucasHRCHatReply/filoir-releases/main/installer.sh | zsh</pre></noscript>
+    <p class="x-upgrade rv"><b>Vous aviez T&#105;roir (1.0) ?</b> Filoir reprend vos filoirs et réglages au premier lancement.</p>
 </section>
 
 <footer class="x-foot">
-  <div class="x-wrap">Filoir 1.3.0 · scènes dessinées d'après l'app · <a href="https://app.lucashi.fr/">Toutes les apps</a></div>
+  <div class="x-wrap">Filoir 1.3.0 · scènes dessinées d'après l'app · <a href="../">Toutes les apps</a></div>
 </footer>
 
 
@@ -3276,7 +3230,10 @@ kbd{font:600 12px var(--font-sans);padding:3px 8px;border-radius:7px;background:
         '<div class="lk-mac">' + ico + '<b>Ouvrir « ' + nom + ' » ?</b><p>Votre Mac ne peut pas vérifier cette app.</p><div class="lk-bt"><span>Annuler</span><span class="lk-d">Ouvrir quand même</span></div></div>']
     ];
     el.classList.add("lk-inst"); if (d.couleur) el.style.setProperty("--lk-c", d.couleur);
-    el.innerHTML =
+    // data-compact : la commande seule et son bouton Copier (premier écran de la page), sans titre ni .dmg ni notes.
+    if (d.compact !== undefined) el.classList.add("lk-compact");
+    el.innerHTML = d.compact !== undefined ?
+      '<p class="lk-hint">Dans Terminal, collez et appuyez sur Entrée. ' + nom + ' s\'installe seule.</p><div class="lk-cmd"><pre>' + esc(cmd) + '</pre><button class="lk-btn" type="button">Copier</button></div>' :
       '<h2>Installer.</h2><p class="lk-lead">Une commande, dans Terminal. Elle installe, et met à jour les fois suivantes.</p>' +
       (dmg ? '<h3><span class="lk-num">1</span> La commande <span class="lk-tag">Recommandée</span></h3>' : "") +
       '<div class="lk-cmd"><pre>' + esc(cmd) + '</pre><button class="lk-btn" type="button">Copier</button></div>' +
@@ -3387,10 +3344,6 @@ kbd{font:600 12px var(--font-sans);padding:3px 8px;border-radius:7px;background:
   [].forEach.call(document.querySelectorAll(".x-envoi"),function(a){a.addEventListener("click",function(e){
     if(navigator.share){e.preventDefault();navigator.share({title:"Filoir pour Mac",text:"Filoir pour Mac",url:url}).catch(function(){});}
   });});
-  var g=document.querySelector(".x-gestes");
-  if(g&&matchMedia("(max-width:767px)").matches)g.removeAttribute("open");
-  var h=(location.hash||"").slice(1);
-  if(h==="installer"||h==="terminal"){var tm=document.getElementById("terminal");if(tm)tm.setAttribute("open","");}
 })();
 </script>
 </body>

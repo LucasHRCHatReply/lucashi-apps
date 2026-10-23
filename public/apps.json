@@ -17,11 +17,9 @@
       "page": "pince/",
       "depot": "LucasHRCHatReply/pince-releases",
       "zip": "Pince.zip",
-      "version": "1.3.0",
-      "source_page": "~/Pince/site",
-      "build_page": "python3 build.py",
+      "version": "1.4.1",
+      "source_page": "~/Pince/site-vente",
       "large": true,
-      "page_construite": "~/Downloads/Pince.html",
       "requis": [
         "macOS 15 ou plus (Liquid Glass natif sous macOS 26)",
         "Mac à puce Apple (M1 ou plus récent)",
@@ -51,13 +49,13 @@
       "page": "jauge/",
       "depot": "LucasHRCHatReply/jauge-releases",
       "zip": "Jauge.zip",
-      "version": "1.6.0",
+      "version": "1.7.3",
       "source_page": "~/Jauge/site",
       "requis": [
         "MacBook à puce Apple (M1 ou plus récent)",
         "macOS 26 ou plus",
         "Quitter AlDente ou toute autre app de limite de charge",
-        "Aucun compte, aucun mot de passe administrateur"
+        "Aucun compte. Le mot de passe du Mac est demandé une fois, pour autoriser l'aide de charge"
       ],
       "build_page": "python3 build.py",
       "page_construite": "~/Downloads/Jauge.html",
@@ -186,17 +184,40 @@
       "requis": [
         "Mac à puce Apple (M1 ou plus récent) avec un trackpad",
         "macOS 14 ou plus (essayée sur macOS 26)",
-        "Autorisation Accessibilité, une seule fois",
-        "Aucun compte, aucune télémétrie, aucun mot de passe"
+        "Autorisation Accessibilité, une seule fois (mot de passe ou Touch ID du Mac)",
+        "Aucun compte, aucune télémétrie"
       ],
       "depot": "LucasHRCHatReply/glisse-releases",
       "zip": "Glisse.zip",
-      "version": "0.3.0",
+      "version": "0.6.0",
       "source_page": "~/Swish/site",
       "build_page": "python3 build.py",
       "page_construite": "~/Downloads/Glisse.html",
       "dmg": "Glisse.dmg",
       "description": "Glisse ajoute des gestes à la barre de titre des fenêtres : deux ou trois doigts qui glissent ou pincent calent la fenêtre (moitiés, quarts, tiers, huitièmes), la passent en plein écran, la minimisent ou la ferment. Une affiche montre où elle ira avant que vous leviez les doigts. Version de test."
+    },
+    {
+      "id": "veillon",
+      "nom": "Veillon",
+      "phrase": "Le Mac sous les yeux : processeur, mémoire, disque, et un grand nettoyage.",
+      "couleur": "#84D896",
+      "icone": "assets/veillon-icon.png",
+      "captures": [
+        {
+          "src": "veillon/captures/apercu.png",
+          "alt": "L'aperçu de Veillon : processeur, mémoire, disque"
+        }
+      ],
+      "page": "veillon/",
+      "bientot": true,
+      "requis": [
+        "Mac à puce Apple",
+        "Disponible bientôt : pas encore de téléchargement"
+      ],
+      "description": "Veillon surveille le Mac depuis la barre des menus (processeur, mémoire, disque, réseau, batterie) et nettoie ce qui encombre. Il arrive bientôt.",
+      "source_page": "~/Vigie/site",
+      "build_page": "python3 build.py",
+      "page_construite": "~/Downloads/Veillon.html"
     }
   ]
 }
