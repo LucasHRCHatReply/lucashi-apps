@@ -17,7 +17,7 @@
       "page": "pince/",
       "depot": "LucasHRCHatReply/pince-releases",
       "zip": "Pince.zip",
-      "version": "1.4.2",
+      "version": "1.4.3",
       "source_page": "~/Pince/site-vente",
       "large": true,
       "requis": [
@@ -49,7 +49,7 @@
       "page": "jauge/",
       "depot": "LucasHRCHatReply/jauge-releases",
       "zip": "Jauge.zip",
-      "version": "1.7.4",
+      "version": "1.7.5",
       "source_page": "~/Jauge/site",
       "requis": [
         "MacBook à puce Apple (M1 ou plus récent)",
@@ -86,7 +86,7 @@
       "page": "penombre/",
       "depot": "LucasHRCHatReply/penombre-releases",
       "zip": "Penombre.zip",
-      "version": "1.4.0",
+      "version": "1.4.1",
       "source_page": "~/Penombre/site",
       "requis": [
         "Mac à puce Apple (M1 ou plus récent)",
@@ -189,7 +189,7 @@
       ],
       "depot": "LucasHRCHatReply/glisse-releases",
       "zip": "Glisse.zip",
-      "version": "0.6.2",
+      "version": "0.6.3",
       "source_page": "~/Swish/site",
       "build_page": "python3 build.py",
       "page_construite": "~/Downloads/Glisse.html",
@@ -220,7 +220,7 @@
       "page_construite": "~/Downloads/Veillon.html",
       "depot": "LucasHRCHatReply/veillon-releases",
       "zip": "Veillon.zip",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "dmg": "Veillon.dmg"
     }
   ]
