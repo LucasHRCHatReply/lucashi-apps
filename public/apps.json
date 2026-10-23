@@ -209,15 +209,19 @@
         }
       ],
       "page": "veillon/",
-      "bientot": true,
       "requis": [
         "Mac à puce Apple",
-        "Disponible bientôt : pas encore de téléchargement"
+        "macOS 26 ou plus",
+        "Aucun compte, aucune télémétrie"
       ],
-      "description": "Veillon surveille le Mac depuis la barre des menus (processeur, mémoire, disque, réseau, batterie) et nettoie ce qui encombre. Il arrive bientôt.",
+      "description": "Veillon surveille le Mac depuis la barre des menus (processeur, mémoire, disque, réseau, batterie) et nettoie ce qui encombre. Version 0.1.0.",
       "source_page": "~/Vigie/site",
       "build_page": "python3 build.py",
-      "page_construite": "~/Downloads/Veillon.html"
+      "page_construite": "~/Downloads/Veillon.html",
+      "depot": "LucasHRCHatReply/veillon-releases",
+      "zip": "Veillon.zip",
+      "version": "0.1.0",
+      "dmg": "Veillon.dmg"
     }
   ]
 }
