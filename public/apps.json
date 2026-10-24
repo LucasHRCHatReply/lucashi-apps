@@ -222,6 +222,42 @@
       "zip": "Veillon.zip",
       "version": "0.3.0",
       "dmg": "Veillon.dmg"
+    },
+    {
+      "id": "lueur",
+      "nom": "Lueur",
+      "phrase": "Le rétroéclairage du clavier, depuis la barre des menus.",
+      "couleur": "#F2A93B",
+      "icone": "assets/lueur-icon.png?v=20261024",
+      "captures": [
+        {
+          "src": "lueur/captures/clavier.jpg",
+          "alt": "Lueur : le didacticiel, clavier allumé, raccourci Ctrl Option L"
+        },
+        {
+          "src": "lueur/captures/menu.jpg",
+          "alt": "Le menu de Lueur : curseur de luminosité, Allumé, Ouvrir Lueur, Quitter"
+        },
+        {
+          "src": "lueur/captures/luminosite.jpg",
+          "alt": "Lueur : la page Luminosité, niveau en 16 pas"
+        }
+      ],
+      "page": "lueur/",
+      "depot": "LucasHRCHatReply/lueur-releases",
+      "zip": "Lueur.zip",
+      "version": "0.1.0",
+      "source_page": "~/Lueur/site",
+      "requis": [
+        "Mac à puce Apple (M1 ou plus récent), clavier rétroéclairé",
+        "macOS 14 ou plus (essayée sur macOS 26.6)",
+        "Surveillance de la saisie, facultative : réveil à la frappe",
+        "Aucun compte, aucune télémétrie, aucun mot de passe administrateur"
+      ],
+      "build_page": "python3 build.py",
+      "page_construite": "~/Downloads/Lueur.html",
+      "dmg": "Lueur.dmg",
+      "description": "Lueur règle le rétroéclairage du clavier de votre MacBook depuis la barre des menus : curseur de luminosité, raccourcis, délai d'extinction, jamais éteint la nuit. Si macOS reprend la main, Lueur réimpose votre réglage."
     }
   ]
 }
