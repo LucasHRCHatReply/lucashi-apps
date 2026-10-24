@@ -220,7 +220,7 @@
       "page_construite": "~/Downloads/Veillon.html",
       "depot": "LucasHRCHatReply/veillon-releases",
       "zip": "Veillon.zip",
-      "version": "0.3.0",
+      "version": "0.4.0",
       "dmg": "Veillon.dmg"
     },
     {
@@ -246,7 +246,7 @@
       "page": "lueur/",
       "depot": "LucasHRCHatReply/lueur-releases",
       "zip": "Lueur.zip",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "source_page": "~/Lueur/site",
       "requis": [
         "Mac à puce Apple (M1 ou plus récent), clavier rétroéclairé",
