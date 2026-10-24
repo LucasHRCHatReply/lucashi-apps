@@ -258,6 +258,39 @@
       "page_construite": "~/Downloads/Lueur.html",
       "dmg": "Lueur.dmg",
       "description": "Lueur règle le rétroéclairage du clavier de votre MacBook depuis la barre des menus : curseur de luminosité, raccourcis, délai d'extinction, jamais éteint la nuit. Si macOS reprend la main, Lueur réimpose votre réglage."
+    },
+    {
+      "id": "corolle",
+      "nom": "Corolle",
+      "phrase": "Glissez un fichier : une roue d'actions s'ouvre sous le curseur.",
+      "couleur": "#F2762E",
+      "icone": "assets/corolle-icon.png?v=20261024",
+      "captures": [
+        {
+          "src": "corolle/captures/roue.jpg",
+          "sombre": "corolle/captures/roue-sombre.jpg",
+          "alt": "La roue de Corolle : huit parts pour une image"
+        },
+        {
+          "src": "corolle/captures/parts.jpg",
+          "alt": "Onglet Parts : favoris et carrousel"
+        }
+      ],
+      "page": "corolle/",
+      "depot": "LucasHRCHatReply/corolle-releases",
+      "zip": "Corolle.zip",
+      "version": "0.1.0",
+      "source_page": "~/Corolle/site",
+      "requis": [
+        "Mac à puce Apple (M1 ou plus récent), avec trackpad",
+        "macOS 14 ou plus",
+        "Trois autorisations facultatives, chacune pour une part (voix, Office, Fichiers et dossiers)",
+        "Aucun compte, aucune télémétrie, aucun mot de passe administrateur"
+      ],
+      "build_page": "python3 build.py",
+      "page_construite": "~/Downloads/Corolle.html",
+      "dmg": "Corolle.dmg",
+      "description": "Corolle ouvre une roue de huit actions sous le curseur quand vous glissez un fichier et appuyez sur Maj : convertir, alléger, extraire, zipper. Le résultat apparaît à côté de l'original, le trackpad vibre à chaque part."
     }
   ]
 }
