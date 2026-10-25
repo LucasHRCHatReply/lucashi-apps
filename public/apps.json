@@ -279,7 +279,7 @@
       "page": "corolle/",
       "depot": "LucasHRCHatReply/corolle-releases",
       "zip": "Corolle.zip",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "source_page": "~/Corolle/site",
       "requis": [
         "Mac à puce Apple (M1 ou plus récent), avec trackpad",
