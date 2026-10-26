@@ -49,7 +49,7 @@
       "page": "jauge/",
       "depot": "LucasHRCHatReply/jauge-releases",
       "zip": "Jauge.zip",
-      "version": "1.8.0",
+      "version": "1.8.1",
       "source_page": "~/Jauge/site",
       "requis": [
         "MacBook à puce Apple (M1 ou plus récent)",
