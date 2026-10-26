@@ -189,7 +189,7 @@
       ],
       "depot": "LucasHRCHatReply/glisse-releases",
       "zip": "Glisse.zip",
-      "version": "0.6.3",
+      "version": "0.7.0",
       "source_page": "~/Swish/site",
       "build_page": "python3 build.py",
       "page_construite": "~/Downloads/Glisse.html",
