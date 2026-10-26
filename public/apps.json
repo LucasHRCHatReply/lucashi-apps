@@ -315,6 +315,15 @@
       "icone": "assets/relais-icon.svg",
       "page": "relais/",
       "description": "Relais relie l'iPhone et les Mac par un serveur privé : notifications par projet, réponses d'un geste, fichiers dans les deux sens. En construction."
+    },
+    {
+      "id": "relief",
+      "nom": "Relief",
+      "phrase": "Votre montre Garmin lue par le câble, sans compte.",
+      "couleur": "#84D896",
+      "icone": "assets/relief-icon.svg",
+      "page": "relief/",
+      "description": "Relief lit la montre Garmin par USB et garde les activités sur le Mac, sans Garmin Connect. Première version très légère, à enrichir."
     }
   ]
 }
