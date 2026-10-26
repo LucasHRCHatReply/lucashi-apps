@@ -78,7 +78,7 @@
       grille.appendChild(t); if (a.depot) copier(t.querySelector("[data-copier]"), a); version(a, t);
     });
     const bande = document.getElementById("bande");
-    const caps = data.apps.flatMap(a => a.captures.map(c => ({ a, c })));
+    const caps = data.apps.flatMap(a => (a.captures || []).map(c => ({ a, c })));
     if (bande && caps.length) bande.innerHTML = caps.map(({ a, c }) => `<a class="vue" href="${esc(a.page)}" style="--c:${a.couleur}">${img(c)}<span>${esc(a.nom)}</span></a>`).join("");
     else if (bande) bande.closest("section").remove();
     reveler(); mouvement();
