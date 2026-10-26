@@ -291,6 +291,30 @@
       "page_construite": "~/Downloads/Corolle.html",
       "dmg": "Corolle.dmg",
       "description": "Corolle ouvre une roue de huit actions sous le curseur quand vous glissez un fichier et appuyez sur Maj : convertir, alléger, extraire, zipper. Le résultat apparaît à côté de l'original, le trackpad vibre à chaque part."
+    },
+    {
+      "id": "releve",
+      "nom": "Relève",
+      "phrase": "Toutes mes apps à jour d'un coup, sans jamais casser l'ancienne.",
+      "couleur": "#23CC99",
+      "icone": "assets/releve-icon.png?v=20261026",
+      "page": "releve/",
+      "preversion": true,
+      "requis": [
+        "Mac à puce Apple ou Intel",
+        "macOS 14 ou plus",
+        "Aucun compte, aucune télémétrie"
+      ],
+      "description": "Relève trouve les apps installées, compare leur version à la dernière publiée et met tout à jour d'un coup. L'ancienne version est gardée, on peut revenir en arrière ; les doublons se proposent à la Corbeille."
+    },
+    {
+      "id": "relais",
+      "nom": "Relais",
+      "phrase": "Votre Mac vous parle, vous lui répondez depuis l'iPhone.",
+      "couleur": "#16A8BC",
+      "icone": "assets/relais-icon.svg",
+      "page": "relais/",
+      "description": "Relais relie l'iPhone et les Mac par un serveur privé : notifications par projet, réponses d'un geste, fichiers dans les deux sens. En construction."
     }
   ]
 }
