@@ -299,13 +299,17 @@
       "couleur": "#23CC99",
       "icone": "assets/releve-icon.png?v=20261026",
       "page": "releve/",
-      "preversion": true,
       "requis": [
         "Mac à puce Apple ou Intel",
         "macOS 14 ou plus",
         "Aucun compte, aucune télémétrie"
       ],
-      "description": "Relève trouve les apps installées, compare leur version à la dernière publiée et met tout à jour d'un coup. L'ancienne version est gardée, on peut revenir en arrière ; les doublons se proposent à la Corbeille."
+      "description": "Relève trouve les apps installées, compare leur version à la dernière publiée et met tout à jour d'un coup. L'ancienne version est gardée, on peut revenir en arrière ; les doublons se proposent à la Corbeille.",
+      "depot": "LucasHRCHatReply/releve-releases",
+      "zip": "Releve.zip",
+      "dmg": "Releve.dmg",
+      "version": "0.1.0",
+      "source_page": "~/Releve/site"
     },
     {
       "id": "relais",

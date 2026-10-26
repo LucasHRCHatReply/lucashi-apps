@@ -202,7 +202,7 @@ footer a{color:var(--ink2)}
 }
 </style>
 </head>
-<body><div id="preversion" style="position:sticky;top:0;z-index:999;background:#23CC99;color:#04342C;font:600 14px/1.4 -apple-system,BlinkMacSystemFont,sans-serif;text-align:center;padding:10px 16px">Préversion — première version de test. Le téléchargement ouvre avec la première release publique.</div>
+<body>
 <nav class="nav">
   <a class="logo" href="#"><img src="images/icone-s.png" alt="">Relève</a>
   <div class="links"><a href="#lot">Tout mettre à jour</a><a href="#surete">Sûreté</a><a href="#decouvrir">Découvrir</a><a class="cta" href="#installer">Installer</a></div>
@@ -213,8 +213,8 @@ footer a{color:var(--ink2)}
   <h1>Toutes vos apps à jour. <span class="grad">D'un coup.</span></h1>
   <p class="tag">Relève vit dans la barre des menus, repère les apps en retard et les remplace toutes, sans jamais casser l'ancienne version.</p>
   <div class="cta-row">
-    <a class="btn-p only-desk" href="#preversion">Télécharger le .dmg</a>
-    <a class="btn-p only-phone" href="#preversion">M'envoyer le lien pour mon Mac</a>
+    <a class="btn-p only-desk" href="https://github.com/LucasHRCHatReply/releve-releases/releases/latest/download/Releve.dmg">Télécharger le .dmg</a>
+    <a class="btn-p only-phone" href="mailto:?subject=Rel%C3%A8ve%20pour%20mon%20Mac&amp;body=Le%20.dmg%20de%20Rel%C3%A8ve%20%3A%20https%3A%2F%2Fgithub.com%2FLucasHRCHatReply%2Freleve-releases%2Freleases%2Flatest%2Fdownload%2FReleve.dmg">M'envoyer le lien pour mon Mac</a>
     <a class="btn-s" href="#installer">Comment l'installer</a>
   </div>
   <p class="small">Gratuit, sans compte · version 0.1.0 · macOS 14 ou plus, Mac à puce Apple</p>
@@ -319,15 +319,15 @@ footer a{color:var(--ink2)}
       <li><span class="n">3</span><h3>Ouvrir quand même</h3><p>Au premier lancement : clic droit sur Relève › Ouvrir. Une seule fois.</p></li>
     </ol>
     <div class="dl">
-      <a class="btn-p only-desk" href="#preversion">Télécharger le .dmg</a>
-      <a class="btn-p only-phone" href="#preversion">M'envoyer le lien pour mon Mac</a>
+      <a class="btn-p only-desk" href="https://github.com/LucasHRCHatReply/releve-releases/releases/latest/download/Releve.dmg">Télécharger le .dmg</a>
+      <a class="btn-p only-phone" href="mailto:?subject=Rel%C3%A8ve%20pour%20mon%20Mac&amp;body=Le%20.dmg%20de%20Rel%C3%A8ve%20%3A%20https%3A%2F%2Fgithub.com%2FLucasHRCHatReply%2Freleve-releases%2Freleases%2Flatest%2Fdownload%2FReleve.dmg">M'envoyer le lien pour mon Mac</a>
     </div>
     <p class="notar"><b>Relève est signée, mais pas vérifiée par Apple</b> (cette vérification, la notarisation, demande un compte développeur payant) : macOS demande donc une confirmation la première fois.</p>
 
     <details class="cmd">
       <summary>Ou en une commande Terminal : elle installe, puis met à jour</summary>
-      <p class="sub">Dans Terminal (<kbd>⌘ Espace</kbd>, « Terminal »), collez la commande. Elle télécharge Relève, contrôle l'empreinte et la signature, et lève le blocage de macOS sur Relève seulement. Le script se lit en entier : <a href="#preversion" rel="noopener">installer.sh</a>.</p>
-      <div class="cmdbox"><pre id="cmd">La commande d’installation arrive avec la première release publique.</pre><button type="button" id="copier">Copier</button></div>
+      <p class="sub">Dans Terminal (<kbd>⌘ Espace</kbd>, « Terminal »), collez la commande. Elle télécharge Relève, contrôle l'empreinte et la signature, et lève le blocage de macOS sur Relève seulement. Le script se lit en entier : <a href="https://github.com/LucasHRCHatReply/releve-releases/blob/main/installer.sh" rel="noopener">installer.sh</a>.</p>
+      <div class="cmdbox"><pre id="cmd">curl -fsSL https://raw.githubusercontent.com/LucasHRCHatReply/releve-releases/main/installer.sh | zsh</pre><button type="button" id="copier">Copier</button></div>
     </details>
 
     <h2 class="rv" style="margin-top:70px;font-size:clamp(26px,3.2vw,40px)">Compatibilité, sans détour.</h2>
@@ -341,7 +341,7 @@ footer a{color:var(--ink2)}
   </div>
 </section>
 
-<footer><div class="wrap">Relève 0.1.0 · <a href="#preversion">Toutes les versions</a> · <a href="#preversion">Lire le script d'installation</a></div></footer>
+<footer><div class="wrap">Relève 0.1.0 · <a href="https://github.com/LucasHRCHatReply/releve-releases/releases">Toutes les versions</a> · <a href="https://github.com/LucasHRCHatReply/releve-releases/blob/main/installer.sh">Lire le script d'installation</a></div></footer>
 
 <script>
 (function(){
