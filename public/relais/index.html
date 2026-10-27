@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Relais — préversion</title>
-<meta name="description" content="Relais : votre Mac vous écrit sur l'iPhone, vous répondez d'un geste. Un serveur privé, des consignes signées par Face ID, aucune donnée client. Préversion : accès au serveur sur invitation.">
+<title>Relais 0.2.0 — préversion</title>
+<meta name="description" content="Relais : votre Mac vous écrit sur l'iPhone, vous répondez d'un geste. Plusieurs Mac, un code pour en ajouter un, des consignes signées par Face ID, des fichiers dans les deux sens, et votre propre serveur. Version 0.2.0, préversion.">
 <link rel="icon" href="../assets/relais-icon.svg">
 <style>
 :root{--fond:#F5F8FA;--fond2:#FFFFFF;--texte:#0B1B22;--doux:#4A5B63;--carte:#FFFFFF;--trait:rgba(11,27,34,.1);--teal:#16A8BC;--teal-f:#0B6F86;--ciel:#4BDCFE;--ok:#1E9E62;--reste:#B7791F;--ombre:0 30px 60px rgba(11,27,34,.16)}
@@ -98,20 +98,20 @@ footer{text-align:center;color:var(--doux);font-size:13px;padding:24px;border-to
 </style>
 </head>
 <body>
-<nav><a href="../">← Toutes les apps</a><strong>Relais</strong><span class="pre">Préversion</span><span class="liens"><a href="#fonctions">Fonctions</a><a href="#etat">Où en est-on</a><a href="#installer">Installer</a></span></nav>
+<nav><a href="../">← Toutes les apps</a><strong>Relais</strong><span class="pre">0.2.0 · préversion</span><span class="liens"><a href="#fonctions">Fonctions</a><a href="#etat">Où en est-on</a><a href="#installer">Installer</a></span></nav>
 
 <header class="hero">
   <img src="../assets/relais-icon.svg" alt="">
-  <div class="pastille">Préversion · accès sur invitation</div>
+  <div class="pastille">Version 0.2.0 · préversion</div>
   <h1>Votre Mac vous écrit.<br>Vous répondez d'un geste.</h1>
-  <p class="lead">Une tâche attend votre accord ? La notification tombe sur l'iPhone, vous touchez « oui », la tâche continue. Un serveur privé au milieu, rien d'ouvert chez vous.</p>
-  <p class="invit"><b>Sans invitation, rien ne marche.</b> Relais ne fait rien avec le serveur sans une clé d'accès créée par un lien valable 15 minutes, utilisable une seule fois, et sans un jeton propre à chaque Mac.</p>
-  <div class="boutons"><a class="btn" href="https://github.com/LucasHRCHatReply/relais-releases/releases/latest/download/Relais.dmg">Télécharger pour Mac</a><a class="btn sec" href="https://relais.srv875929.hstgr.cloud">Ouvrir sur l'iPhone</a></div>
+  <p class="lead">Une tâche attend votre accord ? La notification tombe sur l'iPhone, vous touchez « oui », la tâche continue. Plusieurs Mac, un serveur privé au milieu, rien d'ouvert chez vous.</p>
+  <p class="invit"><b>Un Mac s'ajoute avec un code.</b> Sur l'iPhone, Appareils › Ajouter un Mac affiche un code <code>XXXX-XXXX</code>, valable 10 minutes et utilisable une seule fois ; on le tape sur le Mac. Plus de jeton à coller.</p>
+  <div class="boutons"><a class="btn" href="https://github.com/LucasHRCHatReply/relais-releases/releases/latest/download/Relais.dmg">Télécharger Relais 0.2.0</a><a class="btn sec" href="https://relais.srv875929.hstgr.cloud">Ouvrir sur l'iPhone</a></div>
   <div class="tel">
-    <div class="cadre l"><picture><source media="(prefers-color-scheme:dark)" srcset="images/pwa-accueil-dark.png"><img src="images/pwa-accueil-light.png" alt="Liste des canaux : Général, un canal par projet" width="390" height="260"></picture></div>
-    <div class="cadre l"><picture><source media="(prefers-color-scheme:dark)" srcset="images/pwa-canal-glisse-dark.png"><img src="images/pwa-canal-glisse-light.png" alt="Un message mis en page avec des boutons oui et non" width="390" height="360"></picture></div>
+    <div class="cadre l"><picture><source media="(prefers-color-scheme:dark)" srcset="images/pwa-canaux-dark.png"><img src="images/pwa-canaux-light.png" alt="Liste des canaux avec les messages non lus" width="390" height="550" loading="lazy"></picture></div>
+    <div class="cadre l"><picture><source media="(prefers-color-scheme:dark)" srcset="images/pwa-fil-glisse-dark.png"><img src="images/pwa-fil-glisse-light.png" alt="Un message mis en page avec des boutons Publier et Attendre" width="390" height="844" loading="lazy"></picture></div>
   </div>
-  <p class="legende">Captures réelles de la version de développement, données d'exemple.</p>
+  <p class="legende">Captures réelles de Relais 0.2.0 (site de développement), données d'exemple.</p>
 </header>
 
 <section class="alt" id="schema"><div class="wrap">
@@ -120,34 +120,33 @@ footer{text-align:center;color:var(--doux);font-size:13px;padding:24px;border-to
   <div class="schema rv">
     <div class="noeud"><b>iPhone · iPad</b><span>le site Relais, ajouté à l'écran d'accueil</span><span>Face ID signe chaque consigne</span></div>
     <div class="fleche">⇄</div>
-    <div class="noeud centre"><b>Serveur privé</b><span>transporte, ne décide de rien</span><span>canaux, messages 30 jours, journal</span></div>
+    <div class="noeud centre"><b>Serveur privé</b><span>transporte, ne décide de rien</span><span>canaux, messages 30 jours, fichiers 7 jours, journal</span></div>
     <div class="fleche">⇄</div>
     <div class="macs">
-      <div class="mac"><b>MacBook Pro perso</b><span>émet et reçoit</span></div>
-      <div class="mac"><b>Mac du travail</b><span>émet seulement, réception sur accord de l'informatique</span></div>
-      <div class="mac futur"><b>Mac mini</b><span>mini-agent, plus tard</span></div>
+      <div class="mac"><b>MacBook Pro perso</b><span>complet : émet, reçoit consignes et fichiers</span></div>
+      <div class="mac"><b>Mac du travail</b><span>émission seule : messages et questions</span></div>
+      <div class="mac"><b>Autre Mac</b><span>ajouté par un code, en émission ou en complet</span></div>
     </div>
   </div>
 </div></section>
 
 <section id="fonctions"><div class="wrap">
   <h2 class="rv">Chaque fonction, un geste.</h2>
-  <p class="sous rv">Ce que Relais fait aujourd'hui, et ce qui reste. Les pastilles disent la vérité du jour (27/10/2026).</p>
+  <p class="sous rv">Ce que Relais fait aujourd'hui, et ce qui reste. Les pastilles disent la vérité du jour (27/10/2026, version 0.2.0).</p>
 
   <div class="fonc rv">
-    <div class="txt"><span class="etat fait">Fait</span><h3>Un canal par projet</h3><p>Un fil « Général » et un par projet, créés tout seuls à la première publication. On ouvre l'app, on touche un canal.</p><p><b>Le geste :</b> toucher un canal pour lire ses messages.</p></div>
-    <div class="vis"><div class="cadre"><picture><source media="(prefers-color-scheme:dark)" srcset="images/pwa-accueil-dark.png"><img src="images/pwa-accueil-light.png" alt="Canaux" width="390" height="260"></picture></div></div>
+    <div class="txt"><span class="etat fait">Fait</span><h3>Un canal par projet</h3><p>Un fil « Général » et un par projet, créés tout seuls à la première publication. Les messages non lus s'affichent par canal et sur la pastille de l'app. On peut aussi y écrire depuis l'iPhone.</p><p><b>Le geste :</b> toucher un canal pour lire ses messages.</p></div>
+    <div class="vis"><div class="cadre"><picture><source media="(prefers-color-scheme:dark)" srcset="images/pwa-canaux-dark.png"><img src="images/pwa-canaux-light.png" alt="Canaux avec compteurs de non-lus" width="390" height="550" loading="lazy"></picture></div></div>
   </div>
 
   <div class="fonc inv rv">
-    <div class="txt"><span class="etat fait">Fait</span><h3>Des messages qui se lisent</h3><p>Titres, listes, tableaux, code, liens. Le texte est assaini : aucun script, aucune image hors https.</p><p><b>Le geste :</b> rien, ça s'affiche.</p></div>
-    <div class="vis"><div class="cadre"><picture><source media="(prefers-color-scheme:dark)" srcset="images/pwa-canal-jauge-dark.png"><img src="images/pwa-canal-jauge-light.png" alt="Un tableau rendu dans un message" width="390" height="210"></picture></div></div>
+    <div class="txt"><span class="etat fait">Fait</span><h3>Des messages qui se lisent</h3><p>Titres, listes, code, liens, en bulles. Le texte est assaini : aucun script, aucune image hors https.</p><p><b>Le geste :</b> rien, ça s'affiche.</p></div>
+    <div class="vis"><div class="cadre"><picture><source media="(prefers-color-scheme:dark)" srcset="images/pwa-fil-glisse-dark.png"><img src="images/pwa-fil-glisse-light.png" alt="Fil d'un canal avec liste, code et boutons" width="390" height="844" loading="lazy"></picture></div></div>
   </div>
 
   <div class="fonc rv">
     <div class="txt"><span class="etat fait">Fait</span><span class="etat reste">À faire : essai iPhone</span><h3>Répondre d'un geste</h3><p>Une session pose une question avec ses choix. Vous touchez « oui » ou « non » ; la réponse revient au Mac qui l'attendait, et rien d'autre.</p><p><b>Le geste :</b> toucher la notification, puis un bouton. Sur le Mac, l'onglet « Questions » pose et suit les questions.</p></div>
-    <div class="vis"><div class="cadre"><picture><source media="(prefers-color-scheme:dark)" srcset="images/pwa-canal-glisse-dark.png"><img src="images/pwa-canal-glisse-light.png" alt="Question avec boutons oui et non" width="390" height="360"></picture></div>
-    <div style="width:230px"><div class="fen"><div class="barre"><i></i><i></i><i></i></div><img src="images/mac-questions.png" alt="Onglet Questions de l'app Mac" width="900" height="675"></div></div></div>
+    <div class="vis"><div style="width:100%;max-width:480px"><div class="fen"><div class="barre"><i></i><i></i><i></i></div><img src="images/mac-questions.png" alt="Onglet Questions de l'app Mac" width="1200" height="800" loading="lazy"></div><p class="legende">Capture réelle, Relais 0.2.0, données d'exemple.</p></div></div>
   </div>
 
   <div class="fonc inv rv">
@@ -156,22 +155,42 @@ footer{text-align:center;color:var(--doux);font-size:13px;padding:24px;border-to
   </div>
 
   <div class="fonc rv">
-    <div class="txt"><span class="etat fait">Fait</span><h3>Une clé d'accès par appareil</h3><p>Pas de mot de passe. Un lien d'invitation (15 minutes, une seule fois) crée la clé d'accès de l'iPhone. Les jetons des Mac se créent et se révoquent d'un geste.</p><p><b>Le geste :</b> Réglages › Appareils ou Jetons › « Révoquer ».</p></div>
-    <div class="vis"><div class="cadre"><picture><source media="(prefers-color-scheme:dark)" srcset="images/pwa-reglages-dark.png"><img src="images/pwa-reglages-light.png" alt="Appareils, jetons et journal" width="390" height="595"></picture></div></div>
+    <div class="txt"><span class="etat fait">Fait</span><h3>Plusieurs Mac, deux modes</h3><p>Un même serveur accueille plusieurs Mac. Chacun est en <b>émission seule</b> (il écrit des messages et pose des questions, comme un Mac de travail) ou en <b>complet</b> (il reçoit aussi les consignes signées et les fichiers). Le mode se choisit sur l'iPhone.</p><p><b>Le geste :</b> Appareils › Ajouter un Mac, puis choisir le mode.</p></div>
+    <div class="vis"><div class="cadre"><picture><source media="(prefers-color-scheme:dark)" srcset="images/pwa-appareils-dark.png"><img src="images/pwa-appareils-light.png" alt="Appareils : Mac en ligne avec leur mode, téléphones et leurs empreintes" width="390" height="844" loading="lazy"></picture></div></div>
   </div>
 
   <div class="fonc inv rv">
-    <div class="txt"><span class="etat fait">Fait</span><span class="etat reste">À faire : appairage par QR</span><h3>Une app Mac discrète</h3><p>Cinq onglets : État, Jeton, Questions, Journal, Mises à jour. Elle émet les messages, suit les réponses et prévient par une notification locale.</p><p><b>Le geste :</b> coller le jeton du Mac dans « Jeton », puis « Envoyer un essai » dans « État ».</p></div>
-    <div class="vis"><div style="width:100%;max-width:460px"><div class="fen"><div class="barre"><i></i><i></i><i></i></div><img src="images/mac-etat.png" alt="Onglet État de l'app Relais" width="900" height="710"></div><p class="legende">Capture réelle, app Relais 0.1.0, avant saisie du jeton.</p></div></div>
+    <div class="txt"><span class="etat fait">Fait</span><h3>Ajouter un Mac, sans Terminal</h3><p>Sur l'iPhone, Appareils › Ajouter un Mac donne un code <code>XXXX-XXXX</code> (10 minutes, une seule fois). Sur le Mac, Connexion › Ajouter ce Mac : on tape le code, c'est tout. Plus de jeton à coller ; le collage reste possible, en avancé.</p><p>Les clés des téléphones arrivent avec une empreinte courte, du type <code>3F9A-C21B</code>, à comparer à l'œil avec celle de l'iPhone. Une clé apparue plus tard reste « à approuver ».</p></div>
+    <div class="vis"><div style="width:100%;max-width:480px"><div class="fen"><div class="barre"><i></i><i></i><i></i></div><img src="images/mac-ajouter.png" alt="Fenêtre Ajouter ce Mac : code, serveur, nom du Mac" width="1000" height="641" loading="lazy"></div><p class="legende">Capture réelle, Relais 0.2.0. Le code <code>ABCD-EF23</code> est un exemple.</p></div></div>
+  </div>
+
+  <div class="fonc rv">
+    <div class="txt"><span class="etat fait">Fait</span><h3>Des fichiers dans les deux sens</h3><p>Photos, PDF, documents : de l'iPhone vers un Mac, d'un Mac vers l'iPhone. 20 Mo au plus, gardés 7 jours. Sur un Mac en mode complet, les fichiers reçus vont dans <code>~/Downloads/Relais</code>, après vérification de leur empreinte.</p><p><b>Le geste :</b> le trombone dans le fil, ou glisser un fichier dans la fenêtre du Mac.</p></div>
+    <div class="vis"><div class="cadre"><picture><source media="(prefers-color-scheme:dark)" srcset="images/pwa-fil-fichiers-dark.png"><img src="images/pwa-fil-fichiers-light.png" alt="Fil avec une consigne, un PDF et une image joints" width="390" height="844" loading="lazy"></picture></div><div style="width:100%;max-width:300px"><div class="fen"><div class="barre"><i></i><i></i><i></i></div><img src="images/mac-canaux.png" alt="Onglet Canaux de l'app Mac avec pièces jointes" width="1200" height="800" loading="lazy"></div><p class="legende">Captures réelles, Relais 0.2.0, données d'exemple.</p></div></div>
+  </div>
+
+  <div class="fonc inv rv">
+    <div class="txt"><span class="etat fait">Fait</span><h3>Écrire à un Mac : une consigne signée</h3><p>Écrire à un Mac depuis l'iPhone envoie une consigne, signée par Face ID à chaque envoi. Le Mac la vérifie lui-même : signature, âge de 5 minutes au plus, jamais rejouée, clé de téléphone approuvée. Seule une action de sa liste blanche locale s'exécute.</p><p>Des raccourcis prêts à l'emploi : ping, batterie, disque, tâches, point du jour.</p><p><b>Le geste :</b> choisir le Mac dans « Pour », écrire ou toucher un raccourci, valider avec Face ID.</p></div>
+    <div class="vis"><div style="width:100%;max-width:480px"><div class="fen"><div class="barre"><i></i><i></i><i></i></div><img src="images/mac-consignes.png" alt="Onglet Consignes de l'app Mac : consignes reçues et liste blanche" width="1200" height="800" loading="lazy"></div><p class="legende">Capture réelle, Relais 0.2.0, données d'exemple.</p></div></div>
+  </div>
+
+  <div class="fonc rv">
+    <div class="txt"><span class="etat fait">Fait</span><h3>Une app Mac à sept onglets</h3><p>Canaux, Appareils, Consignes, Questions, Journal, Connexion, Mises à jour. Elle émet les messages, suit les réponses, vérifie les consignes et prévient par une notification locale. Les mises à jour passent par les Releases publiques de GitHub.</p><p><b>Le geste :</b> ouvrir « Appareils » pour approuver la clé d'un nouveau téléphone.</p></div>
+    <div class="vis"><div style="width:100%;max-width:480px"><div class="fen"><div class="barre"><i></i><i></i><i></i></div><img src="images/mac-appareils.png" alt="Onglet Appareils de l'app Mac : clé à approuver, téléphones et Mac" width="1200" height="800" loading="lazy"></div><p class="legende">Capture réelle, Relais 0.2.0, données d'exemple.</p></div></div>
+  </div>
+
+  <div class="fonc inv rv">
+    <div class="txt"><span class="etat fait">Fait</span><span class="etat reste">À faire : code du serveur public</span><h3>Apporter son propre serveur</h3><p>L'assistant « Apporter mon serveur », dans l'app Mac : adresse du serveur, nom de domaine, accès SSH, puis une installation complète en 13 étapes (durcissement SSH, pare-feu, fail2ban, Node, nginx, HTTPS). À la fin, ce Mac s'ajoute tout seul.</p><p><b>Honnêtement :</b> le code du serveur n'est pas encore public. Pour l'instant, l'assistant sert à qui a le code du site sur son Mac.</p></div>
+    <div class="vis"><div style="width:100%;max-width:480px"><div class="fen"><div class="barre"><i></i><i></i><i></i></div><img src="images/mac-serveur.png" alt="Assistant Apporter mon serveur : adresse IP et nom de domaine" width="1000" height="500" loading="lazy"></div><p class="legende">Capture réelle, Relais 0.2.0, adresse d'exemple.</p></div><div style="width:100%;max-width:480px"><div class="fen"><div class="barre"><i></i><i></i><i></i></div><img src="images/mac-connexion.png" alt="Onglet Connexion de l'app Mac : serveurs, mode de ce Mac, Apporter mon serveur" width="1200" height="800" loading="lazy"></div><p class="legende">Capture réelle, onglet Connexion, données d'exemple.</p></div></div>
   </div>
 
   <div class="fonc rv">
     <div class="txt"><span class="etat fait">Fait</span><h3>Un journal de tout</h3><p>Heure, appareil, question, réponse : le journal garde l'enveloppe, jamais le contenu. Les messages s'effacent après 30 jours, le journal après 90.</p><p><b>Le geste :</b> onglet « Journal » sur le Mac, ou Réglages sur l'iPhone.</p></div>
-    <div class="vis"><div style="width:100%;max-width:460px"><div class="fen"><div class="barre"><i></i><i></i><i></i></div><img src="images/mac-journal.png" alt="Onglet Journal" width="900" height="675"></div></div></div>
+    <div class="vis"><div style="width:100%;max-width:480px"><div class="fen"><div class="barre"><i></i><i></i><i></i></div><img src="images/mac-journal.png" alt="Onglet Journal de l'app Mac" width="1200" height="800" loading="lazy"></div><p class="legende">Capture réelle, Relais 0.2.0, données d'exemple.</p></div></div>
   </div>
 
   <div class="fonc inv rv">
-    <div class="txt"><span class="etat fait">Fait</span><h3>Envoyer depuis le terminal</h3><p>L'outil <code>relais-envoyer</code> publie un message, pose une question à boutons et attend la réponse. C'est lui qu'appellent les sessions Claude Code.</p><p><b>Le geste :</b> une ligne, par exemple <code>relais-envoyer --canal glisse --choix oui,non "Publier ?"</code></p></div>
+    <div class="txt"><span class="etat fait">Fait</span><h3>Envoyer et recevoir depuis le terminal</h3><p>L'outil <code>relais-envoyer</code> publie un message, pose une question à boutons et attend la réponse. C'est lui qu'appellent les sessions Claude Code. Son pendant <code>relais-recevoir</code> lit la boîte locale des consignes reçues (avec <code>--suivre</code>, il attend le message suivant).</p><p><b>Le geste :</b> une ligne, par exemple <code>relais-envoyer --canal glisse --choix oui,non "Publier ?"</code></p></div>
     <div class="vis"><div class="cmd" style="max-width:100%"><code>relais-envoyer --canal glisse --question … --choix oui,non</code></div></div>
   </div>
 </div></section>
@@ -191,8 +210,8 @@ footer{text-align:center;color:var(--doux);font-size:13px;padding:24px;border-to
   <p class="sous rv">La sécurité est dans la conception, pas dans une promesse.</p>
   <div class="garde rv">
     <div class="carte"><div class="ico">⇄</div><div><h3>Le serveur transporte seulement</h3><p>Il range et relaie. Il ne fabrique ni ne modifie aucune consigne.</p></div></div>
-    <div class="carte"><div class="ico">✓</div><div><h3>Consignes signées, Face ID</h3><p>La consigne est signée sur le téléphone ; le Mac vérifie lui-même la signature, l'âge (moins de 5 minutes) et l'unicité. Un serveur piraté ne pilote rien.</p></div></div>
-    <div class="carte"><div class="ico">⚿</div><div><h3>Jetons révocables</h3><p>Un jeton par Mac, stocké haché, limité en débit, révocable d'un geste.</p></div></div>
+    <div class="carte"><div class="ico">✓</div><div><h3>Consignes signées, Face ID</h3><p>La consigne est signée sur le téléphone ; le Mac vérifie lui-même la signature, l'âge (moins de 5 minutes), l'unicité et la clé approuvée. Un serveur piraté ne pilote rien.</p></div></div>
+    <div class="carte"><div class="ico">⚿</div><div><h3>Jetons révocables</h3><p>Un jeton par Mac, stocké haché, limité en débit, révocable d'un geste. Un code d'appairage ne sert qu'une fois, pendant 10 minutes.</p></div></div>
     <div class="carte"><div class="ico">∅</div><div><h3>Aucune donnée client</h3><p>Les messages s'écrivent comme un texte qu'un administrateur pourrait lire : jamais de contenu client.</p></div></div>
     <div class="carte"><div class="ico">◌</div><div><h3>Pas de faux signal de présence</h3><p>Relais ne simule ni activité ni statut, ni souris, ni veille.</p></div></div>
     <div class="carte"><div class="ico">☾</div><div><h3>Silence de 22 h à 7 h</h3><p>Le message est rangé ; la notification ne part que s'il est urgent.</p></div></div>
@@ -201,7 +220,7 @@ footer{text-align:center;color:var(--doux);font-size:13px;padding:24px;border-to
 
 <section class="alt" id="etat"><div class="wrap">
   <h2 class="rv">Où en est Relais.</h2>
-  <p class="sous rv">État au 27/10/2026. 67 tests automatiques côté site, plus de 23 côté app Mac, tous verts à cette date.</p>
+  <p class="sous rv">État au 27/10/2026, version 0.2.0.</p>
   <div class="colonnes rv">
     <div class="carte c-fait"><h3>Fait</h3><ul>
       <li>Canaux et messages mis en page</li>
@@ -209,21 +228,20 @@ footer{text-align:center;color:var(--doux);font-size:13px;padding:24px;border-to
       <li>Clés d'accès sur invitation, jetons</li>
       <li>Questions à boutons, journal</li>
       <li>Consignes signées, vérifiées côté Mac</li>
-      <li>App Mac : émission, suivi, notifications</li>
-      <li>Téléchargement de l'app par jeton</li>
+      <li>Plusieurs Mac, ajout par un code</li>
+      <li>Fichiers dans les deux sens (20 Mo, 7 jours)</li>
+      <li>App Mac à sept onglets, assistant « Apporter mon serveur »</li>
     </ul></div>
     <div class="carte c-reste"><h3>Reste à faire</h3><ul>
       <li>Essai sur l'iPhone, par Lucas</li>
-      <li>Appairage par QR code</li>
-      <li>Réception de consignes sur le MacBook Pro</li>
-      <li>Fichiers chiffrés</li>
-      <li>Vues du coffre (tâches, points du jour)</li>
+      <li>Code du serveur public, pour que l'assistant serve à tous</li>
+      <li>Fichiers chiffrés de bout en bout</li>
       <li>Mini-agent sur le Mac mini</li>
       <li>Mac du travail en réception, après accord de l'informatique</li>
     </ul></div>
     <div class="carte c-loin"><h3>Jusqu'où on peut aller</h3><ul>
       <li>Le Mac vérifie et exécute des consignes signées, sur une liste fermée</li>
-      <li>Photos et PDF dans les deux sens, chiffrés avant dépôt</li>
+      <li>Fichiers chiffrés avant dépôt sur le serveur</li>
       <li>Un petit modèle sur le Mac mini qui répond au basique</li>
       <li>Chiffrement de bout en bout des discussions, après la V1</li>
     </ul></div>
@@ -234,29 +252,28 @@ footer{text-align:center;color:var(--doux);font-size:13px;padding:24px;border-to
   <ol class="frise rv">
     <li class="fait"><span class="num">0</span><b>Serveur durci</b>Accès par clé seule, ports internes fermés<span class="st">Fait</span></li>
     <li class="encours"><span class="num">1</span><b>Site et notifications</b>Canaux, push, clés d'accès. En ligne ; essai iPhone à faire<span class="st">En cours</span></li>
-    <li class="encours"><span class="num">2</span><b>App Mac</b>Questions à boutons, appairage QR, commandes de lecture<span class="st">En cours</span></li>
+    <li><span class="num">2</span><b>App Mac</b>Plusieurs Mac, code d'appairage, consignes vérifiées, serveur apporté : 0.2.0<span class="st" style="color:var(--ok)">Fait</span></li>
     <li><span class="num">3</span><b>Mini-agent</b>Un résumé sourcé de « où en est le chantier ? »<span class="st">À venir</span></li>
-    <li><span class="num">4</span><b>Fichiers</b>Chiffrés, dans les deux sens ; vues du coffre<span class="st">À venir</span></li>
+    <li><span class="num">4</span><b>Fichiers chiffrés</b>Dans les deux sens, c'est fait ; le chiffrement de bout en bout reste à faire<span class="st">À venir</span></li>
     <li><span class="num">5</span><b>Mac du travail</b>Réponses seulement, si l'informatique l'accepte<span class="st">À venir</span></li>
   </ol>
 </div></section>
 
 <section id="installer"><div class="wrap">
   <h2 class="rv">Installer la préversion.</h2>
-  <p class="sous rv">Le téléchargement est libre ; l'accès au serveur, lui, se fait sur invitation.</p>
+  <p class="sous rv">Le téléchargement est libre ; l'accès à un serveur, lui, passe toujours par une invitation ou un code.</p>
   <div class="install rv">
-    <p class="invit" style="max-width:none;margin:0"><b>Sans invitation, rien ne marche.</b> L'app Mac et le site ne peuvent rien faire avec le serveur sans une clé d'accès (lien d'invitation valable 15 minutes, utilisable une fois) et sans un jeton propre au Mac. Aucun mot de passe, aucun jeton n'est écrit sur cette page.</p>
-    <div class="carte"><h3>Sur le Mac</h3><p>macOS 14 ou plus. Ouvrir le .dmg, glisser Relais dans Applications. Au premier lancement, coller le jeton de ce Mac dans l'onglet « Jeton » : sans lui, l'app n'a accès à rien.</p>
-      <div class="boutons" style="justify-content:flex-start;margin:0 0 14px"><a class="btn" href="https://github.com/LucasHRCHatReply/relais-releases/releases/latest/download/Relais.dmg">Télécharger Relais 0.1.0</a><a class="btn sec" href="https://github.com/LucasHRCHatReply/relais-releases/releases/latest">Toutes les versions</a></div>
-      <p>Autre voie, en une commande : elle demande le jeton du Mac, vérifie l'empreinte et la signature, puis installe.</p>
-      <div class="cmd"><code id="cmd">curl -fsSL https://relais.srv875929.hstgr.cloud/installer-mac.sh | bash</code><button type="button" id="cp">Copier</button></div></div>
-    <div class="carte"><h3>Sur l'iPhone</h3><p>iOS 16.4 ou plus. Ouvrir dans Safari, puis Partager › « Sur l'écran d'accueil », ouvrir l'icône et créer la clé d'accès avec le lien d'invitation.</p>
+    <p class="invit" style="max-width:none;margin:0"><b>Sans invitation, rien ne marche.</b> Le site ne s'ouvre qu'avec une clé d'accès créée par un lien d'invitation (15 minutes, une seule fois). Un Mac ne s'ajoute qu'avec un code de l'iPhone (10 minutes, une seule fois). Aucun mot de passe, aucun jeton n'est écrit sur cette page.</p>
+    <div class="carte"><h3>Sur le Mac</h3><p>macOS 14 ou plus. Ouvrir le .dmg, glisser Relais dans Applications. Au premier lancement, ouvrir « Connexion › Ajouter ce Mac » et taper le code affiché sur l'iPhone (Appareils › Ajouter un Mac). Les mises à jour passent ensuite par les Releases publiques de GitHub.</p>
+      <div class="boutons" style="justify-content:flex-start;margin:0"><a class="btn" href="https://github.com/LucasHRCHatReply/relais-releases/releases/latest/download/Relais.dmg">Télécharger Relais 0.2.0</a><a class="btn sec" href="https://github.com/LucasHRCHatReply/relais-releases/releases/latest">Toutes les versions</a></div></div>
+    <div class="carte"><h3>Sur l'iPhone</h3><p>iOS 16.4 ou plus. Ouvrir dans Safari, puis Partager › « Sur l'écran d'accueil », ouvrir l'icône et créer la clé d'accès avec le lien d'invitation. Ensuite : Appareils › Ajouter un Mac, pour obtenir un code.</p>
       <a class="btn" href="https://relais.srv875929.hstgr.cloud">Ouvrir sur l'iPhone</a></div>
+    <div class="carte"><h3>Avec votre propre serveur</h3><p>Dans l'app Mac, Connexion › Apporter mon serveur. Le code du serveur n'est pas encore public : pour l'instant, l'assistant sert à qui a le code du site sur son Mac.</p></div>
   </div>
 </div></section>
 
 <div class="fin"><a class="btn sec" href="../">Voir les apps disponibles</a></div>
-<footer>Relais · préversion · sans compte tiers, sans télémétrie</footer>
+<footer>Relais 0.2.0 · préversion · sans compte tiers, sans télémétrie</footer>
 <script>
 (function(){
   var b=document.getElementById('cp');
