@@ -189,7 +189,7 @@
       ],
       "depot": "LucasHRCHatReply/glisse-releases",
       "zip": "Glisse.zip",
-      "version": "0.7.0",
+      "version": "0.7.1",
       "source_page": "~/Swish/site",
       "build_page": "python3 build.py",
       "page_construite": "~/Downloads/Glisse.html",
@@ -291,6 +291,39 @@
       "page_construite": "~/Downloads/Corolle.html",
       "dmg": "Corolle.dmg",
       "description": "Corolle ouvre une roue de huit actions sous le curseur quand vous glissez un fichier et appuyez sur Maj : convertir, alléger, extraire, zipper. Le résultat apparaît à côté de l'original, le trackpad vibre à chaque part."
+    },
+    {
+      "id": "paupiere",
+      "nom": "Paupière",
+      "phrase": "Le Mac reste éveillé, vous choisissez comment : écran éteint, verrouillé, voilé ou capot fermé.",
+      "couleur": "#2B3A67",
+      "icone": "assets/paupiere-icon.png?v=20261026",
+      "captures": [
+        {
+          "src": "paupiere/captures/scene.jpg",
+          "sombre": "paupiere/captures/scene-sombre.jpg",
+          "alt": "Le MacBook en 3D de Paupière, écran allumé"
+        },
+        {
+          "src": "paupiere/captures/voile-protege.jpg",
+          "alt": "Le voile protégé : Touch ID ou un code de Paupière"
+        }
+      ],
+      "page": "paupiere/",
+      "depot": "LucasHRCHatReply/paupiere-releases",
+      "zip": "Paupiere.zip",
+      "version": "0.3.0",
+      "source_page": "~/Paupiere/site",
+      "requis": [
+        "Mac à puce Apple (M1 ou plus récent)",
+        "macOS 14 ou plus",
+        "Aide d'administrateur seulement pour le mode Capot fermé",
+        "Aucun compte, aucune télémétrie"
+      ],
+      "build_page": "python3 build.py",
+      "page_construite": "~/Downloads/Paupiere.html",
+      "dmg": "Paupiere.dmg",
+      "description": "Paupière tient le Mac éveillé avec six modes (éveillé, écran éteint, verrouillé actif, faux écran, voile protégé, capot fermé), une fin toujours prévue et un MacBook en 3D qui montre ce qui va se passer."
     },
     {
       "id": "releve",
