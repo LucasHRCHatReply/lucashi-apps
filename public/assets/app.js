@@ -13,7 +13,7 @@
     if (!a.depot) return;
     fetch(`https://api.github.com/repos/${a.depot}/releases/latest`)
       .then(r => r.ok ? r.json() : Promise.reject())
-      .then(j => { if (j.tag_name) racineEl.querySelectorAll("[data-v]").forEach(e => e.textContent = "Version " + j.tag_name.replace(/^v/, "")); })
+      .then(j => { if (j.tag_name) racineEl.querySelectorAll("[data-v]").forEach(e => e.textContent = (a.preversion ? "Préversion " : "Version ") + j.tag_name.replace(/^v/, "")); })
       .catch(() => {});
   }
   function copier(btn, a) {
@@ -67,7 +67,7 @@
       t.className = "tuile rv"; t.style.setProperty("--c", a.couleur); t.style.setProperty("--d", (i * 90) + "ms"); t.id = a.id;
       t.innerHTML = `
         <a class="ico" href="${esc(a.page)}" aria-label="${esc(a.nom)}"><img src="${esc(a.icone)}" alt="" width="96" height="96"></a>
-        <h3>${esc(a.nom)}</h3><div class="v" data-v>${a.depot ? "Version " + esc(a.version) : a.preversion ? "Préversion" : "Bientôt"}</div>
+        <h3>${esc(a.nom)}</h3><div class="v" data-v>${a.depot ? (a.preversion ? "Préversion " : "Version ") + esc(a.version) : a.preversion ? "Préversion" : "Bientôt"}</div>
         <p class="ph">${esc(a.phrase)}</p>
         ${a.description ? `<p class="desc">${esc(a.description)}</p>` : ""}
         <div class="boutons">

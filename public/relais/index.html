@@ -3,108 +3,269 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Relais — bientôt</title>
-<meta name="description" content="Relais relie votre iPhone et vos Mac par un serveur privé : les notifications de vos tâches, vos réponses, vos fichiers. Bientôt.">
+<title>Relais — préversion</title>
+<meta name="description" content="Relais : votre Mac vous écrit sur l'iPhone, vous répondez d'un geste. Un serveur privé, des consignes signées par Face ID, aucune donnée client. Préversion : accès au serveur sur invitation.">
 <link rel="icon" href="../assets/relais-icon.svg">
 <style>
-:root{--fond:#F5F8FA;--texte:#0B1B22;--doux:#4A5B63;--carte:#FFFFFF;--trait:rgba(11,27,34,.1);--teal:#16A8BC;--teal-f:#0B6F86;--ciel:#4BDCFE}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--fond:#061217;--texte:#EAF6F9;--doux:#9DB4BC;--carte:#0D2029;--trait:rgba(234,246,249,.12)}}
+:root{--fond:#F5F8FA;--fond2:#FFFFFF;--texte:#0B1B22;--doux:#4A5B63;--carte:#FFFFFF;--trait:rgba(11,27,34,.1);--teal:#16A8BC;--teal-f:#0B6F86;--ciel:#4BDCFE;--ok:#1E9E62;--reste:#B7791F;--ombre:0 30px 60px rgba(11,27,34,.16)}
+@media (prefers-color-scheme:dark){:root{--fond:#061217;--fond2:#0A1A22;--texte:#EAF6F9;--doux:#9DB4BC;--carte:#0D2029;--trait:rgba(234,246,249,.12);--ok:#4BD18E;--reste:#F0B35A;--ombre:0 30px 60px rgba(0,0,0,.5)}}
 *{box-sizing:border-box}html{scroll-behavior:smooth}
-body{margin:0;background:var(--fond);color:var(--texte);font:17px/1.6 -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",sans-serif;-webkit-font-smoothing:antialiased}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.rv{opacity:1!important;transform:none!important;transition:none!important}}
+body{margin:0;background:var(--fond);color:var(--texte);font:17px/1.55 -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",sans-serif;-webkit-font-smoothing:antialiased}
 a{color:inherit}
-nav{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:12px 20px;background:color-mix(in srgb,var(--fond) 80%,transparent);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--trait);font-size:14px}
+nav{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 20px;background:color-mix(in srgb,var(--fond) 80%,transparent);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--trait);font-size:14px}
 nav a{text-decoration:none;color:var(--doux)}nav strong{font-weight:600}
-.hero{position:relative;overflow:hidden;text-align:center;padding:96px 20px 72px;background:radial-gradient(1200px 500px at 50% -10%,rgba(75,220,254,.35),transparent 60%),radial-gradient(800px 400px at 85% 30%,rgba(22,168,188,.25),transparent 60%)}
-.hero img{width:112px;height:112px;border-radius:26px;box-shadow:0 20px 50px rgba(11,111,134,.35)}
-.pastille{display:inline-block;margin:28px 0 8px;padding:5px 14px;border-radius:999px;background:rgba(22,168,188,.14);color:var(--teal-f);font-size:13px;font-weight:600;letter-spacing:.02em}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .pastille{color:var(--ciel)}}
-h1{font-size:clamp(44px,8vw,80px);line-height:1.04;letter-spacing:-.025em;margin:6px 0 14px;font-weight:700}
-.lead{font-size:clamp(19px,2.6vw,24px);color:var(--doux);max-width:720px;margin:0 auto}
-.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
-section{padding:80px 0}
-h2{font-size:clamp(30px,4.6vw,48px);letter-spacing:-.02em;line-height:1.1;margin:0 0 16px;text-align:center}
-.sous{color:var(--doux);text-align:center;max-width:640px;margin:0 auto 48px}
-.schema{display:grid;grid-template-columns:1fr auto 1.2fr auto 1fr;align-items:center;gap:14px}
-.noeud{background:var(--carte);border:1px solid var(--trait);border-radius:20px;padding:22px 18px;text-align:center}
-.noeud b{display:block;font-size:18px}.noeud span{font-size:14px;color:var(--doux)}
-.noeud.centre{background:linear-gradient(135deg,var(--teal),var(--teal-f));color:#fff;border:0}.noeud.centre span{color:rgba(255,255,255,.85)}
-.fleche{font-size:22px;color:var(--teal)}
-.grille{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-.carte{background:var(--carte);border:1px solid var(--trait);border-radius:22px;padding:28px}
-.carte .ico{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:rgba(22,168,188,.14);color:var(--teal);font-size:20px;margin-bottom:14px}
-.carte h3{margin:0 0 6px;font-size:20px}.carte p{margin:0;color:var(--doux);font-size:15px}
-.bulle{max-width:420px;margin:0 auto;background:var(--carte);border:1px solid var(--trait);border-radius:24px;padding:18px;box-shadow:0 30px 60px rgba(11,27,34,.12)}
-.notif{display:flex;gap:12px;align-items:flex-start;padding:12px;border-radius:16px;background:rgba(22,168,188,.08)}
-.notif img{width:36px;height:36px;border-radius:9px}.notif small{color:var(--doux)}
-.choix{display:flex;gap:8px;margin-top:12px}.choix span{flex:1;text-align:center;padding:9px;border-radius:12px;font-weight:600;font-size:15px;background:var(--fond);border:1px solid var(--trait)}.choix span:first-child{background:var(--teal);color:#fff;border-color:var(--teal)}
-.etapes{counter-reset:e;list-style:none;padding:0;margin:0;display:grid;gap:12px;max-width:720px;margin:0 auto}
-.etapes li{counter-increment:e;background:var(--carte);border:1px solid var(--trait);border-radius:16px;padding:16px 18px 16px 60px;position:relative}
-.etapes li::before{content:counter(e);position:absolute;left:18px;top:15px;width:28px;height:28px;border-radius:50%;background:var(--teal);color:#fff;display:grid;place-items:center;font-weight:700;font-size:14px}
-.etapes li.ok::before{content:"✓"}
-.fin{text-align:center;padding:72px 20px 96px}
+nav .liens{display:flex;gap:16px}
+.pre{display:inline-block;padding:3px 10px;border-radius:999px;background:rgba(22,168,188,.16);color:var(--teal-f);font-size:12px;font-weight:700;letter-spacing:.02em}
+@media (prefers-color-scheme:dark){.pre,.pastille{color:var(--ciel)}}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+.hero{position:relative;overflow:hidden;text-align:center;padding:84px 20px 64px;background:radial-gradient(1200px 520px at 50% -10%,rgba(75,220,254,.35),transparent 60%),radial-gradient(800px 400px at 85% 30%,rgba(22,168,188,.25),transparent 60%)}
+.hero>img{display:block;margin:0 auto;width:112px;height:112px;border-radius:26px;box-shadow:0 20px 50px rgba(11,111,134,.35)}
+.pastille{display:inline-block;margin:26px 0 8px;padding:5px 14px;border-radius:999px;background:rgba(22,168,188,.14);color:var(--teal-f);font-size:13px;font-weight:600}
+h1{font-size:clamp(42px,8vw,80px);line-height:1.04;letter-spacing:-.025em;margin:6px 0 14px;font-weight:700}
+.lead{font-size:clamp(18px,2.6vw,23px);color:var(--doux);max-width:720px;margin:0 auto}
+.invit{max-width:660px;margin:28px auto 0;padding:14px 18px;border-radius:16px;background:var(--carte);border:1px solid var(--teal);font-size:15px;text-align:left}
+.invit b{color:var(--teal-f)}@media (prefers-color-scheme:dark){.invit b{color:var(--ciel)}}
+.boutons{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:24px}
 .btn{display:inline-block;padding:13px 26px;border-radius:999px;background:var(--teal);color:#fff;text-decoration:none;font-weight:600}
+.btn.sec{background:transparent;color:var(--texte);border:1px solid var(--trait)}
+.hero .tel{margin-top:44px;display:flex;justify-content:center;gap:22px;align-items:flex-end}
+section{padding:84px 0}
+section.alt{background:var(--fond2);border-block:1px solid var(--trait)}
+h2{font-size:clamp(30px,4.6vw,48px);letter-spacing:-.02em;line-height:1.1;margin:0 0 14px;text-align:center}
+.sous{color:var(--doux);text-align:center;max-width:660px;margin:0 auto 44px}
+.tel img,.tel picture{display:block}
+.cadre{border-radius:30px;border:8px solid #0B1B22;background:#0B1B22;overflow:hidden;box-shadow:var(--ombre);width:230px;flex:none}
+.cadre img{width:100%;height:auto;display:block}
+.cadre.l{width:260px}
+.fen{border-radius:12px;overflow:hidden;box-shadow:var(--ombre);border:1px solid var(--trait);background:#fff}
+.fen .barre{height:26px;background:#E9EDF0;display:flex;gap:7px;align-items:center;padding:0 11px}
+.fen .barre i{width:11px;height:11px;border-radius:50%;background:#FF5F57}.fen .barre i:nth-child(2){background:#FEBC2E}.fen .barre i:nth-child(3){background:#28C840}
+.fen img{display:block;width:100%;height:auto}
+.fonc{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;margin:0 auto 96px;max-width:1000px}
+.fonc:last-child{margin-bottom:0}
+.fonc.inv .txt{order:2}
+.fonc h3{font-size:clamp(26px,3.4vw,38px);line-height:1.12;letter-spacing:-.02em;margin:0 0 12px}
+.fonc p{color:var(--doux);margin:0 0 12px}
+.fonc .vis{display:flex;flex-wrap:wrap;justify-content:center;gap:18px;align-items:flex-start}
+.etat{display:inline-block;margin:2px 6px 8px 0;padding:3px 11px;border-radius:999px;font-size:13px;font-weight:700;border:1px solid currentColor}
+.etat.fait{color:var(--ok)}.etat.reste{color:var(--reste)}
+.legende{font-size:12px;color:var(--doux);margin-top:10px;text-align:center}
+.schema{display:grid;grid-template-columns:1fr auto 1.15fr auto 1fr;align-items:stretch;gap:14px;max-width:1000px;margin:0 auto}
+.noeud{background:var(--carte);border:1px solid var(--trait);border-radius:20px;padding:20px 16px;text-align:center}
+.noeud b{display:block;font-size:17px;margin-bottom:4px}.noeud span{font-size:14px;color:var(--doux);display:block}
+.noeud.centre{background:linear-gradient(135deg,var(--teal),var(--teal-f));color:#fff;border:0}.noeud.centre span{color:rgba(255,255,255,.88)}
+.noeud .pe{margin-top:8px;font-size:12px;font-weight:700;color:var(--reste)}
+.fleche{font-size:24px;color:var(--teal);align-self:center}
+.macs{display:grid;gap:10px}
+.mac{background:var(--carte);border:1px solid var(--trait);border-radius:16px;padding:12px 14px;text-align:center}
+.mac b{display:block;font-size:15px}.mac span{font-size:13px;color:var(--doux)}
+.mac.futur{border-style:dashed;opacity:.85}
+.trois{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:1000px;margin:0 auto}
+.carte{background:var(--carte);border:1px solid var(--trait);border-radius:22px;padding:26px}
+.carte .n{width:36px;height:36px;border-radius:50%;background:var(--teal);color:#fff;display:grid;place-items:center;font-weight:700;margin-bottom:12px}
+.carte h3{margin:0 0 6px;font-size:19px}.carte p{margin:0;color:var(--doux);font-size:15px}
+.notif{display:flex;gap:12px;align-items:flex-start;padding:12px;border-radius:16px;background:rgba(22,168,188,.1);margin-top:12px;text-align:left}
+.notif img{width:36px;height:36px;border-radius:9px}.notif small{color:var(--doux)}
+.choix{display:flex;gap:8px;margin-top:10px}.choix span{flex:1;text-align:center;padding:8px;border-radius:12px;font-weight:600;font-size:14px;background:var(--fond);border:1px solid var(--trait)}.choix span:first-child{background:var(--teal);color:#fff;border-color:var(--teal)}
+.garde{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;max-width:1000px;margin:0 auto}
+.garde .carte{display:flex;gap:16px;align-items:flex-start;padding:22px}
+.garde .ico{flex:none;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:rgba(22,168,188,.14);color:var(--teal);font-size:19px;font-weight:700}
+.garde h3{margin:0 0 4px;font-size:18px}.garde p{margin:0;font-size:15px;color:var(--doux)}
+.colonnes{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:1000px;margin:0 auto}
+.colonnes h3{margin:0 0 12px;font-size:20px}
+.colonnes ul{margin:0;padding:0;list-style:none;display:grid;gap:9px;font-size:15px}
+.colonnes li{padding-left:24px;position:relative;color:var(--doux)}
+.colonnes li::before{position:absolute;left:0;font-weight:700}
+.c-fait li::before{content:"✓";color:var(--ok)}.c-reste li::before{content:"◔";color:var(--reste)}.c-loin li::before{content:"→";color:var(--teal)}
+.frise{list-style:none;margin:0 auto;padding:0;max-width:1000px;display:grid;grid-template-columns:repeat(6,1fr);gap:10px;position:relative}
+.frise li{background:var(--carte);border:1px solid var(--trait);border-radius:18px;padding:16px 12px;font-size:13px;color:var(--doux);position:relative}
+.frise li b{display:block;color:var(--texte);font-size:15px;margin:6px 0 4px}
+.frise .num{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:14px;color:#fff;background:var(--doux)}
+.frise .encours .num{background:var(--reste)}.frise .encours{border-color:var(--reste)}
+.frise .st{display:block;margin-top:8px;font-weight:700;font-size:12px}
+.frise .encours .st{color:var(--reste)}
+.install{max-width:760px;margin:0 auto;display:grid;gap:16px}
+.cmd{display:flex;gap:10px;align-items:center;background:#0B1B22;color:#EAF6F9;border-radius:14px;padding:14px 16px;font:14px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;overflow-x:auto}
+.cmd code{flex:1;white-space:nowrap}.cmd button{flex:none;border:0;border-radius:9px;padding:7px 14px;background:var(--teal);color:#fff;font-weight:600;cursor:pointer;font-size:13px}
+.install h3{margin:0 0 6px;font-size:20px}.install p{margin:0 0 10px;color:var(--doux);font-size:15px}
+.install .carte{padding:24px}
+.fin{text-align:center;padding:64px 20px 80px}
 footer{text-align:center;color:var(--doux);font-size:13px;padding:24px;border-top:1px solid var(--trait)}
-@media (max-width:760px){.schema{grid-template-columns:1fr}.fleche{transform:rotate(90deg);justify-self:center}.grille{grid-template-columns:1fr}section{padding:56px 0}.hero{padding:64px 16px 48px}}
+.rv{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}.rv.vu{opacity:1;transform:none}
+.fonc>*,.install>*,.carte,.schema>*{min-width:0}.cmd code{min-width:0}
+@media (max-width:860px){.fonc{grid-template-columns:minmax(0,1fr)}.install{grid-template-columns:minmax(0,1fr)}.cmd{font-size:12px}.cmd code{white-space:normal;word-break:break-all}.fonc{grid-template-columns:1fr;gap:28px;margin-bottom:72px}.fonc.inv .txt{order:0}.schema{grid-template-columns:1fr}.fleche{transform:rotate(90deg);justify-self:center}.trois,.garde,.colonnes{grid-template-columns:1fr}.frise{grid-template-columns:1fr}section{padding:56px 0}.hero{padding:60px 16px 44px}.hero .tel .cadre:nth-child(2){display:none}nav .liens{display:none}}
 </style>
 </head>
 <body>
-<nav><a href="../">← Toutes les apps</a><strong>Relais</strong><span style="color:var(--doux)">Bientôt</span></nav>
+<nav><a href="../">← Toutes les apps</a><strong>Relais</strong><span class="pre">Préversion</span><span class="liens"><a href="#fonctions">Fonctions</a><a href="#etat">Où en est-on</a><a href="#installer">Installer</a></span></nav>
 
 <header class="hero">
   <img src="../assets/relais-icon.svg" alt="">
-  <div class="pastille">En construction — bientôt</div>
-  <h1>Votre Mac vous parle.<br>Vous lui répondez.</h1>
-  <p class="lead">Relais relie votre iPhone et vos Mac par un serveur privé. Vos tâches longues vous préviennent, vos réponses repartent d'un geste, vos fichiers passent d'un appareil à l'autre.</p>
+  <div class="pastille">Préversion · accès sur invitation</div>
+  <h1>Votre Mac vous écrit.<br>Vous répondez d'un geste.</h1>
+  <p class="lead">Une tâche attend votre accord ? La notification tombe sur l'iPhone, vous touchez « oui », la tâche continue. Un serveur privé au milieu, rien d'ouvert chez vous.</p>
+  <p class="invit"><b>Sans invitation, rien ne marche.</b> Relais ne fait rien avec le serveur sans une clé d'accès créée par un lien valable 15 minutes, utilisable une seule fois, et sans un jeton propre à chaque Mac.</p>
+  <div class="boutons"><a class="btn" href="https://github.com/LucasHRCHatReply/relais-releases/releases/latest/download/Relais.dmg">Télécharger pour Mac</a><a class="btn sec" href="https://relais.srv875929.hstgr.cloud">Ouvrir sur l'iPhone</a></div>
+  <div class="tel">
+    <div class="cadre l"><picture><source media="(prefers-color-scheme:dark)" srcset="images/pwa-accueil-dark.png"><img src="images/pwa-accueil-light.png" alt="Liste des canaux : Général, un canal par projet" width="390" height="260"></picture></div>
+    <div class="cadre l"><picture><source media="(prefers-color-scheme:dark)" srcset="images/pwa-canal-glisse-dark.png"><img src="images/pwa-canal-glisse-light.png" alt="Un message mis en page avec des boutons oui et non" width="390" height="360"></picture></div>
+  </div>
+  <p class="legende">Captures réelles de la version de développement, données d'exemple.</p>
 </header>
 
-<main class="wrap">
-  <section>
-    <h2>Un seul relais, au milieu.</h2>
-    <p class="sous">Personne ne se connecte jamais à votre Mac. Chaque appareil ouvre lui-même sa connexion vers le serveur, comme un site web : rien à ouvrir, aucun tunnel.</p>
-    <div class="schema">
-      <div class="noeud"><b>iPhone · iPad</b><span>l'app sur l'écran d'accueil</span></div>
-      <div class="fleche">⇄</div>
-      <div class="noeud centre"><b>Votre serveur privé</b><span>canaux, messages, fichiers</span></div>
-      <div class="fleche">⇄</div>
-      <div class="noeud"><b>Vos Mac</b><span>l'app Relais, discrète</span></div>
+<section class="alt" id="schema"><div class="wrap">
+  <h2 class="rv">Un seul relais, au milieu.</h2>
+  <p class="sous rv">Personne ne se connecte jamais vers un Mac. Chaque appareil ouvre lui-même sa connexion sortante vers le serveur, comme un site web : aucun port à ouvrir, aucun tunnel.</p>
+  <div class="schema rv">
+    <div class="noeud"><b>iPhone · iPad</b><span>le site Relais, ajouté à l'écran d'accueil</span><span>Face ID signe chaque consigne</span></div>
+    <div class="fleche">⇄</div>
+    <div class="noeud centre"><b>Serveur privé</b><span>transporte, ne décide de rien</span><span>canaux, messages 30 jours, journal</span></div>
+    <div class="fleche">⇄</div>
+    <div class="macs">
+      <div class="mac"><b>MacBook Pro perso</b><span>émet et reçoit</span></div>
+      <div class="mac"><b>Mac du travail</b><span>émet seulement, réception sur accord de l'informatique</span></div>
+      <div class="mac futur"><b>Mac mini</b><span>mini-agent, plus tard</span></div>
     </div>
-  </section>
+  </div>
+</div></section>
 
-  <section>
-    <h2>Une question arrive. Vous tranchez.</h2>
-    <p class="sous">Une tâche attend votre accord depuis dix minutes ? La notification tombe sur l'iPhone, vous touchez « Oui », la tâche continue.</p>
-    <div class="bulle">
-      <div class="notif"><img src="../assets/relais-icon.svg" alt=""><div><b>Glisse</b> <small>· maintenant</small><br>Publier la version 0.7.0 ?</div></div>
-      <div class="choix"><span>Oui</span><span>Non</span><span>Plus tard</span></div>
-    </div>
-  </section>
+<section id="fonctions"><div class="wrap">
+  <h2 class="rv">Chaque fonction, un geste.</h2>
+  <p class="sous rv">Ce que Relais fait aujourd'hui, et ce qui reste. Les pastilles disent la vérité du jour (27/10/2026).</p>
 
-  <section>
-    <h2>Ce que Relais saura faire.</h2>
-    <p class="sous">Pensé d'abord pour un usage personnel, à un seul utilisateur.</p>
-    <div class="grille">
-      <div class="carte"><div class="ico">◎</div><h3>Un canal par projet</h3><p>Un fil général et un par projet, créés tout seuls. Messages mis en page : titres, liens, images.</p></div>
-      <div class="carte"><div class="ico">↩︎</div><h3>Répondre d'un geste</h3><p>Oui, non, plus tard : la réponse revient au Mac qui l'attendait, et rien d'autre.</p></div>
-      <div class="carte"><div class="ico">⇅</div><h3>Fichiers dans les deux sens</h3><p>Une photo de l'iPhone vers le Mac, un PDF du Mac vers l'iPhone, chiffrés avant de partir.</p></div>
-      <div class="carte"><div class="ico">⌁</div><h3>Notifications fiables</h3><p>Le vrai push de l'iPhone et de l'iPad, sans compte développeur, rangé dans vos modes de concentration.</p></div>
-      <div class="carte"><div class="ico">✓</div><h3>Chaque consigne signée</h3><p>Face ID signe la consigne sur le téléphone, le Mac vérifie la signature : le serveur transporte, il ne peut rien ordonner.</p></div>
-      <div class="carte"><div class="ico">☰</div><h3>Une liste fermée</h3><p>Le Mac n'exécute que ce que vous avez permis, écrit à la main. Ni effacer, ni envoyer, ni publier seul.</p></div>
-    </div>
-  </section>
+  <div class="fonc rv">
+    <div class="txt"><span class="etat fait">Fait</span><h3>Un canal par projet</h3><p>Un fil « Général » et un par projet, créés tout seuls à la première publication. On ouvre l'app, on touche un canal.</p><p><b>Le geste :</b> toucher un canal pour lire ses messages.</p></div>
+    <div class="vis"><div class="cadre"><picture><source media="(prefers-color-scheme:dark)" srcset="images/pwa-accueil-dark.png"><img src="images/pwa-accueil-light.png" alt="Canaux" width="390" height="260"></picture></div></div>
+  </div>
 
-  <section>
-    <h2>Où en est Relais.</h2>
-    <p class="sous">Construit étape par étape, chaque étape montrée avant la suivante.</p>
-    <ol class="etapes">
-      <li class="ok"><b>Cadrage</b> — le schéma, les règles de sécurité, les étapes.</li>
-      <li><b>Le serveur privé et l'app de l'iPhone</b> — canaux, messages, notifications.</li>
-      <li><b>L'app Mac</b> — questions à boutons, premières commandes de lecture.</li>
-      <li><b>Les fichiers</b> — chiffrés, dans les deux sens.</li>
-    </ol>
-  </section>
-</main>
+  <div class="fonc inv rv">
+    <div class="txt"><span class="etat fait">Fait</span><h3>Des messages qui se lisent</h3><p>Titres, listes, tableaux, code, liens. Le texte est assaini : aucun script, aucune image hors https.</p><p><b>Le geste :</b> rien, ça s'affiche.</p></div>
+    <div class="vis"><div class="cadre"><picture><source media="(prefers-color-scheme:dark)" srcset="images/pwa-canal-jauge-dark.png"><img src="images/pwa-canal-jauge-light.png" alt="Un tableau rendu dans un message" width="390" height="210"></picture></div></div>
+  </div>
 
-<div class="fin"><a class="btn" href="../">Voir les apps déjà disponibles</a></div>
-<footer>Relais · gratuit, sans compte tiers, sans télémétrie · en construction</footer>
+  <div class="fonc rv">
+    <div class="txt"><span class="etat fait">Fait</span><span class="etat reste">À faire : essai iPhone</span><h3>Répondre d'un geste</h3><p>Une session pose une question avec ses choix. Vous touchez « oui » ou « non » ; la réponse revient au Mac qui l'attendait, et rien d'autre.</p><p><b>Le geste :</b> toucher la notification, puis un bouton. Sur le Mac, l'onglet « Questions » pose et suit les questions.</p></div>
+    <div class="vis"><div class="cadre"><picture><source media="(prefers-color-scheme:dark)" srcset="images/pwa-canal-glisse-dark.png"><img src="images/pwa-canal-glisse-light.png" alt="Question avec boutons oui et non" width="390" height="360"></picture></div>
+    <div style="width:230px"><div class="fen"><div class="barre"><i></i><i></i><i></i></div><img src="images/mac-questions.png" alt="Onglet Questions de l'app Mac" width="900" height="675"></div></div></div>
+  </div>
+
+  <div class="fonc inv rv">
+    <div class="txt"><span class="etat fait">Fait côté serveur</span><span class="etat reste">À faire : essai iPhone</span><h3>Une vraie notification</h3><p>Le Web Push d'iOS : sans compte développeur, sans app de la boutique. De 22 h à 7 h, silence, sauf message urgent.</p><p><b>Le geste :</b> « Activer » les notifications dans Réglages, une fois. Il faut iOS 16.4 ou plus et le site ajouté à l'écran d'accueil.</p></div>
+    <div class="vis"><div style="max-width:300px;width:100%"><div class="carte"><div class="notif"><img src="../assets/relais-icon.svg" alt=""><div><b>Glisse</b> <small>· maintenant</small><br>Publier la version 0.7.0 ?</div></div><div class="choix"><span>Oui</span><span>Non</span><span>Plus tard</span></div></div><p class="legende">Illustration, exemple. La notification réelle sur iPhone n'est pas encore essayée.</p></div></div>
+  </div>
+
+  <div class="fonc rv">
+    <div class="txt"><span class="etat fait">Fait</span><h3>Une clé d'accès par appareil</h3><p>Pas de mot de passe. Un lien d'invitation (15 minutes, une seule fois) crée la clé d'accès de l'iPhone. Les jetons des Mac se créent et se révoquent d'un geste.</p><p><b>Le geste :</b> Réglages › Appareils ou Jetons › « Révoquer ».</p></div>
+    <div class="vis"><div class="cadre"><picture><source media="(prefers-color-scheme:dark)" srcset="images/pwa-reglages-dark.png"><img src="images/pwa-reglages-light.png" alt="Appareils, jetons et journal" width="390" height="595"></picture></div></div>
+  </div>
+
+  <div class="fonc inv rv">
+    <div class="txt"><span class="etat fait">Fait</span><span class="etat reste">À faire : appairage par QR</span><h3>Une app Mac discrète</h3><p>Cinq onglets : État, Jeton, Questions, Journal, Mises à jour. Elle émet les messages, suit les réponses et prévient par une notification locale.</p><p><b>Le geste :</b> coller le jeton du Mac dans « Jeton », puis « Envoyer un essai » dans « État ».</p></div>
+    <div class="vis"><div style="width:100%;max-width:460px"><div class="fen"><div class="barre"><i></i><i></i><i></i></div><img src="images/mac-etat.png" alt="Onglet État de l'app Relais" width="900" height="710"></div><p class="legende">Capture réelle, app Relais 0.1.0, avant saisie du jeton.</p></div></div>
+  </div>
+
+  <div class="fonc rv">
+    <div class="txt"><span class="etat fait">Fait</span><h3>Un journal de tout</h3><p>Heure, appareil, question, réponse : le journal garde l'enveloppe, jamais le contenu. Les messages s'effacent après 30 jours, le journal après 90.</p><p><b>Le geste :</b> onglet « Journal » sur le Mac, ou Réglages sur l'iPhone.</p></div>
+    <div class="vis"><div style="width:100%;max-width:460px"><div class="fen"><div class="barre"><i></i><i></i><i></i></div><img src="images/mac-journal.png" alt="Onglet Journal" width="900" height="675"></div></div></div>
+  </div>
+
+  <div class="fonc inv rv">
+    <div class="txt"><span class="etat fait">Fait</span><h3>Envoyer depuis le terminal</h3><p>L'outil <code>relais-envoyer</code> publie un message, pose une question à boutons et attend la réponse. C'est lui qu'appellent les sessions Claude Code.</p><p><b>Le geste :</b> une ligne, par exemple <code>relais-envoyer --canal glisse --choix oui,non "Publier ?"</code></p></div>
+    <div class="vis"><div class="cmd" style="max-width:100%"><code>relais-envoyer --canal glisse --question … --choix oui,non</code></div></div>
+  </div>
+</div></section>
+
+<section class="alt"><div class="wrap">
+  <h2 class="rv">Trois gestes, de bout en bout.</h2>
+  <p class="sous rv">Exemple suivi : une session attend une réponse depuis dix minutes.</p>
+  <div class="trois rv">
+    <div class="carte"><div class="n">1</div><h3>Le Mac pose la question</h3><p>La session appelle <code>relais-envoyer</code> : « Publier Glisse 0.7.0 ? », choix oui / non. L'app Mac l'envoie, signée de son jeton.</p></div>
+    <div class="carte"><div class="n">2</div><h3>L'iPhone sonne</h3><p>Le serveur range le message dans le canal Glisse et pousse la notification. Un toucher ouvre la question.</p></div>
+    <div class="carte"><div class="n">3</div><h3>Vous répondez</h3><p>Un bouton, Face ID. La réponse revient au Mac, la session continue. Le journal garde l'heure et le choix.</p></div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <h2 class="rv">Ce que Relais refuse de faire.</h2>
+  <p class="sous rv">La sécurité est dans la conception, pas dans une promesse.</p>
+  <div class="garde rv">
+    <div class="carte"><div class="ico">⇄</div><div><h3>Le serveur transporte seulement</h3><p>Il range et relaie. Il ne fabrique ni ne modifie aucune consigne.</p></div></div>
+    <div class="carte"><div class="ico">✓</div><div><h3>Consignes signées, Face ID</h3><p>La consigne est signée sur le téléphone ; le Mac vérifie lui-même la signature, l'âge (moins de 5 minutes) et l'unicité. Un serveur piraté ne pilote rien.</p></div></div>
+    <div class="carte"><div class="ico">⚿</div><div><h3>Jetons révocables</h3><p>Un jeton par Mac, stocké haché, limité en débit, révocable d'un geste.</p></div></div>
+    <div class="carte"><div class="ico">∅</div><div><h3>Aucune donnée client</h3><p>Les messages s'écrivent comme un texte qu'un administrateur pourrait lire : jamais de contenu client.</p></div></div>
+    <div class="carte"><div class="ico">◌</div><div><h3>Pas de faux signal de présence</h3><p>Relais ne simule ni activité ni statut, ni souris, ni veille.</p></div></div>
+    <div class="carte"><div class="ico">☾</div><div><h3>Silence de 22 h à 7 h</h3><p>Le message est rangé ; la notification ne part que s'il est urgent.</p></div></div>
+  </div>
+</div></section>
+
+<section class="alt" id="etat"><div class="wrap">
+  <h2 class="rv">Où en est Relais.</h2>
+  <p class="sous rv">État au 27/10/2026. 67 tests automatiques côté site, plus de 23 côté app Mac, tous verts à cette date.</p>
+  <div class="colonnes rv">
+    <div class="carte c-fait"><h3>Fait</h3><ul>
+      <li>Canaux et messages mis en page</li>
+      <li>Notifications Web Push, silence de nuit</li>
+      <li>Clés d'accès sur invitation, jetons</li>
+      <li>Questions à boutons, journal</li>
+      <li>Consignes signées, vérifiées côté Mac</li>
+      <li>App Mac : émission, suivi, notifications</li>
+      <li>Téléchargement de l'app par jeton</li>
+    </ul></div>
+    <div class="carte c-reste"><h3>Reste à faire</h3><ul>
+      <li>Essai sur l'iPhone, par Lucas</li>
+      <li>Appairage par QR code</li>
+      <li>Réception de consignes sur le MacBook Pro</li>
+      <li>Fichiers chiffrés</li>
+      <li>Vues du coffre (tâches, points du jour)</li>
+      <li>Mini-agent sur le Mac mini</li>
+      <li>Mac du travail en réception, après accord de l'informatique</li>
+    </ul></div>
+    <div class="carte c-loin"><h3>Jusqu'où on peut aller</h3><ul>
+      <li>Le Mac vérifie et exécute des consignes signées, sur une liste fermée</li>
+      <li>Photos et PDF dans les deux sens, chiffrés avant dépôt</li>
+      <li>Un petit modèle sur le Mac mini qui répond au basique</li>
+      <li>Chiffrement de bout en bout des discussions, après la V1</li>
+    </ul></div>
+  </div>
+
+  <h2 class="rv" style="margin-top:72px;font-size:clamp(26px,3.6vw,36px)">La feuille de route, étape par étape.</h2>
+  <p class="sous rv">Chaque étape se montre avant la suivante.</p>
+  <ol class="frise rv">
+    <li class="encours"><span class="num">0</span><b>Serveur durci</b>Accès par clé seule, ports internes fermés<span class="st">À faire</span></li>
+    <li class="encours"><span class="num">1</span><b>Site et notifications</b>Canaux, push, clés d'accès. En ligne ; essai iPhone à faire<span class="st">En cours</span></li>
+    <li class="encours"><span class="num">2</span><b>App Mac</b>Questions à boutons, appairage QR, commandes de lecture<span class="st">En cours</span></li>
+    <li><span class="num">3</span><b>Mini-agent</b>Un résumé sourcé de « où en est le chantier ? »<span class="st">À venir</span></li>
+    <li><span class="num">4</span><b>Fichiers</b>Chiffrés, dans les deux sens ; vues du coffre<span class="st">À venir</span></li>
+    <li><span class="num">5</span><b>Mac du travail</b>Réponses seulement, si l'informatique l'accepte<span class="st">À venir</span></li>
+  </ol>
+</div></section>
+
+<section id="installer"><div class="wrap">
+  <h2 class="rv">Installer la préversion.</h2>
+  <p class="sous rv">Le téléchargement est libre ; l'accès au serveur, lui, se fait sur invitation.</p>
+  <div class="install rv">
+    <p class="invit" style="max-width:none;margin:0"><b>Sans invitation, rien ne marche.</b> L'app Mac et le site ne peuvent rien faire avec le serveur sans une clé d'accès (lien d'invitation valable 15 minutes, utilisable une fois) et sans un jeton propre au Mac. Aucun mot de passe, aucun jeton n'est écrit sur cette page.</p>
+    <div class="carte"><h3>Sur le Mac</h3><p>macOS 14 ou plus. Ouvrir le .dmg, glisser Relais dans Applications. Au premier lancement, coller le jeton de ce Mac dans l'onglet « Jeton » : sans lui, l'app n'a accès à rien.</p>
+      <div class="boutons" style="justify-content:flex-start;margin:0 0 14px"><a class="btn" href="https://github.com/LucasHRCHatReply/relais-releases/releases/latest/download/Relais.dmg">Télécharger Relais 0.1.0</a><a class="btn sec" href="https://github.com/LucasHRCHatReply/relais-releases/releases/latest">Toutes les versions</a></div>
+      <p>Autre voie, en une commande : elle demande le jeton du Mac, vérifie l'empreinte et la signature, puis installe.</p>
+      <div class="cmd"><code id="cmd">curl -fsSL https://relais.srv875929.hstgr.cloud/installer-mac.sh | bash</code><button type="button" id="cp">Copier</button></div></div>
+    <div class="carte"><h3>Sur l'iPhone</h3><p>iOS 16.4 ou plus. Ouvrir dans Safari, puis Partager › « Sur l'écran d'accueil », ouvrir l'icône et créer la clé d'accès avec le lien d'invitation.</p>
+      <a class="btn" href="https://relais.srv875929.hstgr.cloud">Ouvrir sur l'iPhone</a></div>
+  </div>
+</div></section>
+
+<div class="fin"><a class="btn sec" href="../">Voir les apps disponibles</a></div>
+<footer>Relais · préversion · sans compte tiers, sans télémétrie</footer>
+<script>
+(function(){
+  var b=document.getElementById('cp');
+  if(b)b.addEventListener('click',function(){try{navigator.clipboard.writeText(document.getElementById('cmd').textContent);b.textContent='Copié';setTimeout(function(){b.textContent='Copier'},1500)}catch(e){}});
+  var els=document.querySelectorAll('.rv');
+  if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('vu')});return}
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('vu');io.unobserve(e.target)}})},{threshold:.08});
+  els.forEach(function(e){io.observe(e)});
+})();
+</script>
 </body>
 </html>
