@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Relief — bientôt</title>
-<meta name="description" content="Relief lit votre montre Garmin par le câble USB, sans compte, et garde vos données sur votre Mac. Bientôt.">
+<title>Relief — votre Garmin sur le Mac</title>
+<meta name="description" content="Relief lit votre montre Garmin par le câble USB, sans compte, et garde vos données sur votre Mac. Gratuit, sans compte.">
 <link rel="icon" href="../assets/relief-icon.svg">
 <style>
 :root{--fond:#F4F6F2;--texte:#12141F;--doux:#555B66;--carte:#fff;--trait:rgba(18,20,31,.1);--vert:#3E9E5A;--clair:#84D896}
@@ -23,18 +23,26 @@ h1{font-size:clamp(44px,8vw,76px);line-height:1.04;letter-spacing:-.025em;margin
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn{color:#0B0D18}}
 footer{text-align:center;color:var(--doux);font-size:13px;padding:24px;border-top:1px solid var(--trait)}
 @media (max-width:760px){.grille{grid-template-columns:1fr}.hero{padding:64px 16px 48px}}
-</style></head><body>
-<nav><a href="../">← Toutes les apps</a><strong>Relief</strong><span style="color:var(--doux)">Bientôt</span></nav>
+.chiffres{display:flex;gap:28px;justify-content:center;flex-wrap:wrap;margin:22px 0 0;color:var(--doux);font-size:14px}.chiffres b{display:block;font-size:30px;color:var(--texte)}.dl{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:28px}.btn2{display:inline-block;padding:13px 26px;border-radius:999px;border:1px solid var(--trait);color:var(--texte);text-decoration:none;font-weight:600}</style></head><body>
+</head><body>
+<nav><a href="../">← Toutes les apps</a><strong>Relief</strong><span style="color:var(--doux)">0.2.0</span></nav>
 <header class="hero"><img src="../assets/relief-icon.svg" alt="">
-<div class="pastille">Première version, très légère</div>
+<div class="pastille">Nouveau · records et semaines</div>
 <h1>Votre montre,<br>chez vous.</h1>
-<p class="lead">Relief lit votre montre Garmin par le câble USB, sans compte ni nuage, et garde vos activités sur votre Mac.</p></header>
-<main class="wrap"><div class="grille">
-<div class="carte"><h3>Par le câble</h3><p>On branche la montre, Relief lit ses fichiers. Testé sur une Forerunner 165.</p></div>
-<div class="carte"><h3>Sans compte</h3><p>Aucune connexion à Garmin Connect : rien ne quitte le Mac.</p></div>
-<div class="carte"><h3>Vos données restent à vous</h3><p>Rangées dans la bibliothèque de votre Mac, jamais envoyées ailleurs.</p></div>
+<p class="lead">Relief lit votre montre Garmin par le câble USB, sans compte ni nuage, et en tire vos records, vos semaines et vos zones cardiaques — sur votre Mac.</p>
+<div class="dl"><a class="btn" href="https://github.com/LucasHRCHatReply/relief-releases/releases/latest/download/Relief.dmg">Télécharger pour Mac</a><a class="btn2" href="https://github.com/LucasHRCHatReply/relief-releases/releases/latest">Toutes les versions</a></div>
+<p class="note" style="margin-top:14px">macOS 26 · Mac à puce Apple · gratuit, sans compte, sans télémétrie</p></header>
+<main class="wrap">
+<h2 style="text-align:center">Branchez. Tout est là.</h2>
+<div class="grille">
+<div class="carte"><h3>Par le câble</h3><p>Relief copie les fichiers de la montre en lecture seule : il n'écrit et n'efface rien dessus. Testé sur une Forerunner 165.</p></div>
+<div class="carte"><h3>Records</h3><p>Meilleur 1 km, 5 km et 10 km trouvés dans chaque sortie, plus longue sortie, plus gros dénivelé. Un clic ouvre l'activité.</p></div>
+<div class="carte"><h3>Semaine après semaine</h3><p>Distance, durée et nombre de séances par semaine, en barres. On voit tout de suite si la charge monte.</p></div>
+<div class="carte"><h3>Zones cardiaques</h3><p>Le temps passé dans chacune des cinq zones, calculé sur votre fréquence maximale observée.</p></div>
+<div class="carte"><h3>Allure et parcours</h3><p>Allure en min/km, cœur, altitude, cadence, puissance ; le tracé sur Plans ; export GPX, CSV ou FIT d'origine.</p></div>
+<div class="carte"><h3>Le quotidien</h3><p>Stress, sommeil, SpO₂, respiration et VFC, quand la montre les enregistre. Sans interprétation médicale.</p></div>
 </div>
-<p class="note">Relief commence petit : lire la montre. Les idées viendront ensuite — graphiques d'entraînement, records, cartes de parcours.</p></main>
-<div class="fin"><a class="btn" href="../">Voir les apps déjà disponibles</a></div>
-<footer>Relief · gratuit, sans compte, sans télémétrie · en construction</footer>
+<p class="note">Sans Garmin Connect : rien ne quitte le Mac. Ce qui ne se calcule pas s'affiche « n/a », jamais inventé. Relief se met à jour depuis son onglet Mises à jour, empreinte SHA-256 vérifiée.</p></main>
+<div class="fin"><a class="btn" href="https://github.com/LucasHRCHatReply/relief-releases/releases/latest/download/Relief.dmg">Télécharger Relief 0.2.0</a></div>
+<footer>Relief · gratuit, sans compte, sans télémétrie</footer>
 </body></html>

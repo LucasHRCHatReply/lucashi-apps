@@ -360,7 +360,17 @@
       "couleur": "#84D896",
       "icone": "assets/relief-icon.svg",
       "page": "relief/",
-      "description": "Relief lit la montre Garmin par USB et garde les activités sur le Mac, sans Garmin Connect. Première version très légère, à enrichir."
+      "description": "Relief lit la montre Garmin par USB et garde les activités sur le Mac, sans Garmin Connect : records 1/5/10 km, totaux par semaine, zones cardiaques, allure, carte du parcours et export GPX.",
+      "requis": [
+        "Mac à puce Apple",
+        "macOS 26 ou plus",
+        "Aucun compte, aucune télémétrie"
+      ],
+      "depot": "LucasHRCHatReply/relief-releases",
+      "zip": "Relief.zip",
+      "dmg": "Relief.dmg",
+      "version": "0.2.0",
+      "source_page": "~/Relief/site"
     }
   ]
 }
