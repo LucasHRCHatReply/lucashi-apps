@@ -22,7 +22,7 @@
       "source_page": "~/Pince/site-vente",
       "large": true,
       "requis": [
-        "macOS 15 ou plus (Liquid Glass natif sous macOS 26)",
+        "macOS 26 ou plus",
         "Mac à puce Apple (M1 ou plus récent)",
         "Aucun compte, aucun mot de passe administrateur"
       ],
@@ -370,7 +370,7 @@
       "icone": "assets/releve-icon.png?v=20261026",
       "page": "releve/",
       "requis": [
-        "Mac à puce Apple ou Intel",
+        "Mac à puce Apple",
         "macOS 14 ou plus",
         "Aucun compte, aucune télémétrie"
       ],
@@ -439,7 +439,7 @@
       ]
     },
     {
-      "id": "tadis",
+      "id": "tadis", "preversion": true,
       "nom": "Tadis",
       "phrase": "Dicte et transcrit, sur le Mac, sans envoyer votre voix.",
       "famille": "capture",
@@ -464,7 +464,7 @@
       "version": "0.2.3"
     },
     {
-      "id": "ocruroeil",
+      "id": "ocruroeil", "preversion": true,
       "nom": "Ocruroeil",
       "phrase": "Un scan ou une photo devient un vrai document, cherchable et modifiable.",
       "famille": "capture",
