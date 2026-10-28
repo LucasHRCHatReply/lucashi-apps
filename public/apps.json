@@ -68,7 +68,12 @@
       "large": true,
       "dmg": "Jauge.dmg",
       "description": "Jauge empêche la batterie de votre MacBook de rester chargée à 100 % : la charge s'arrête au niveau que vous choisissez (80 % par exemple) et reprend en dessous. La batterie s'use moins vite.",
-      "bande": []
+      "bande": [
+        {
+          "src": "assets/bande/jauge-vue.png",
+          "alt": "Jauge : la charge, la limite et où vont les watts"
+        }
+      ]
     },
     {
       "id": "penombre",
@@ -234,8 +239,8 @@
       "dmg": "Veillon.dmg",
       "bande": [
         {
-          "src": "assets/bande/veillon-apercu.jpg",
-          "alt": "Veillon : l'aperçu de la santé du Mac"
+          "src": "assets/bande/veillon-apercu2.png",
+          "alt": "Veillon : processeur, mémoire, disque, réseau et batterie"
         },
         {
           "src": "assets/bande/veillon-capteurs.jpg",
@@ -412,7 +417,13 @@
       "zip": "Relief.zip",
       "dmg": "Relief.dmg",
       "version": "0.2.0",
-      "source_page": "~/Relief/site"
+      "source_page": "~/Relief/site",
+      "bande": [
+        {
+          "src": "assets/bande/relief-vue.png",
+          "alt": "Relief : la vue générale des activités de la montre"
+        }
+      ]
     },
     {
       "id": "tadis",
@@ -423,7 +434,13 @@
       "captures": [],
       "page": "tadis/",
       "developpement": true,
-      "description": "Transcription de fichiers audio et vidéo, dictée : le moteur tourne sur le Mac."
+      "description": "Transcription de fichiers audio et vidéo, dictée : le moteur tourne sur le Mac.",
+      "bande": [
+        {
+          "src": "assets/bande/tadis-ecouter.png",
+          "alt": "Tadis : la fenêtre d'écoute, le texte apparaît au fil de la parole"
+        }
+      ]
     },
     {
       "id": "ocruroeil",
@@ -445,7 +462,13 @@
       "captures": [],
       "page": "cliche/",
       "developpement": true,
-      "description": "Capture d'écran et enregistrement vidéo pour le Mac, à la manière des meilleures apps du genre."
+      "description": "Capture d'écran et enregistrement vidéo pour le Mac, à la manière des meilleures apps du genre.",
+      "bande": [
+        {
+          "src": "assets/bande/cliche-general.png",
+          "alt": "Cliché : la fenêtre des réglages"
+        }
+      ]
     }
   ]
 }
