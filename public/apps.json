@@ -428,19 +428,26 @@
     {
       "id": "tadis",
       "nom": "Tadis",
-      "phrase": "Transcrit et dicte, sur le Mac, sans envoyer votre voix.",
+      "phrase": "Dicte et transcrit, sur le Mac, sans envoyer votre voix.",
       "couleur": "#EC623C",
       "icone": "assets/tadis-icon.png?v=20261028",
       "captures": [],
       "page": "tadis/",
-      "developpement": true,
-      "description": "Transcription de fichiers audio et vidéo, dictée : le moteur tourne sur le Mac.",
+      "description": "Dictée par raccourci, écrite directement là où est le curseur, et transcription de fichiers audio et vidéo : le moteur tourne sur le Mac (Apple, Parakeet, Whisper). Un mode Comparer met les modèles côte à côte sur votre voix. Préversion.",
       "bande": [
         {
           "src": "assets/bande/tadis-ecouter.png",
           "alt": "Tadis : la fenêtre d'écoute, le texte apparaît au fil de la parole"
         }
-      ]
+      ],
+      "requis": [
+        "Mac à puce Apple",
+        "macOS 26 ou plus",
+        "Aucun compte, votre voix ne part pas sur Internet"
+      ],
+      "depot": "LucasHRCHatReply/tadis-releases",
+      "zip": "Tadis.zip",
+      "version": "0.2.3"
     },
     {
       "id": "ocruroeil",
