@@ -338,7 +338,7 @@
       "page": "paupiere/",
       "depot": "LucasHRCHatReply/paupiere-releases",
       "zip": "Paupiere.zip",
-      "version": "0.3.0",
+      "version": "0.4.0",
       "source_page": "~/Paupiere/site",
       "requis": [
         "Mac à puce Apple (M1 ou plus récent)",
