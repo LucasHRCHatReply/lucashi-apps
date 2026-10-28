@@ -26,7 +26,13 @@
         "Aucun compte, aucun mot de passe administrateur"
       ],
       "dmg": "Pince.dmg",
-      "description": "Pince garde en mémoire tout ce que vous copiez : textes, liens, images, fichiers. Un raccourci ouvre l'historique, vous cherchez, et l'élément choisi se colle aussitôt là où vous étiez."
+      "description": "Pince garde en mémoire tout ce que vous copiez : textes, liens, images, fichiers. Un raccourci ouvre l'historique, vous cherchez, et l'élément choisi se colle aussitôt là où vous étiez.",
+      "bande": [
+        {
+          "src": "assets/bande/pince-pile.jpg",
+          "alt": "Pince : la pile de collage"
+        }
+      ]
     },
     {
       "id": "jauge",
@@ -61,7 +67,8 @@
       "page_construite": "~/Downloads/Jauge.html",
       "large": true,
       "dmg": "Jauge.dmg",
-      "description": "Jauge empêche la batterie de votre MacBook de rester chargée à 100 % : la charge s'arrête au niveau que vous choisissez (80 % par exemple) et reprend en dessous. La batterie s'use moins vite."
+      "description": "Jauge empêche la batterie de votre MacBook de rester chargée à 100 % : la charge s'arrête au niveau que vous choisissez (80 % par exemple) et reprend en dessous. La batterie s'use moins vite.",
+      "bande": []
     },
     {
       "id": "penombre",
@@ -97,7 +104,8 @@
       "build_page": "python3 build.py",
       "page_construite": "~/Downloads/Penombre.html",
       "dmg": "Penombre.dmg",
-      "description": "Penombre assombrit tout l'écran, sauf la fenêtre sur laquelle vous travaillez. Le reste s'efface dans un voile réglable : vous restez concentré sur une seule chose."
+      "description": "Penombre assombrit tout l'écran, sauf la fenêtre sur laquelle vous travaillez. Le reste s'efface dans un voile réglable : vous restez concentré sur une seule chose.",
+      "bande": []
     },
     {
       "id": "filoir",
@@ -132,7 +140,8 @@
         "Aucun compte, aucune télémétrie, aucun mot de passe administrateur"
       ],
       "dmg": "Filoir.dmg",
-      "description": "Secouez le curseur pendant que vous déplacez un fichier : un filoir apparaît. Déposez-y vos fichiers en attendant de savoir où les mettre, puis reprenez-les d'un glisser quand vous en avez besoin."
+      "description": "Secouez le curseur pendant que vous déplacez un fichier : un filoir apparaît. Déposez-y vos fichiers en attendant de savoir où les mettre, puis reprenez-les d'un glisser quand vous en avez besoin.",
+      "bande": []
     },
     {
       "id": "autofoldericon",
@@ -171,7 +180,8 @@
         "Aucun compte, aucune télémétrie, aucun mot de passe administrateur"
       ],
       "dmg": "AutoFolderIcon.dmg",
-      "description": "AutoFolderIcon donne à chaque dossier une couleur et un symbole d'après son nom, tout seul. « Factures » devient vert avec un reçu, « Voyages » bleu avec un avion : on retrouve ses dossiers d'un coup d'œil."
+      "description": "AutoFolderIcon donne à chaque dossier une couleur et un symbole d'après son nom, tout seul. « Factures » devient vert avec un reçu, « Voyages » bleu avec un avion : on retrouve ses dossiers d'un coup d'œil.",
+      "bande": []
     },
     {
       "id": "glisse",
@@ -221,7 +231,21 @@
       "depot": "LucasHRCHatReply/veillon-releases",
       "zip": "Veillon.zip",
       "version": "0.4.0",
-      "dmg": "Veillon.dmg"
+      "dmg": "Veillon.dmg",
+      "bande": [
+        {
+          "src": "assets/bande/veillon-apercu.jpg",
+          "alt": "Veillon : l'aperçu de la santé du Mac"
+        },
+        {
+          "src": "assets/bande/veillon-capteurs.jpg",
+          "alt": "Veillon : températures, watts et tensions"
+        },
+        {
+          "src": "assets/bande/veillon-nettoyage.jpg",
+          "alt": "Veillon : ce qui peut être nettoyé"
+        }
+      ]
     },
     {
       "id": "lueur",
@@ -257,7 +281,8 @@
       "build_page": "python3 build.py",
       "page_construite": "~/Downloads/Lueur.html",
       "dmg": "Lueur.dmg",
-      "description": "Lueur règle le rétroéclairage du clavier de votre MacBook depuis la barre des menus : curseur de luminosité, raccourcis, délai d'extinction, jamais éteint la nuit. Si macOS reprend la main, Lueur réimpose votre réglage."
+      "description": "Lueur règle le rétroéclairage du clavier de votre MacBook depuis la barre des menus : curseur de luminosité, raccourcis, délai d'extinction, jamais éteint la nuit. Si macOS reprend la main, Lueur réimpose votre réglage.",
+      "bande": []
     },
     {
       "id": "corolle",
@@ -290,7 +315,13 @@
       "build_page": "python3 build.py",
       "page_construite": "~/Downloads/Corolle.html",
       "dmg": "Corolle.dmg",
-      "description": "Corolle ouvre une roue de huit actions sous le curseur quand vous glissez un fichier et appuyez sur Maj : convertir, alléger, extraire, zipper. Le résultat apparaît à côté de l'original, le trackpad vibre à chaque part."
+      "description": "Corolle ouvre une roue de huit actions sous le curseur quand vous glissez un fichier et appuyez sur Maj : convertir, alléger, extraire, zipper. Le résultat apparaît à côté de l'original, le trackpad vibre à chaque part.",
+      "bande": [
+        {
+          "src": "assets/bande/corolle-roue.jpg",
+          "alt": "Corolle : la roue"
+        }
+      ]
     },
     {
       "id": "paupiere",
@@ -298,17 +329,7 @@
       "phrase": "Le Mac reste éveillé, vous choisissez comment : écran éteint, verrouillé, voilé ou capot fermé.",
       "couleur": "#2B3A67",
       "icone": "assets/paupiere-icon.png?v=20261026",
-      "captures": [
-        {
-          "src": "paupiere/captures/scene.jpg",
-          "sombre": "paupiere/captures/scene-sombre.jpg",
-          "alt": "Le MacBook en 3D de Paupière, écran allumé"
-        },
-        {
-          "src": "paupiere/captures/voile-protege.jpg",
-          "alt": "Le voile protégé : Touch ID ou un code de Paupière"
-        }
-      ],
+      "captures": [],
       "page": "paupiere/",
       "depot": "LucasHRCHatReply/paupiere-releases",
       "zip": "Paupiere.zip",
@@ -342,7 +363,17 @@
       "zip": "Releve.zip",
       "dmg": "Releve.dmg",
       "version": "0.1.2",
-      "source_page": "~/Releve/site"
+      "source_page": "~/Releve/site",
+      "bande": [
+        {
+          "src": "assets/bande/releve-apps.jpg",
+          "alt": "Relève : toutes les apps installées et leur version"
+        },
+        {
+          "src": "assets/bande/releve-journal.jpg",
+          "alt": "Relève : le journal des mises à jour"
+        }
+      ]
     },
     {
       "id": "relais",
@@ -382,6 +413,39 @@
       "dmg": "Relief.dmg",
       "version": "0.2.0",
       "source_page": "~/Relief/site"
+    },
+    {
+      "id": "tadis",
+      "nom": "Tadis",
+      "phrase": "Transcrit et dicte, sur le Mac, sans envoyer votre voix.",
+      "couleur": "#EC623C",
+      "icone": "assets/tadis-icon.png?v=20261028",
+      "captures": [],
+      "page": "tadis/",
+      "developpement": true,
+      "description": "Transcription de fichiers audio et vidéo, dictée : le moteur tourne sur le Mac."
+    },
+    {
+      "id": "ocruroeil",
+      "nom": "Ocruroeil",
+      "phrase": "Rend un scan ou une photo cherchable, en un dépôt.",
+      "couleur": "#5B48E8",
+      "icone": "assets/ocruroeil-icon.png?v=20261028",
+      "captures": [],
+      "page": "ocruroeil/",
+      "developpement": true,
+      "description": "Déposez une photo ou un PDF scanné : il en sort un PDF où l'on peut chercher du texte."
+    },
+    {
+      "id": "cliche",
+      "nom": "Cliché",
+      "phrase": "Capture l'écran, annote, enregistre. Nom provisoire.",
+      "couleur": "#2896E6",
+      "icone": "assets/cliche-icon.png?v=20261028",
+      "captures": [],
+      "page": "cliche/",
+      "developpement": true,
+      "description": "Capture d'écran et enregistrement vidéo pour le Mac, à la manière des meilleures apps du genre."
     }
   ]
 }

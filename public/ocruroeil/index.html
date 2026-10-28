@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ocruroeil — rendre un scan cherchable</title>
+<meta name="description" content="Ocruroeil transforme une photo ou un PDF scanné en PDF dans lequel on peut chercher.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="../assets/ocruroeil-icon.png">
+<style>
+:root{--fond:#F5F5F7;--texte:#14141C;--doux:#5A5F6B;--carte:#fff;--trait:rgba(20,20,28,.1);--c:#5B48E8}
+@media (prefers-color-scheme:dark){:root{--fond:#0C0D16;--texte:#EEF0F5;--doux:#9AA0AD;--carte:#171928;--trait:rgba(238,240,245,.12)}}
+*{box-sizing:border-box}body{margin:0;background:var(--fond);color:var(--texte);font:17px/1.6 -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",sans-serif;-webkit-font-smoothing:antialiased}
+nav{position:sticky;top:0;padding:12px 20px;font-size:14px;background:color-mix(in srgb,var(--fond) 80%,transparent);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--trait)}
+nav a{color:var(--doux);text-decoration:none}
+.hero{text-align:center;padding:90px 20px 56px;background:radial-gradient(900px 420px at 50% 0,color-mix(in srgb,var(--c) 28%,transparent),transparent 65%)}
+.hero img{width:112px;height:112px;border-radius:26px;box-shadow:0 20px 50px rgba(14,16,32,.35)}
+.pastille{display:inline-block;margin:26px 0 8px;padding:5px 14px;border-radius:999px;background:color-mix(in srgb,var(--c) 16%,transparent);color:var(--c);font-size:13px;font-weight:600}
+h1{font-size:clamp(40px,8vw,72px);line-height:1.05;letter-spacing:-.025em;margin:6px 0 14px}
+.lead{font-size:clamp(19px,2.6vw,23px);color:var(--doux);max-width:660px;margin:0 auto}
+.wrap{max-width:900px;margin:0 auto;padding:0 20px}
+h2{font-size:clamp(26px,4vw,36px);letter-spacing:-.02em;margin:56px 0 18px}
+.trois{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
+.trois div{background:var(--carte);border:1px solid var(--trait);border-radius:22px;padding:22px}
+.trois b{display:block;font-size:19px;margin-bottom:6px}.trois span{color:var(--doux);font-size:15.5px}
+ul.etat{list-style:none;padding:0;margin:0}ul.etat li{padding:12px 0 12px 30px;border-bottom:1px solid var(--trait);position:relative}
+ul.etat li:before{content:"";position:absolute;left:4px;top:21px;width:12px;height:12px;border-radius:50%;background:var(--c)}
+ul.etat li.attend:before{background:transparent;border:2px solid var(--c)}
+.note{margin:40px 0 70px;padding:20px 22px;border-radius:20px;background:color-mix(in srgb,var(--c) 10%,transparent);color:var(--doux);font-size:15.5px}
+footer{text-align:center;color:var(--doux);font-size:13px;padding:0 20px 50px}
+</style></head><body>
+<nav><a href="../">← Les apps de Lucas</a></nav>
+<header class="hero"><img src="../assets/ocruroeil-icon.png" alt="" width="112" height="112">
+<div><span class="pastille">En développement</span></div>
+<h1>Ocruroeil</h1><p class="lead">Un dépôt, et le texte de vos scans devient cherchable. Rien ne part sur Internet.</p></header>
+<div class="wrap">
+<h2>Ce que fait Ocruroeil</h2>
+<div class="trois"><div><b>Déposer</b><span>Une photo ou un PDF scanné : on le glisse dans la fenêtre.</span></div><div><b>Cherchable</b><span>Il en sort un PDF où ⌘F trouve les mots, et un fichier texte.</span></div><div><b>Sur le Mac</b><span>La lecture du texte se fait sur le Mac, avec la reconnaissance d’Apple.</span></div></div>
+<h2>Où en est le développement</h2>
+<ul class="etat"><li>Une première version (0.1.0) est construite et testée.</li><li>Sur de vraies photos de notice et de formulaire, tous les mots de référence sont retrouvés dans le PDF produit.</li><li>Un fichier est traité en environ une seconde, redressement compris.</li><li class=attend>En cours : une version 0.2.0.</li><li class=attend>Pas encore publiée : aucune version à télécharger pour l’instant.</li></ul>
+<p class="note">Ocruroeil est une préversion de travail. Pas encore de téléchargement : la page se mettra à jour à la première version publiée.</p>
+</div>
+<footer>© Lucas Hirschauer</footer></body></html>
