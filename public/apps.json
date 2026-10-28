@@ -18,7 +18,7 @@
       "page": "pince/",
       "depot": "LucasHRCHatReply/pince-releases",
       "zip": "Pince.zip",
-      "version": "1.4.3",
+      "version": "1.5.0",
       "source_page": "~/Pince/site-vente",
       "large": true,
       "requis": [
@@ -57,7 +57,7 @@
       "page": "jauge/",
       "depot": "LucasHRCHatReply/jauge-releases",
       "zip": "Jauge.zip",
-      "version": "1.8.1",
+      "version": "1.9.0",
       "source_page": "~/Jauge/site",
       "requis": [
         "MacBook à puce Apple (M1 ou plus récent)",
@@ -101,7 +101,7 @@
       "page": "penombre/",
       "depot": "LucasHRCHatReply/penombre-releases",
       "zip": "Penombre.zip",
-      "version": "1.4.1",
+      "version": "1.5.0",
       "source_page": "~/Penombre/site",
       "requis": [
         "Mac à puce Apple (M1 ou plus récent)",
@@ -139,7 +139,7 @@
       "page": "filoir/",
       "depot": "LucasHRCHatReply/filoir-releases",
       "zip": "Filoir.zip",
-      "version": "1.4.0",
+      "version": "1.5.0",
       "source_page": "~/Tiroir/site",
       "build_page": "python3 build.py",
       "page_construite": "~/Downloads/Filoir.html",
@@ -179,7 +179,7 @@
       "page": "autofoldericon/",
       "depot": "LucasHRCHatReply/autofoldericon-releases",
       "zip": "AutoFolderIcon.zip",
-      "version": "1.1.2",
+      "version": "1.2.0",
       "source_page": "~/AutoFolderIcon/site",
       "build_page": "python3 build.py",
       "page_construite": "~/Downloads/AutoFolderIcon.html",
@@ -210,7 +210,7 @@
       ],
       "depot": "LucasHRCHatReply/glisse-releases",
       "zip": "Glisse.zip",
-      "version": "0.7.1",
+      "version": "0.8.0",
       "source_page": "~/Swish/site",
       "build_page": "python3 build.py",
       "page_construite": "~/Downloads/Glisse.html",
@@ -242,7 +242,7 @@
       "page_construite": "~/Downloads/Veillon.html",
       "depot": "LucasHRCHatReply/veillon-releases",
       "zip": "Veillon.zip",
-      "version": "0.4.0",
+      "version": "0.5.0",
       "dmg": "Veillon.dmg",
       "bande": [
         {
@@ -283,7 +283,7 @@
       "page": "lueur/",
       "depot": "LucasHRCHatReply/lueur-releases",
       "zip": "Lueur.zip",
-      "version": "0.1.1",
+      "version": "0.2.0",
       "source_page": "~/Lueur/site",
       "requis": [
         "Mac à puce Apple (M1 ou plus récent), clavier rétroéclairé",
@@ -318,7 +318,7 @@
       "page": "corolle/",
       "depot": "LucasHRCHatReply/corolle-releases",
       "zip": "Corolle.zip",
-      "version": "0.4.0",
+      "version": "0.5.0",
       "source_page": "~/Corolle/site",
       "requis": [
         "Mac à puce Apple (M1 ou plus récent), avec trackpad",
@@ -348,7 +348,7 @@
       "page": "paupiere/",
       "depot": "LucasHRCHatReply/paupiere-releases",
       "zip": "Paupiere.zip",
-      "version": "0.4.0",
+      "version": "0.5.0",
       "source_page": "~/Paupiere/site",
       "requis": [
         "Mac à puce Apple (M1 ou plus récent)",
@@ -378,7 +378,7 @@
       "depot": "LucasHRCHatReply/releve-releases",
       "zip": "Releve.zip",
       "dmg": "Releve.dmg",
-      "version": "0.1.2",
+      "version": "0.2.0",
       "source_page": "~/Releve/site",
       "bande": [
         {
@@ -410,7 +410,7 @@
       "depot": "LucasHRCHatReply/relais-releases",
       "zip": "Relais.zip",
       "dmg": "Relais.dmg",
-      "version": "0.3.1"
+      "version": "0.4.0"
     },
     {
       "id": "relief",
@@ -429,7 +429,7 @@
       "depot": "LucasHRCHatReply/relief-releases",
       "zip": "Relief.zip",
       "dmg": "Relief.dmg",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "source_page": "~/Relief/site",
       "bande": [
         {
@@ -461,7 +461,7 @@
       ],
       "depot": "LucasHRCHatReply/tadis-releases",
       "zip": "Tadis.zip",
-      "version": "0.2.3"
+      "version": "0.3.0"
     },
     {
       "id": "ocruroeil", "preversion": true,
@@ -480,7 +480,7 @@
       "depot": "LucasHRCHatReply/ocruroeil-releases",
       "zip": "Ocruroeil.zip",
       "dmg": "Ocruroeil.dmg",
-      "version": "0.2.1"
+      "version": "0.3.0"
     },
     {
       "id": "cliche",
@@ -491,7 +491,12 @@
       "icone": "assets/cliche-icon.png?v=20261028n",
       "captures": [],
       "page": "cliche/",
-      "developpement": true,
+      "version": "0.1.0",
+      "preversion": true,
+      "depot": "LucasHRCHatReply/cliche-releases",
+      "zip": "Cliche.zip",
+      "dmg": "Cliche.dmg",
+      "requis": ["Mac à puce Apple", "macOS 15 ou plus", "Aucun compte, rien ne part sur Internet"],
       "description": "Capture d'écran et enregistrement vidéo pour le Mac, à la manière des meilleures apps du genre.",
       "bande": [
         {
