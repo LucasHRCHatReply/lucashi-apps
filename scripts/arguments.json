@@ -1,0 +1,66 @@
+{
+  "pince": {
+    "probleme": ["Copier-coller sur Mac, c'est parfait… pour une seule chose à la fois.", "Trois bouts de texte à recopier ? Trois allers-retours entre les fenêtres.", "Et si vous copiez autre chose par mégarde, ce que vous aviez copié avant est perdu."],
+    "solution": "Pince garde tout ce que vous copiez. ⇧⌘V, deux lettres pour retrouver, Retour : c'est collé. Copiez trois fois d'affilée, collez trois fois dans l'ordre."
+  },
+  "jauge": {
+    "probleme": ["Votre MacBook reste branché toute la journée au bureau, chargé à 100 %.", "C'est justement ce qui use le plus une batterie : au bout de deux ans, elle ne tient plus la matinée.", "macOS « optimise » la charge, mais quand il le décide, pas vous."],
+    "solution": "Jauge arrête la charge au niveau que vous choisissez, 80 % par exemple, et le tient même app fermée. Un bouton pour charger à fond la veille d'un déplacement."
+  },
+  "penombre": {
+    "probleme": ["Dix fenêtres ouvertes, un Dock qui bouge, des onglets partout : l'œil part dans tous les sens.", "Le mode Concentration coupe les notifications, pas le désordre à l'écran.", "Résultat : on relit trois fois la même phrase."],
+    "solution": "Penombre assombrit tout, sauf la fenêtre sur laquelle vous travaillez. Vous changez de fenêtre, la lumière suit."
+  },
+  "filoir": {
+    "probleme": ["Glisser un fichier d'un dossier vers un mail, c'est simple… tant que les deux fenêtres sont visibles en même temps.", "Sinon, on le lâche « pour l'instant » sur le Bureau.", "Et le Bureau finit en décharge."],
+    "solution": "Filoir ouvre une étagère flottante en verre : vous y déposez les fichiers en passant, vous les reprenez quand la destination est prête."
+  },
+  "autofoldericon": {
+    "probleme": ["Dans le Finder, tous les dossiers ont la même icône bleue.", "Pour trouver « Factures » parmi trente, on lit les noms un par un.", "Changer les icônes à la main ? Personne n'a le temps."],
+    "solution": "AutoFolderIcon lit le nom de chaque dossier et lui pose toute seule une icône teintée qui lui correspond. Vos dossiers se reconnaissent d'un coup d'œil."
+  },
+  "glisse": {
+    "probleme": ["Mettre deux fenêtres côte à côte sur Mac : on tire, on ajuste au pixel près, on recommence.", "macOS sait le faire, à condition de viser le petit bouton vert et d'attendre son menu.", "Dix fois par jour, ça finit par agacer."],
+    "solution": "Glisse cale la fenêtre d'un geste à deux doigts sur sa barre de titre : moitié, quart ou plein écran, sans rien viser."
+  },
+  "veillon": {
+    "probleme": ["Le Mac rame, le ventilateur souffle, le disque est plein, et on ne sait pas pourquoi.", "Le Moniteur d'activité affiche cent lignes illisibles.", "Et la page Stockage met une minute à calculer pour ne rien dire."],
+    "solution": "Veillon montre d'un coup d'œil le processeur, la mémoire et le disque, dit ce qui les occupe, et fait le grand nettoyage en un clic."
+  },
+  "lueur": {
+    "probleme": ["Le rétroéclairage du clavier s'allume quand il veut et s'éteint quand on en a besoin.", "Sur les MacBook récents, ses touches ont disparu du clavier.", "Pour le régler, il faut aller le chercher dans le Centre de contrôle."],
+    "solution": "Lueur met le réglage dans la barre des menus : un curseur, et le clavier reste éclairé comme vous l'avez laissé."
+  },
+  "corolle": {
+    "probleme": ["Compresser un fichier, le convertir en PDF, l'envoyer par AirDrop ?", "Clic droit, sous-menu, « Actions rapides », on cherche…", "Chaque action a son propre chemin caché."],
+    "solution": "Glissez le fichier : une roue d'actions s'ouvre sous le curseur. Vous lâchez sur l'action voulue, c'est fait."
+  },
+  "paupiere": {
+    "probleme": ["Un long téléchargement, un rendu vidéo, une présentation : le Mac se met en veille au pire moment.", "On ferme le capot, et tout s'arrête.", "Les réglages d'énergie, eux, sont à refaire à chaque fois."],
+    "solution": "Paupière garde le Mac éveillé comme vous le voulez : écran éteint, verrouillé, voilé ou capot fermé, le temps qu'il faut, puis tout redevient normal."
+  },
+  "releve": {
+    "probleme": ["Les apps installées hors de l'App Store ne se mettent pas à jour toutes seules.", "Chacune a sa fenêtre « nouvelle version », ou rien du tout.", "Et une mise à jour ratée laisse parfois une app qui ne s'ouvre plus."],
+    "solution": "Relève liste toutes les apps en retard et les met à jour d'un coup. Si une nouvelle version ne démarre pas, l'ancienne revient toute seule."
+  },
+  "relais": {
+    "probleme": ["Vous lancez une longue tâche sur le Mac et partez prendre un café.", "À votre retour, elle attend votre réponse depuis vingt minutes.", "Il fallait rester devant l'écran."],
+    "solution": "Relais envoie la question du Mac sur votre iPhone. Vous répondez « Oui » depuis la notification, et le Mac continue sans vous."
+  },
+  "relief": {
+    "probleme": ["Pour voir ses sorties Garmin sur l'ordinateur, il faut un compte Garmin Connect.", "Vos parcours partent alors sur leurs serveurs.", "Et sans réseau, vous ne voyez plus rien."],
+    "solution": "Relief lit la montre par le câble : records, semaines, zones cardiaques et tracés, sur le Mac, sans compte."
+  },
+  "tadis": {
+    "probleme": ["Taper un long mail ou un compte rendu, c'est lent.", "Un enregistrement de réunion, il faut le réécouter pour l'écrire.", "Et les services de transcription en ligne emportent votre voix avec eux."],
+    "solution": "Tadis dicte là où est votre curseur et transcrit un fichier audio ou vidéo déposé. Tout se calcule sur le Mac, rien ne part sur Internet."
+  },
+  "ocruroeil": {
+    "probleme": ["Un scan ou une photo de document, ce n'est qu'une image.", "Impossible d'y chercher un mot, de corriger une faute ou d'en copier un tableau.", "Alors on retape tout."],
+    "solution": "Ocruroeil en fait un vrai document : texte cherchable, titres et tableaux reconstruits, modifiable dans son éditeur PDF ou dans Word."
+  },
+  "cliche": {
+    "probleme": ["⇧⌘4 fait une capture d'écran, puis il faut l'ouvrir dans Aperçu pour y mettre une flèche.", "Pour filmer l'écran, c'est encore un autre outil.", "Trois apps pour un seul geste."],
+    "solution": "Cliché capture, annote et enregistre l'écran au même endroit."
+  }
+}

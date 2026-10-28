@@ -2275,6 +2275,29 @@ kbd{font:600 12px var(--font-sans);padding:3px 8px;border-radius:7px;background:
     </div>
   </div>
 </header>
+<!-- arguments:debut -->
+<style>
+.pbsol{--pb-fond:#f5f5f7;--pb-carte:#fff;--pb-texte:#1d1d1f;--pb-doux:#6e6e73;--pb-rouge:#e5484d;--pb-vert:#30a46c;
+  background:var(--pb-fond);color:var(--pb-texte);padding:72px 16px;font-family:inherit}
+@media (prefers-color-scheme:dark){.pbsol{--pb-fond:#111113;--pb-carte:#1c1c1f;--pb-texte:#f5f5f7;--pb-doux:#a1a1a6}}
+.pbsol .pb-in{max-width:1040px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.pbsol .pb-c{background:var(--pb-carte);border-radius:24px;padding:32px;box-shadow:0 1px 2px rgba(0,0,0,.06),0 8px 30px rgba(0,0,0,.06)}
+.pbsol .pb-t{font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin:0 0 18px;display:flex;align-items:center;gap:8px}
+.pbsol .pb-t i{width:22px;height:22px;border-radius:50%;display:inline-grid;place-items:center;color:#fff;font-style:normal;font-size:13px}
+.pbsol .pb-p .pb-t{color:var(--pb-rouge)}.pbsol .pb-p .pb-t i{background:var(--pb-rouge)}
+.pbsol .pb-s .pb-t{color:var(--pb-vert)}.pbsol .pb-s .pb-t i{background:var(--pb-vert)}
+.pbsol ul{list-style:none;margin:0;padding:0;display:grid;gap:14px}
+.pbsol li{font-size:19px;line-height:1.45;color:var(--pb-doux)}
+.pbsol li:last-child{color:var(--pb-texte);font-weight:600}
+.pbsol .pb-s p:not(.pb-t){margin:0;font-size:22px;line-height:1.45;font-weight:600}
+@media (max-width:760px){.pbsol{padding:48px 16px}.pbsol .pb-in{grid-template-columns:1fr}.pbsol .pb-c{padding:24px}.pbsol li{font-size:17px}.pbsol .pb-s p:not(.pb-t){font-size:19px}}
+</style>
+<section class="pbsol" id="probleme-solution" aria-label="Le problème et la solution"><div class="pb-in">
+<div class="pb-c pb-p"><p class="pb-t"><i>!</i>Le problème</p><ul><li>Glisser un fichier d'un dossier vers un mail, c'est simple… tant que les deux fenêtres sont visibles en même temps.</li><li>Sinon, on le lâche « pour l'instant » sur le Bureau.</li><li>Et le Bureau finit en décharge.</li></ul></div>
+<div class="pb-c pb-s"><p class="pb-t"><i>✓</i>La solution</p><p>Filoir ouvre une étagère flottante en verre : vous y déposez les fichiers en passant, vous les reprenez quand la destination est prête.</p></div>
+</div></section>
+<!-- arguments:fin -->
+
 
 <nav class="x-index" aria-label="Chapitres">
   <div class="x-wrap">
