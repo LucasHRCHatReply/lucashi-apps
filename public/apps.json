@@ -445,13 +445,20 @@
     {
       "id": "ocruroeil",
       "nom": "Ocruroeil",
-      "phrase": "Rend un scan ou une photo cherchable, en un dépôt.",
+      "phrase": "Un scan ou une photo devient un vrai document, cherchable et modifiable.",
       "couleur": "#5B48E8",
       "icone": "assets/ocruroeil-icon.png?v=20261028",
-      "captures": [],
       "page": "ocruroeil/",
-      "developpement": true,
-      "description": "Déposez une photo ou un PDF scanné : il en sort un PDF où l'on peut chercher du texte."
+      "description": "Déposez une photo ou un PDF scanné : Ocruroeil lit le texte sur le Mac et reconstruit le document (titres, paragraphes, tableaux), avec un éditeur PDF pour corriger, réordonner et annoter. Préversion.",
+      "requis": [
+        "Mac à puce Apple",
+        "macOS 26 ou plus",
+        "Aucun compte, rien ne part sur Internet"
+      ],
+      "depot": "LucasHRCHatReply/ocruroeil-releases",
+      "zip": "Ocruroeil.zip",
+      "dmg": "Ocruroeil.dmg",
+      "version": "0.2.0"
     },
     {
       "id": "cliche",
