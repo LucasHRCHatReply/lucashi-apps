@@ -39,7 +39,7 @@ Sans page de vente à recopier (comme Jauge) : écrire `public/<id>/index.html` 
 
 ## `public/apps.json`
 
-Une entrée par app : `id`, `nom`, `phrase`, `couleur`, `icone`, `captures` (`src`, `alt`, `sombre`), `page` (la page de vente `<id>/`, ouverte par « Découvrir »),
+Une entrée par app : `id`, `nom`, `phrase`, `famille` (range l'accueil : `systeme`, `bureau`, `capture` ou `appareils` ; libellés et ordre dans `src/pages/index.astro` ; sans famille, l'app va dans « Autres » ; `developpement: true` la met en dernier, dans « En développement »), `couleur`, `icone`, `captures` (`src`, `alt`, `sombre`), `page` (la page de vente `<id>/`, ouverte par « Découvrir »),
 `requis` (configuration requise, passée au bloc Installer),
 `dmg` (nom du .dmg de la Release, seulement s'il y est vraiment : `gh release view --repo <depot>` ; sans ce champ, aucune page n'affiche de bloc .dmg), `depot` (dépôt public des releases), `zip` (nom du fichier de la Release), `version` (repli), `source_page`, `build_page`, `page_construite`.
 Il n'y a pas de fiche intermédiaire : « Découvrir » ouvre la page de vente. Le bloc « Installer » (commande, .dmg, étape Gatekeeper, configuration) est commun, dans le kit privé : `lucashi-kit/site/installation` (README) ; `public/assets/installation/` en est une copie verbatim, utilisée par la page de Jauge. `fiche/?app=<id>` redirige vers `<id>/#installer`.
@@ -68,7 +68,7 @@ Ensuite, dans `/etc/lucashi-apps.env` du VPS : `SITE_URL=https://app.lucashi.fr`
 
 | Chemin | Rôle |
 |---|---|
-| `src/pages/index.astro` | accueil (même HTML qu'avant) + section « Outils gratuits » |
+| `src/pages/index.astro` | accueil : l'essentiel (4 apps), recherche, filtres par famille, cartes compactes construites depuis `apps.json` (`assets/app.js` filtre et lit les versions) + section « Outils gratuits » |
 | `src/outils/<id>/` | un outil : `Outil.astro`, `outil.ts`, `outil.test.ts`, `fr.md`, `en.md` (`_modele/` = exemple, non publié) |
 | `src/composants/`, `src/layouts/`, `src/lib/`, `src/styles/` | composants communs, gabarits, aides, styles des outils |
 | `src/pages/outils/`, `src/pages/en/` | routes FR et EN, hubs, `sitemap.xml`, `robots.txt`, images de partage |

@@ -1,31 +1,72 @@
-// Lucas App Store : cartes de l'accueil, copie de la commande, mouvement au défilement.
-// Tout vient de apps.json ; la version est lue sur l'API publique des releases (repli : version écrite).
+// Lucas App Store : l'accueil. Les cartes sont construites par Astro depuis apps.json ;
+// ici : filtres par famille, recherche, version lue sur l'API publique des releases, mouvement au défilement.
 (function () {
   const reduit = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-  const racine = document.body.dataset.racine || "";
-  const cmd = a => `curl -fsSL https://raw.githubusercontent.com/${a.depot}/main/installer.sh | zsh`;
-  const img = (c, cls) => c.sombre
-    ? `<picture><source srcset="${racine}${esc(c.sombre)}" media="(prefers-color-scheme: dark)"><img ${cls ? `class="${cls}" ` : ""}src="${racine}${esc(c.src)}" alt="${esc(c.alt)}" loading="lazy"></picture>`
-    : `<img ${cls ? `class="${cls}" ` : ""}src="${racine}${esc(c.src)}" alt="${esc(c.alt)}" loading="lazy">`;
+  document.documentElement.classList.add("js");
 
-  function version(a, racineEl) {
-    if (!a.depot) return;
-    fetch(`https://api.github.com/repos/${a.depot}/releases/latest`)
-      .then(r => r.ok ? r.json() : Promise.reject())
-      .then(j => { if (j.tag_name) racineEl.querySelectorAll("[data-v]").forEach(e => e.textContent = (a.preversion ? "Préversion " : "Version ") + j.tag_name.replace(/^v/, "")); })
-      .catch(() => {});
-  }
-  function copier(btn, a) {
-    btn.addEventListener("click", async () => {
-      try { await navigator.clipboard.writeText(cmd(a)); }
-      catch (e) { location.href = `${racine}${a.id}/#installer`; return; }
-      const t = btn.textContent; btn.textContent = "Copié"; btn.classList.add("ok");
-      setTimeout(() => { btn.textContent = t; btn.classList.remove("ok"); }, 2200);
+  // version publiée (repli : la version écrite dans apps.json, déjà affichée)
+  function versions() {
+    document.querySelectorAll(".ac-app[data-depot]").forEach(carte => {
+      const v = carte.querySelector("[data-v]");
+      if (!v) return;
+      fetch(`https://api.github.com/repos/${carte.dataset.depot}/releases/latest`)
+        .then(r => r.ok ? r.json() : Promise.reject())
+        .then(j => { if (j.tag_name) v.textContent = (carte.dataset.pre ? "Préversion " : "Version ") + j.tag_name.replace(/^v/, ""); })
+        .catch(() => {});
     });
   }
 
-  // apparition au défilement
+  // filtres par famille + recherche ; l'état vit dans l'adresse (?f=systeme&q=batterie)
+  function filtres() {
+    const champ = document.getElementById("cherche"), chips = [...document.querySelectorAll(".ac-chip")];
+    const cartes = [...document.querySelectorAll(".ac-app")], groupes = [...document.querySelectorAll(".ac-groupe")];
+    const vide = document.getElementById("vide"), statut = document.getElementById("statut");
+    if (!champ || !cartes.length) return;
+    const norm = s => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
+    const p = new URLSearchParams(location.search);
+    let f = chips.some(c => c.dataset.f === p.get("f")) ? p.get("f") : "tout";
+    champ.value = p.get("q") || "";
+
+    function appliquer() {
+      const mots = norm(champ.value).split(/\s+/).filter(Boolean);
+      const trouve = c => mots.every(m => c.dataset.index.includes(m));
+      // les compteurs des familles suivent la recherche
+      const n = { tout: 0 };
+      cartes.forEach(c => { if (trouve(c)) { n.tout++; n[c.dataset.famille] = (n[c.dataset.famille] || 0) + 1; } });
+      document.querySelectorAll("[data-n]").forEach(i => { i.textContent = n[i.dataset.n] || 0; });
+      chips.forEach(c => c.setAttribute("aria-pressed", String(c.dataset.f === f)));
+      let total = 0;
+      cartes.forEach(c => { const ok = trouve(c) && (f === "tout" || c.dataset.famille === f); c.hidden = !ok; if (ok) total++; });
+      groupes.forEach(g => {
+        const visibles = g.querySelectorAll(".ac-app:not([hidden])").length;
+        g.hidden = !visibles;
+        const s = g.querySelector("h2 span"); if (s) s.textContent = visibles;
+      });
+      vide.hidden = total > 0;
+      statut.textContent = mots.length || f !== "tout" ? `${total} app${total > 1 ? "s" : ""}` : "";
+      const q = new URLSearchParams();
+      if (f !== "tout") q.set("f", f);
+      if (champ.value.trim()) q.set("q", champ.value.trim());
+      const s = q.toString();
+      history.replaceState(null, "", location.pathname + (s ? "?" + s : "") + location.hash);
+    }
+    chips.forEach(c => c.addEventListener("click", () => { f = c.dataset.f; appliquer(); }));
+    champ.addEventListener("input", appliquer);
+    champ.addEventListener("keydown", e => {
+      if (e.key === "Escape") { champ.value = ""; appliquer(); }
+      if (e.key === "Enter") { const premiere = cartes.find(c => !c.hidden); if (premiere) location.href = premiere.querySelector("h3 a").href; }
+    });
+    document.getElementById("raz").addEventListener("click", () => { champ.value = ""; f = "tout"; appliquer(); champ.focus(); });
+    addEventListener("keydown", e => {
+      if (e.key === "/" && !/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName)) { e.preventDefault(); champ.focus(); champ.select(); }
+    });
+    appliquer();
+    // sur téléphone, la puce choisie reste visible dans la rangée qui défile
+    const choisie = chips.find(c => c.dataset.f === f), rang = choisie && choisie.parentElement;
+    if (rang && rang.scrollWidth > rang.clientWidth) rang.scrollLeft = Math.max(0, choisie.offsetLeft - rang.offsetLeft - 20);
+  }
+
+  // apparition au défilement (section « Ce que je construis »)
   function reveler() {
     const els = document.querySelectorAll(".rv:not(.vu)");
     if (reduit || !("IntersectionObserver" in window)) { els.forEach(e => e.classList.add("vu")); return; }
@@ -53,36 +94,5 @@
     maj();
   }
 
-
-  async function charger() {
-    try { return await (await fetch(racine + "apps.json", { cache: "no-cache" })).json(); } catch (e) { return null; }
-  }
-
-  async function accueil() {
-    const grille = document.getElementById("grille");
-    const data = await charger();
-    if (!data) { grille.textContent = "Les apps ne se chargent pas. Réessayer plus tard."; return; }
-    data.apps.forEach((a, i) => {
-      const t = document.createElement("article");
-      t.className = "tuile rv"; t.style.setProperty("--c", a.couleur); t.style.setProperty("--d", (i * 90) + "ms"); t.id = a.id;
-      t.innerHTML = `
-        <a class="ico" href="${esc(a.page)}" aria-label="${esc(a.nom)}"><img src="${esc(a.icone)}" alt="" width="96" height="96"></a>
-        <h3>${esc(a.nom)}</h3><div class="v" data-v>${a.developpement ? "En développement" : a.depot ? (a.preversion ? "Préversion " : "Version ") + esc(a.version) : a.preversion ? "Préversion" : "Bientôt"}</div>
-        <p class="ph">${esc(a.phrase)}</p>
-        ${a.description ? `<p class="desc">${esc(a.description)}</p>` : ""}
-        <div class="boutons">
-          <a class="btn p" href="${esc(a.page)}">Découvrir</a>
-          ${a.depot ? `<button class="btn" type="button" data-copier>Installer</button>
-          <a class="btn" href="https://github.com/${esc(a.depot)}" rel="noopener">GitHub</a>` : ""}
-        </div>`;
-      grille.appendChild(t); if (a.depot) copier(t.querySelector("[data-copier]"), a); version(a, t);
-    });
-    const bande = document.getElementById("bande");
-    const caps = data.apps.flatMap(a => (a.bande || a.captures || []).map(c => ({ a, c })));
-    if (bande && caps.length) bande.innerHTML = caps.map(({ a, c }) => `<a class="vue" href="${esc(a.page)}" style="--c:${a.couleur}">${img(c)}<span>${esc(a.nom)}</span></a>`).join("");
-    else if (bande) bande.closest("section").remove();
-    reveler(); mouvement();
-  }
-
-  accueil();
+  filtres(); versions(); reveler(); mouvement();
 })();

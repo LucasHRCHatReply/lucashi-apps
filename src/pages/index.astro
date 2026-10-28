@@ -3,11 +3,58 @@ import '../styles/outils.css';
 import TuileOutil from '../composants/TuileOutil.astro';
 import { fiches } from '../lib/outils';
 import { INDEXABLE, url } from '../lib/site';
+import donnees from '../../public/apps.json';
 const tuiles = await fiches('fr');
 // Les outils automatiques (en_avant) passent devant ; les autres restent en retrait, en liste courte.
 const devant = tuiles.filter((f) => f.data.en_avant);
 const retrait = devant.length ? tuiles.filter((f) => !f.data.en_avant) : [];
 const grille = devant.length ? devant : tuiles;
+
+// ── Les apps : tout vient de public/apps.json ; la famille range l'accueil.
+interface Capture { src: string; alt: string; sombre?: string }
+interface App {
+  id: string; nom: string; phrase: string; famille?: string; couleur: string; icone: string; page: string;
+  depot?: string; zip?: string; dmg?: string; version?: string; preversion?: boolean; developpement?: boolean;
+  description?: string; captures?: Capture[]; bande?: Capture[];
+}
+const apps = (donnees as unknown as { apps: App[] }).apps;
+// Ordre et libellés des familles ; l'explication va au survol (title).
+const FAMILLES = [
+  { id: 'systeme', nom: 'Système', aide: 'Batterie, clavier, veille, surveillance et mises à jour du Mac' },
+  { id: 'bureau', nom: 'Bureau', aide: 'Fenêtres, fichiers et dossiers : ranger, caler, agir d’un geste' },
+  { id: 'capture', nom: 'Capture', aide: 'Garder ce qu’on copie, dicter, lire un scan, capturer l’écran' },
+  { id: 'appareils', nom: 'Appareils', aide: 'L’iPhone et la montre Garmin, reliés au Mac' },
+  { id: 'autres', nom: 'Autres', aide: 'Apps sans famille' },
+];
+const fam = (a: App) => (FAMILLES.some((f) => f.id === a.famille) ? a.famille! : 'autres');
+const nomFamille = (id: string) => FAMILLES.find((f) => f.id === id)?.nom ?? id;
+const publiees = apps.filter((a) => !a.developpement);
+const enChantier = apps.filter((a) => a.developpement);
+const groupes = FAMILLES.map((f) => ({ ...f, apps: publiees.filter((a) => fam(a) === f.id) })).filter((g) => g.apps.length);
+const compte = (id: string) => apps.filter((a) => fam(a) === id).length;
+const chips = FAMILLES.filter((f) => compte(f.id) > 0);
+
+// L'essentiel : un besoin courant, l'app qui y répond.
+const ESSENTIEL = [
+  { id: 'pince', besoin: 'Retrouver ce que j’ai copié' },
+  { id: 'jauge', besoin: 'Ménager la batterie' },
+  { id: 'penombre', besoin: 'Rester concentré' },
+  { id: 'paupiere', besoin: 'Garder le Mac éveillé' },
+].map((e) => ({ ...e, app: apps.find((a) => a.id === e.id) })).filter((e) => e.app) as { id: string; besoin: string; app: App }[];
+
+const etat = (a: App) => a.developpement ? 'En développement'
+  : a.depot ? `${a.preversion ? 'Préversion' : 'Version'} ${a.version ?? ''}`.trim()
+  : a.preversion ? 'Préversion' : 'Bientôt';
+const fichier = (a: App) => a.dmg ?? a.zip;
+const telecharger = (a: App) => a.depot && fichier(a) ? `https://github.com/${a.depot}/releases/latest/download/${fichier(a)}` : null;
+const sansAccent = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+const index = (a: App) => sansAccent([a.nom, a.phrase, a.description ?? '', nomFamille(fam(a))].join(' '));
+// texte du bouton principal : noir sur une couleur claire, blanc sinon (contraste)
+const texteSur = (hex: string) => {
+  const n = parseInt(hex.replace('#', ''), 16), [r, g, b] = [n >> 16, (n >> 8) & 255, n & 255].map((v) => { v /= 255; return v <= .03928 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4; });
+  return .2126 * r + .7152 * g + .0722 * b > .18 ? '#1d1d1f' : '#fff';
+};
+const caps = apps.flatMap((a) => (a.bande ?? a.captures ?? []).map((c) => ({ a, c })));
 ---
 <!doctype html>
 <html lang="fr">
@@ -15,7 +62,7 @@ const grille = devant.length ? devant : tuiles;
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Apps de Lucas</title>
-<meta name="description" content="Des apps macOS que je construis pour moi : un presse-papiers, un limiteur de charge, un voile de focus. Gratuites, sans compte, sans télémétrie.">
+<meta name="description" content={`${apps.length} apps macOS que je construis pour moi : presse-papiers, batterie, fenêtres, dictée. Gratuites, sans compte, sans télémétrie.`}>
 <meta name="color-scheme" content="light dark">
 {!INDEXABLE && <meta name="robots" content="noindex">}
 <link rel="canonical" href={url('/')}>
@@ -28,7 +75,7 @@ const grille = devant.length ? devant : tuiles;
 <meta property="og:locale" content="fr_FR">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="assets/pince-icon.png">
-<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/style.css?v=20261028">
 <link rel="alternate" hreflang="fr" href={url('/')}>
 <link rel="alternate" hreflang="x-default" href={url('/')}>
 </head>
@@ -39,15 +86,73 @@ const grille = devant.length ? devant : tuiles;
   <div class="liens"><a class="m cache" href="#apps">Les apps</a>{tuiles.length > 0 && <a class="m" href="outils/">Outils</a>}<a class="m" href="#construis">Ma démarche</a></div>
 </nav>
 <main>
-  <header class="hero wrap">
+  <header class="ac-hero wrap">
     <h1>Des apps Mac, faites pour moi.</h1>
-    <p>Je construis les outils que j'aurais voulus. Je les partage, tels quels.</p>
-    <a class="cue" href="#apps">Voir les apps ↓</a>
+    <p>{apps.length} apps gratuites, sans compte. La bonne en quelques secondes :</p>
+    <ul class="ac-essentiel" aria-label="L'essentiel">
+      {ESSENTIEL.map((e) => (
+        <li><a href={e.app.page} style={`--c:${e.app.couleur}`} title={e.app.phrase}>
+          <img src={e.app.icone} alt="" width="44" height="44">
+          <span><small>{e.besoin}</small><b>{e.app.nom}</b></span>
+        </a></li>
+      ))}
+    </ul>
   </header>
+
   <div class="wrap" id="apps">
-    <div class="grille" id="grille"><noscript><p style="color:#fff">Les apps : <a href="pince/">Pince</a>, <a href="jauge/">Jauge</a>, <a href="https://github.com/LucasHRCHatReply/penombre-releases">Penombre</a>.</p></noscript></div>
+    <div class="ac-outils" role="search">
+      <label class="ac-cherche"><span class="ac-loupe" aria-hidden="true"></span>
+        <input id="cherche" type="search" placeholder="Rechercher une app" autocomplete="off" spellcheck="false" aria-label="Rechercher une app" title="Nom, usage ou mot-clé — touche / pour y aller">
+      </label>
+      <div class="ac-chips" role="group" aria-label="Familles">
+        <button type="button" class="ac-chip" data-f="tout" aria-pressed="true" title="Toutes les apps">Toutes <i data-n="tout">{apps.length}</i></button>
+        {chips.map((f) => <button type="button" class="ac-chip" data-f={f.id} aria-pressed="false" title={f.aide}>{f.nom} <i data-n={f.id}>{compte(f.id)}</i></button>)}
+      </div>
+    </div>
+    <p class="ac-vide" id="vide" hidden>Aucune app pour cette recherche. <button type="button" id="raz">Tout afficher</button></p>
+    <p class="ac-statut" id="statut" aria-live="polite"></p>
+
+    {[...groupes.map((g) => ({ ...g, chantier: false })), ...(enChantier.length ? [{ id: 'chantier', nom: 'En développement', aide: 'Pas encore téléchargeables : la page dit où elles en sont', apps: enChantier, chantier: true }] : [])].map((g) => (
+      <section class:list={['ac-groupe', { 'ac-chantier': g.chantier }]} data-groupe={g.id} aria-labelledby={`g-${g.id}`}>
+        <h2 id={`g-${g.id}`} title={g.aide}>{g.nom} <span>{g.apps.length}</span></h2>
+        <div class="ac-grille">
+          {g.apps.map((a) => {
+            const dl = telecharger(a);
+            return (
+              <article class="ac-app" id={a.id} data-famille={fam(a)} data-index={index(a)} data-depot={a.depot} data-pre={a.preversion ? '1' : undefined} style={`--c:${a.couleur};--ct:${texteSur(a.couleur)}`}>
+                <a class="ac-ico" href={a.page} tabindex="-1" aria-hidden="true"><img src={a.icone} alt="" width="64" height="64" loading="lazy"></a>
+                <div class="ac-corps">
+                  <h3><a href={a.page}>{a.nom}</a></h3>
+                  <div class="ac-meta">
+                    <span class:list={['ac-v', { 'ac-dev': a.developpement, 'ac-pre': a.preversion }]} data-v={a.depot && !a.developpement ? '' : undefined}>{etat(a)}</span>
+                    {g.chantier && <span class="ac-fam" title={FAMILLES.find((f) => f.id === fam(a))?.aide}>{nomFamille(fam(a))}</span>}
+                  </div>
+                  <p title={a.description}>{a.phrase}</p>
+                  <div class="ac-boutons">
+                    <a class="ac-btn p" href={a.page}>Découvrir</a>
+                    {dl && <a class="ac-btn" href={dl} title={`Télécharge ${fichier(a)}, dernière version publiée`}>Télécharger</a>}
+                  </div>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+    ))}
   </div>
-  <section class="bande-zone" aria-label="Captures"><div class="bande" id="bande"></div></section>
+
+  {caps.length > 0 && (
+    <section class="bande-zone" aria-label="Captures"><div class="bande" id="bande">
+      {caps.map(({ a, c }) => (
+        <a class="vue" href={a.page} style={`--c:${a.couleur}`}>
+          {c.sombre
+            ? <picture><source srcset={c.sombre} media="(prefers-color-scheme: dark)" /><img src={c.src} alt={c.alt} loading="lazy" /></picture>
+            : <img src={c.src} alt={c.alt} loading="lazy" />}
+          <span>{a.nom}</span>
+        </a>
+      ))}
+    </div></section>
+  )}
   <div class="plat">
     {tuiles.length > 0 && (
       <section id="outils"><div class="wrap">
@@ -70,6 +175,6 @@ const grille = devant.length ? devant : tuiles;
     <footer><div class="wrap"><span>© Lucas Hirschauer</span><span>Apps signées, non notarisées par Apple. Le script d'installation se lit en entier.</span></div></footer>
   </div>
 </main>
-<script is:inline src="assets/app.js"></script>
+<script is:inline src="assets/app.js?v=20261028"></script>
 </body>
 </html>
