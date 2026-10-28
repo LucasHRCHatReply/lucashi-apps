@@ -7,7 +7,7 @@
       "phrase": "Le presse-papiers qui garde tout et colle d'une touche.",
       "famille": "capture",
       "couleur": "#009EFF",
-      "icone": "assets/pince-icon.png?v=20261016b",
+      "icone": "assets/pince-icon.png?v=20261028n",
       "captures": [
         {
           "src": "pince/captures/panneau-clair.jpg",
@@ -41,7 +41,7 @@
       "phrase": "Garde la batterie du MacBook entre deux niveaux.",
       "famille": "systeme",
       "couleur": "#2FBF4F",
-      "icone": "assets/jauge-icon.png?v=20261016",
+      "icone": "assets/jauge-icon.png?v=20261028n",
       "captures": [
         {
           "src": "jauge/captures/panneau-clair.jpg",
@@ -83,7 +83,7 @@
       "phrase": "Assombrit tout, sauf la fenêtre active.",
       "famille": "bureau",
       "couleur": "#6E56F0",
-      "icone": "assets/penombre-icon.png?v=20261016",
+      "icone": "assets/penombre-icon.png?v=20261028n",
       "captures": [
         {
           "src": "penombre/captures/fenetre.jpg",
@@ -121,7 +121,7 @@
       "phrase": "Des filoirs flottants en verre, pour déposer vos fichiers.",
       "famille": "bureau",
       "couleur": "#16A8BC",
-      "icone": "assets/tiroir-icon.png?v=20261016",
+      "icone": "assets/filoir-icon.png?v=20261028n",
       "captures": [
         {
           "src": "filoir/captures/replie.jpg",
@@ -158,7 +158,7 @@
       "phrase": "Pose toute seule une icône teintée sur chaque dossier, d'après son nom.",
       "famille": "bureau",
       "couleur": "#4A90F5",
-      "icone": "assets/autofoldericon-icon.png?v=20261016",
+      "icone": "assets/autofoldericon-icon.png?v=20261028n",
       "captures": [
         {
           "src": "autofoldericon/captures/galerie-clair.jpg",
@@ -199,7 +199,7 @@
       "phrase": "Cale la fenêtre d'un geste sur la barre de titre.",
       "famille": "bureau",
       "couleur": "#FF7A3D",
-      "icone": "assets/glisse-icon.png",
+      "icone": "assets/glisse-icon.png?v=20261028n",
       "captures": [],
       "page": "glisse/",
       "requis": [
@@ -223,7 +223,7 @@
       "phrase": "Le Mac sous les yeux : processeur, mémoire, disque, et un grand nettoyage.",
       "famille": "systeme",
       "couleur": "#84D896",
-      "icone": "assets/veillon-icon.png",
+      "icone": "assets/veillon-icon.png?v=20261028n",
       "captures": [
         {
           "src": "veillon/captures/apercu.png",
@@ -265,7 +265,7 @@
       "phrase": "Le rétroéclairage du clavier, depuis la barre des menus.",
       "famille": "systeme",
       "couleur": "#F2A93B",
-      "icone": "assets/lueur-icon.png?v=20261024",
+      "icone": "assets/lueur-icon.png?v=20261028n",
       "captures": [
         {
           "src": "lueur/captures/clavier.jpg",
@@ -303,7 +303,7 @@
       "phrase": "Glissez un fichier : une roue d'actions s'ouvre sous le curseur.",
       "famille": "bureau",
       "couleur": "#F2762E",
-      "icone": "assets/corolle-icon.png?v=20261024",
+      "icone": "assets/corolle-icon.png?v=20261028n",
       "captures": [
         {
           "src": "corolle/captures/roue.jpg",
@@ -343,7 +343,7 @@
       "phrase": "Le Mac reste éveillé, vous choisissez comment : écran éteint, verrouillé, voilé ou capot fermé.",
       "famille": "systeme",
       "couleur": "#2B3A67",
-      "icone": "assets/paupiere-icon.png?v=20261026",
+      "icone": "assets/paupiere-icon.png?v=20261028n",
       "captures": [],
       "page": "paupiere/",
       "depot": "LucasHRCHatReply/paupiere-releases",
@@ -367,7 +367,7 @@
       "phrase": "Toutes mes apps à jour d'un coup, sans jamais casser l'ancienne.",
       "famille": "systeme",
       "couleur": "#23CC99",
-      "icone": "assets/releve-icon.png?v=20261026",
+      "icone": "assets/releve-icon.png?v=20261028n",
       "page": "releve/",
       "requis": [
         "Mac à puce Apple",
@@ -397,7 +397,7 @@
       "phrase": "Votre Mac vous parle, vous lui répondez depuis l'iPhone.",
       "famille": "appareils",
       "couleur": "#16A8BC",
-      "icone": "assets/relais-icon.svg",
+      "icone": "assets/relais-icon.png?v=20261028n",
       "page": "relais/",
       "description": "Relais relie l'iPhone et plusieurs Mac par un serveur privé : canaux par projet, réponses d'un geste, fichiers dans les deux sens, consignes signées par Face ID et vérifiées par le Mac. Un Mac s'ajoute par un code affiché sur l'iPhone ; un trieur Haiku, sur votre abonnement Claude, lit vos messages et répond. Préversion, pas encore ouverte au public : il faut un serveur à soi et un abonnement Claude sur une machine toujours allumée.",
       "preversion": true,
@@ -418,7 +418,7 @@
       "phrase": "Votre montre Garmin lue par le câble, sans compte.",
       "famille": "appareils",
       "couleur": "#84D896",
-      "icone": "assets/relief-icon.svg",
+      "icone": "assets/relief-icon.png?v=20261028n",
       "page": "relief/",
       "description": "Relief lit la montre Garmin par USB et garde les activités sur le Mac, sans Garmin Connect : records 1/5/10 km, totaux par semaine, zones cardiaques, allure, carte du parcours et export GPX.",
       "requis": [
@@ -444,7 +444,7 @@
       "phrase": "Dicte et transcrit, sur le Mac, sans envoyer votre voix.",
       "famille": "capture",
       "couleur": "#EC623C",
-      "icone": "assets/tadis-icon.png?v=20261028",
+      "icone": "assets/tadis-icon.png?v=20261028n",
       "captures": [],
       "page": "tadis/",
       "description": "Dictée par raccourci, écrite directement là où est le curseur, et transcription de fichiers audio et vidéo : le moteur tourne sur le Mac (Apple, Parakeet, Whisper). Un mode Comparer met les modèles côte à côte sur votre voix. Préversion.",
@@ -469,7 +469,7 @@
       "phrase": "Un scan ou une photo devient un vrai document, cherchable et modifiable.",
       "famille": "capture",
       "couleur": "#5B48E8",
-      "icone": "assets/ocruroeil-icon.png?v=20261028",
+      "icone": "assets/ocruroeil-icon.png?v=20261028n",
       "page": "ocruroeil/",
       "description": "Déposez une photo ou un PDF scanné : Ocruroeil lit le texte sur le Mac et reconstruit le document (titres, paragraphes, tableaux), avec un éditeur PDF pour corriger, réordonner et annoter. Préversion.",
       "requis": [
@@ -488,7 +488,7 @@
       "phrase": "Capture l'écran, annote, enregistre. Nom provisoire.",
       "famille": "capture",
       "couleur": "#2896E6",
-      "icone": "assets/cliche-icon.png?v=20261028",
+      "icone": "assets/cliche-icon.png?v=20261028n",
       "captures": [],
       "page": "cliche/",
       "developpement": true,
