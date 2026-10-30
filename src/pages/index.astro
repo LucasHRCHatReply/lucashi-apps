@@ -15,15 +15,18 @@ interface Capture { src: string; alt: string; sombre?: string }
 interface App {
   id: string; nom: string; phrase: string; famille?: string; couleur: string; icone: string; page: string;
   depot?: string; zip?: string; dmg?: string; version?: string; preversion?: boolean; developpement?: boolean;
+  type?: string; telechargement?: string;
   description?: string; captures?: Capture[]; bande?: Capture[];
 }
 const apps = (donnees as unknown as { apps: App[] }).apps;
+const nbApps = apps.filter((a) => a.type !== 'skill').length;
 // Ordre et libellés des familles ; l'explication va au survol (title).
 const FAMILLES = [
   { id: 'systeme', nom: 'Système', aide: 'Batterie, clavier, veille, surveillance et mises à jour du Mac' },
   { id: 'bureau', nom: 'Bureau', aide: 'Fenêtres, fichiers et dossiers : ranger, caler, agir d’un geste' },
   { id: 'capture', nom: 'Capture', aide: 'Garder ce qu’on copie, dicter, lire un scan, capturer l’écran' },
   { id: 'appareils', nom: 'Appareils', aide: 'L’iPhone et la montre Garmin, reliés au Mac' },
+  { id: 'skills', nom: 'Skills Claude', aide: 'Des skills pour Claude Code : un prompt à coller ou un fichier à télécharger' },
   { id: 'autres', nom: 'Autres', aide: 'Apps sans famille' },
 ];
 const fam = (a: App) => (FAMILLES.some((f) => f.id === a.famille) ? a.famille! : 'autres');
@@ -42,11 +45,14 @@ const ESSENTIEL = [
   { id: 'paupiere', besoin: 'Garder le Mac éveillé' },
 ].map((e) => ({ ...e, app: apps.find((a) => a.id === e.id) })).filter((e) => e.app) as { id: string; besoin: string; app: App }[];
 
-const etat = (a: App) => a.developpement ? 'En développement'
+const etat = (a: App) => a.type === 'skill' ? `Skill ${a.version ?? ''}`.trim()
+  : a.developpement ? 'En développement'
   : a.depot ? `${a.preversion ? 'Préversion' : 'Version'} ${a.version ?? ''}`.trim()
   : a.preversion ? 'Préversion' : 'Bientôt';
-const fichier = (a: App) => a.dmg ?? a.zip;
-const telecharger = (a: App) => a.depot && fichier(a) ? `https://github.com/${a.depot}/releases/latest/download/${fichier(a)}` : null;
+const fichier = (a: App) => a.telechargement?.split('/').pop() ?? a.dmg ?? a.zip;
+// Un skill se partage aussi par un prompt à coller dans Claude Code (il télécharge et installe).
+const promptSkill = (a: App) => `Installe le skill ${a.nom} pour Claude Code : télécharge ${url('/' + a.telechargement)}, décompresse-le dans mon dossier personnel, lis install.sh en entier et résume-le-moi en trois lignes, demande-moi mon prénom, lance ./install.sh <prénom>, puis fais /orch accueil.`;
+const telecharger = (a: App) => a.telechargement ? a.telechargement : a.depot && fichier(a) ? `https://github.com/${a.depot}/releases/latest/download/${fichier(a)}` : null;
 const sansAccent = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 const index = (a: App) => sansAccent([a.nom, a.phrase, a.description ?? '', nomFamille(fam(a))].join(' '));
 // texte du bouton principal : noir sur une couleur claire, blanc sinon (contraste)
@@ -62,7 +68,7 @@ const caps = apps.flatMap((a) => (a.bande ?? a.captures ?? []).map((c) => ({ a, 
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Apps de Lucas</title>
-<meta name="description" content={`${apps.length} apps macOS que je construis pour moi : presse-papiers, batterie, fenêtres, dictée. Gratuites, sans compte, sans télémétrie.`}>
+<meta name="description" content={`${nbApps} apps macOS que je construis pour moi : presse-papiers, batterie, fenêtres, dictée. Gratuites, sans compte, sans télémétrie.`}>
 <meta name="color-scheme" content="light dark">
 {!INDEXABLE && <meta name="robots" content="noindex">}
 <link rel="canonical" href={url('/')}>
@@ -75,7 +81,7 @@ const caps = apps.flatMap((a) => (a.bande ?? a.captures ?? []).map((c) => ({ a, 
 <meta property="og:locale" content="fr_FR">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="assets/pince-icon.png?v=20261028n">
-<link rel="stylesheet" href="assets/style.css?v=20261028">
+<link rel="stylesheet" href="assets/style.css?v=20261030">
 <link rel="alternate" hreflang="fr" href={url('/')}>
 <link rel="alternate" hreflang="x-default" href={url('/')}>
 </head>
@@ -88,7 +94,7 @@ const caps = apps.flatMap((a) => (a.bande ?? a.captures ?? []).map((c) => ({ a, 
 <main>
   <header class="ac-hero wrap">
     <h1>Des apps Mac, faites pour moi.</h1>
-    <p>{apps.length} apps gratuites, sans compte. La bonne en quelques secondes :</p>
+    <p>{nbApps} apps gratuites, sans compte. La bonne en quelques secondes :</p>
     <ul class="ac-essentiel" aria-label="L'essentiel">
       {ESSENTIEL.map((e) => (
         <li><a href={e.app.page} style={`--c:${e.app.couleur}`} title={e.app.phrase}>
@@ -130,6 +136,7 @@ const caps = apps.flatMap((a) => (a.bande ?? a.captures ?? []).map((c) => ({ a, 
                   <p title={a.description}>{a.phrase}</p>
                   <div class="ac-boutons">
                     <a class="ac-btn p" href={a.page}>Découvrir</a>
+                    {a.type === 'skill' && a.telechargement && <button type="button" class="ac-btn" data-prompt={promptSkill(a)} title="Copie un prompt à coller dans Claude Code : il télécharge et installe le skill">Copier le prompt</button>}
                     {dl && <a class="ac-btn" href={dl} title={`Télécharge ${fichier(a)}, dernière version publiée`}>Télécharger</a>}
                   </div>
                 </div>
@@ -175,6 +182,6 @@ const caps = apps.flatMap((a) => (a.bande ?? a.captures ?? []).map((c) => ({ a, 
     <footer><div class="wrap"><span>© Lucas Hirschauer</span><span>Apps signées, non notarisées par Apple. Le script d'installation se lit en entier.</span></div></footer>
   </div>
 </main>
-<script is:inline src="assets/app.js?v=20261028"></script>
+<script is:inline src="assets/app.js?v=20261030"></script>
 </body>
 </html>

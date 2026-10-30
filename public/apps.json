@@ -439,7 +439,8 @@
       ]
     },
     {
-      "id": "tadis", "preversion": true,
+      "id": "tadis",
+      "preversion": true,
       "nom": "Tadis",
       "phrase": "Dicte et transcrit, sur le Mac, sans envoyer votre voix.",
       "famille": "capture",
@@ -464,7 +465,8 @@
       "version": "0.3.0"
     },
     {
-      "id": "ocruroeil", "preversion": true,
+      "id": "ocruroeil",
+      "preversion": true,
       "nom": "Ocruroeil",
       "phrase": "Un scan ou une photo devient un vrai document, cherchable et modifiable.",
       "famille": "capture",
@@ -496,7 +498,11 @@
       "depot": "LucasHRCHatReply/cliche-releases",
       "zip": "Cliche.zip",
       "dmg": "Cliche.dmg",
-      "requis": ["Mac à puce Apple", "macOS 15 ou plus", "Aucun compte, rien ne part sur Internet"],
+      "requis": [
+        "Mac à puce Apple",
+        "macOS 15 ou plus",
+        "Aucun compte, rien ne part sur Internet"
+      ],
       "description": "Capture d'écran et enregistrement vidéo pour le Mac, à la manière des meilleures apps du genre.",
       "bande": [
         {
@@ -504,6 +510,20 @@
           "alt": "Cliché : la fenêtre des réglages"
         }
       ]
+    },
+    {
+      "id": "orchestrateur",
+      "nom": "Orchestrateur",
+      "type": "skill",
+      "famille": "skills",
+      "phrase": "Claude fait travailler une équipe : de vraies sessions, chacune avec le modèle qui suffit.",
+      "couleur": "#F59E0B",
+      "icone": "assets/orchestrateur-icon.svg",
+      "page": "orchestrateur/",
+      "version": "1.1.0",
+      "telechargement": "orchestrateur/orchestrateur.zip",
+      "description": "Un skill Claude Code réglé sur 785 sessions et 206 essais Haiku, Sonnet et Opus 5.5 : il découpe, lance de vraies sessions avec le modèle le moins cher qui suffit, suit, relance les sessions trop lourdes. /orch donne le tableau de bord.",
+      "source_page": null
     }
   ]
 }

@@ -238,3 +238,4 @@ html:not(.js) .ac-outils{display:none}
 @media (prefers-reduced-transparency:reduce){
   .ac-essentiel a,.ac-app{-webkit-backdrop-filter:none;backdrop-filter:none;background:var(--bg)}
 }
+button.ac-btn{background:transparent;font-family:inherit;cursor:pointer}

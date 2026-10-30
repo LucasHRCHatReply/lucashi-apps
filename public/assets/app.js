@@ -96,3 +96,10 @@
 
   filtres(); versions(); reveler(); mouvement();
 })();
+
+// Cartes de skill : « Copier le prompt » met dans le presse-papiers le prompt d'installation à coller dans Claude Code.
+document.querySelectorAll("[data-prompt]").forEach(b => b.addEventListener("click", async () => {
+  try { await navigator.clipboard.writeText(b.dataset.prompt); }
+  catch { const z = document.createElement("textarea"); z.value = b.dataset.prompt; document.body.append(z); z.select(); document.execCommand("copy"); z.remove(); }
+  const avant = b.textContent; b.textContent = "✓ Copié — collez-le dans Claude"; setTimeout(() => { b.textContent = avant; }, 2200);
+}));

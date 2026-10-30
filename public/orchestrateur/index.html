@@ -1,0 +1,681 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Orchestrateur — skill Claude Code</title>
+<meta name="description" content="Un skill Claude Code qui fait travailler Claude en équipe : une session dirige, de vraies sessions exécutent, chacune avec le modèle le moins cher qui suffit. Réglé sur 785 sessions et 206 essais mesurés.">
+<meta name="robots" content="noindex">
+<meta name="color-scheme" content="dark light">
+<meta property="og:title" content="Orchestrateur — Claude fait travailler une équipe">
+<meta property="og:description" content="Un skill Claude Code réglé sur 785 sessions et 206 essais Haiku, Sonnet et Opus 5.5.">
+<link rel="icon" href="../assets/orchestrateur-icon.svg">
+<style>
+:root{
+  --bg:#08070d; --bg2:#100e19; --card:#151321; --line:rgba(255,255,255,.09); --ink:#f5f4fa; --ink2:#a9a6bd; --ink3:#6f6c85;
+  --amber:#f59e0b; --amber2:#fde68a; --haiku:#22d3ee; --sonnet:#a78bfa; --opus:#fb923c; --ok:#34d399; --ko:#f87171;
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,monospace; --r:22px;
+}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){
+  --bg:#fbfaf7; --bg2:#f2efe8; --card:#ffffff; --line:rgba(20,15,40,.1); --ink:#17141f; --ink2:#5a566b; --ink3:#8d8a9c;
+  --amber:#d97706; --amber2:#b45309; --haiku:#0891b2; --sonnet:#7c3aed; --opus:#ea580c; --ok:#059669; --ko:#dc2626;
+}}
+:root[data-theme="light"]{--bg:#fbfaf7; --bg2:#f2efe8; --card:#ffffff; --line:rgba(20,15,40,.1); --ink:#17141f; --ink2:#5a566b; --ink3:#8d8a9c;
+  --amber:#d97706; --amber2:#b45309; --haiku:#0891b2; --sonnet:#7c3aed; --opus:#ea580c; --ok:#059669; --ko:#dc2626}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}
+code,kbd{font-family:var(--mono);font-size:.92em}
+:focus-visible{outline:3px solid var(--amber);outline-offset:3px;border-radius:8px}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+section{padding:clamp(72px,11vh,130px) 0}
+.alt{background:var(--bg2)}
+.eyebrow{font-size:13px;font-weight:650;letter-spacing:.12em;text-transform:uppercase;color:var(--amber)}
+h2{font-size:clamp(32px,5vw,56px);line-height:1.04;letter-spacing:-.035em;font-weight:750;margin:10px 0 14px;text-wrap:balance}
+.lead{font-size:clamp(17px,2vw,21px);color:var(--ink2);max-width:62ch;text-wrap:pretty}
+.src{font-size:12px;color:var(--ink3);margin-top:14px}
+.src code{font-size:11px}
+[title]{text-decoration-style:dotted}
+
+/* nav */
+.nav{position:sticky;top:0;z-index:20;backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);background:color-mix(in srgb,var(--bg) 72%,transparent);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:54px;gap:12px}
+.nav a.retour{font-size:14px;color:var(--ink2);text-decoration:none}
+.nav .t{display:flex;align-items:center;gap:10px;font-weight:650}
+.nav .t img{width:26px;height:26px;border-radius:7px}
+.nav .liens{display:flex;gap:4px}
+.nav .liens a{font-size:14px;color:var(--ink2);text-decoration:none;padding:6px 10px;border-radius:999px}
+.nav .liens a:hover{background:var(--line)}
+.nav .liens a.cta{background:var(--amber);color:#111;font-weight:650}
+@media (max-width:720px){.nav .liens a:not(.cta){display:none}}
+
+/* boutons */
+.btns{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.btn{appearance:none;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-weight:650;font-size:16px;padding:14px 22px;border-radius:999px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;text-decoration:none;transition:transform .15s,box-shadow .2s}
+.btn:hover{transform:translateY(-2px)}
+.btn.p{background:linear-gradient(135deg,var(--amber),#fbbf24);color:#140d00;border-color:transparent;box-shadow:0 10px 30px -10px rgba(245,158,11,.7)}
+.btn small{font-weight:500;opacity:.7;font-size:13px}
+.btn.ok{background:var(--ok);color:#03140d;border-color:transparent}
+
+/* héros */
+.hero{text-align:center;padding-top:clamp(56px,10vh,110px);padding-bottom:40px;position:relative}
+.hero:before{content:"";position:absolute;inset:-10% 0 auto;height:620px;background:radial-gradient(60% 50% at 50% 30%,rgba(245,158,11,.20),transparent 70%),radial-gradient(40% 40% at 20% 60%,rgba(167,139,250,.16),transparent 70%),radial-gradient(40% 40% at 80% 60%,rgba(34,211,238,.13),transparent 70%);z-index:-1;pointer-events:none}
+.pill{display:inline-flex;gap:8px;align-items:center;font-size:13px;color:var(--ink2);border:1px solid var(--line);border-radius:999px;padding:6px 14px;background:var(--card)}
+.pill b{color:var(--amber)}
+.hero h1{font-size:clamp(44px,8vw,96px);line-height:.98;letter-spacing:-.045em;font-weight:800;margin:22px auto 18px;max-width:14ch;text-wrap:balance}
+.hero h1 em{font-style:normal;background:linear-gradient(90deg,var(--haiku),var(--sonnet),var(--opus),var(--amber));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .lead{margin:0 auto 30px;text-align:center}
+.hero .note{font-size:13px;color:var(--ink3);margin-top:14px}
+
+/* orchestre animé */
+.scene{max-width:900px;margin:44px auto 0}
+.scene svg{width:100%;height:auto;overflow:visible}
+.scene .lien{stroke:var(--line);stroke-width:2;fill:none}
+.scene .flux{stroke-width:3;fill:none;stroke-dasharray:6 180;animation:flux 2.6s linear infinite}
+@keyframes flux{to{stroke-dashoffset:-186}}
+.scene .noeud rect{fill:var(--card);stroke:var(--line)}
+.scene text{fill:var(--ink);font-family:var(--font);font-size:15px;font-weight:650}
+.scene text.s{fill:var(--ink2);font-size:12.5px;font-weight:500}
+.scene .baton{transform-origin:450px 92px;animation:baton 2.6s ease-in-out infinite}
+@keyframes baton{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}
+.scene .pulse{animation:pulse 2.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
+
+/* chiffres */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:56px}
+@media (max-width:820px){.kpis{grid-template-columns:repeat(2,1fr)}}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px 20px;text-align:left}
+.kpi b{display:block;font-size:clamp(34px,4.4vw,48px);letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
+.kpi span{display:block;color:var(--ink2);font-size:14px;margin-top:8px}
+
+/* points (45 demandes) */
+.duo{display:grid;grid-template-columns:1.05fr 1fr;gap:40px;align-items:center;margin-top:40px}
+@media (max-width:860px){.duo{grid-template-columns:1fr}}
+.points{display:grid;grid-template-columns:repeat(9,1fr);gap:10px;max-width:460px}
+.points i{aspect-ratio:1;border-radius:50%;background:var(--line);transform:scale(.2);opacity:0;transition:transform .5s cubic-bezier(.3,1.6,.5,1),opacity .4s}
+.vu .points i{transform:scale(1);opacity:1}
+.points i.s{background:var(--ok)}.points i.a{background:var(--amber)}.points i.r{background:var(--ink3);opacity:.35}
+.legende{display:flex;flex-wrap:wrap;gap:16px;margin-top:18px;font-size:14px;color:var(--ink2)}
+.legende span:before{content:"";display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:7px;vertical-align:-1px;background:var(--c)}
+.cas{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px}
+.cas h3{font-size:20px;letter-spacing:-.02em;margin-bottom:10px}
+.cas p{color:var(--ink2);margin-bottom:10px}
+.cas .avant,.cas .apres{font-family:var(--mono);font-size:13px;border-radius:12px;padding:12px 14px;margin-top:10px;line-height:1.6}
+.cas .avant{background:rgba(248,113,113,.09);border:1px solid rgba(248,113,113,.25)}
+.cas .apres{background:rgba(52,211,153,.09);border:1px solid rgba(52,211,153,.25)}
+
+/* étapes */
+.etapes{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:44px;counter-reset:e}
+@media (max-width:980px){.etapes{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:560px){.etapes{grid-template-columns:1fr}}
+.etape{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px;position:relative;overflow:hidden}
+.etape .ic{font-size:28px}
+.etape h3{font-size:18px;letter-spacing:-.015em;margin:10px 0 6px}
+.etape p{font-size:14.5px;color:var(--ink2)}
+.etape .m{display:inline-block;margin-top:12px;font-size:12.5px;font-weight:650;color:var(--amber);background:rgba(245,158,11,.1);border-radius:999px;padding:4px 10px}
+.etape:after{counter-increment:e;content:counter(e);position:absolute;right:16px;top:10px;font-size:54px;font-weight:800;color:var(--line);letter-spacing:-.05em}
+
+/* banc */
+.verdicts{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:40px}
+@media (max-width:860px){.verdicts{grid-template-columns:1fr}}
+.verdict{border-radius:var(--r);padding:24px;border:1px solid var(--line);background:var(--card);position:relative;overflow:hidden}
+.verdict:before{content:"";position:absolute;inset:0 0 auto;height:4px;background:var(--c)}
+.verdict .mod{font-size:13px;font-weight:700;color:var(--c);letter-spacing:.06em;text-transform:uppercase}
+.verdict>b{display:block;font-size:22px;letter-spacing:-.02em;line-height:1.2;margin:8px 0}
+.verdict p{color:var(--ink2);font-size:14.5px}
+.banc{margin-top:28px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px}
+.taches{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.taches button{appearance:none;font:inherit;font-size:13.5px;border:1px solid var(--line);background:transparent;color:var(--ink2);padding:7px 13px;border-radius:999px;cursor:pointer}
+.taches button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.graphe{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+@media (max-width:760px){.graphe{grid-template-columns:1fr}}
+.colonne h4{font-size:15px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:baseline}
+.colonne h4 small{color:var(--ink3);font-weight:500;font-size:12px}
+.ligne{display:grid;grid-template-columns:54px 1fr 40px 54px;gap:8px;align-items:center;font-size:13px;margin:7px 0;font-variant-numeric:tabular-nums}
+.ligne .e{color:var(--ink2)}
+.ligne .barre{height:12px;border-radius:6px;background:var(--line);overflow:hidden}
+.ligne .barre i{display:block;height:100%;width:0;border-radius:6px;background:var(--c);transition:width .7s cubic-bezier(.2,.8,.2,1)}
+.ligne .n{font-weight:650;text-align:right}
+.ligne .c{color:var(--ink3);text-align:right;font-size:12px}
+.ligne.na{opacity:.4}
+.banc .lecture{margin-top:16px;padding-top:14px;border-top:1px solid var(--line);color:var(--ink2);font-size:14.5px}
+.table{width:100%;border-collapse:collapse;margin-top:28px;font-size:14.5px}
+.table th,.table td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.table th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);font-weight:650}
+.table td b{white-space:nowrap}
+.tbl{overflow-x:auto}
+@media (max-width:560px){.table th,.table td{padding:10px 6px;font-size:13.5px}.nav a.retour{font-size:13px}}
+.chip{display:inline-block;font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;color:#0b0b12;background:var(--c);white-space:nowrap}
+
+/* coût réel */
+.reel{display:grid;gap:12px;margin-top:36px}
+.reel .r{display:grid;grid-template-columns:150px 1fr 1fr;gap:16px;align-items:center}
+@media (max-width:700px){.reel .r{grid-template-columns:1fr}}
+.reel .r .nm{font-weight:650}
+.reel .r .nm small{display:block;color:var(--ink3);font-weight:500;font-size:12.5px}
+.reel .piste{height:26px;border-radius:8px;background:var(--line);position:relative;overflow:hidden}
+.reel .piste i{position:absolute;inset:0 auto 0 0;width:0;background:var(--c);border-radius:8px;transition:width 1s cubic-bezier(.2,.8,.2,1)}
+.reel .piste span{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:12.5px;font-weight:650;mix-blend-mode:normal;color:var(--ink)}
+.reel .tete{display:grid;grid-template-columns:150px 1fr 1fr;gap:16px;font-size:12px;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em;font-weight:650}
+@media (max-width:700px){.reel .tete{display:none}}
+
+/* poids */
+.jauge{margin-top:36px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:26px}
+.piste-j{position:relative;height:22px;border-radius:11px;background:linear-gradient(90deg,var(--ok) 0 40%,#facc15 40% 60%,var(--opus) 60% 100%);opacity:.9}
+.piste-j .curseur{position:absolute;top:-8px;width:4px;height:38px;border-radius:2px;background:var(--ink);transform:translateX(-2px);transition:left .15s}
+.reperes{position:relative;height:40px;font-size:12px;color:var(--ink2)}
+.reperes span{position:absolute;top:8px;transform:translateX(-50%);white-space:nowrap}
+.jauge input[type=range]{width:100%;margin-top:6px;accent-color:var(--amber)}
+.sortie{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+@media (max-width:700px){.sortie{grid-template-columns:1fr}}
+.sortie div{background:var(--bg2);border-radius:14px;padding:14px 16px}
+.sortie b{display:block;font-size:26px;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.sortie span{font-size:13px;color:var(--ink2)}
+
+/* terminal */
+.cmds{display:flex;flex-wrap:wrap;gap:8px;margin:34px 0 14px}
+.cmds button{appearance:none;font:600 14px var(--mono);border:1px solid var(--line);background:var(--card);color:var(--ink);padding:9px 14px;border-radius:12px;cursor:pointer}
+.cmds button[aria-pressed="true"]{border-color:var(--amber);color:var(--amber);background:rgba(245,158,11,.08)}
+.term{background:#0d0c14;color:#e9e7f5;border-radius:18px;border:1px solid rgba(255,255,255,.1);box-shadow:0 30px 80px -30px rgba(0,0,0,.6);overflow:hidden}
+.term .barre-t{display:flex;align-items:center;gap:7px;padding:12px 14px;background:#16141f;border-bottom:1px solid rgba(255,255,255,.07)}
+.term .barre-t i{width:12px;height:12px;border-radius:50%;background:#ff5f57}.term .barre-t i:nth-child(2){background:#febc2e}.term .barre-t i:nth-child(3){background:#28c840}
+.term .barre-t span{margin-left:10px;font-size:12.5px;color:#8c89a3;font-family:var(--mono)}
+.term pre{font:13.5px/1.65 var(--mono);padding:20px 22px;overflow-x:auto;min-height:330px;white-space:pre}
+.term .p{color:#f59e0b}.term .g{color:#34d399}.term .k{color:#f87171}.term .d{color:#8c89a3}.term .h{color:#fff;font-weight:700}.term .v{color:#a78bfa}.term .c{color:#22d3ee}.term .o{color:#fb923c}
+.cmd-aide{font-size:14.5px;color:var(--ink2);margin-top:12px;min-height:1.5em}
+
+/* accueil */
+.accueil{margin-top:40px;border-radius:24px;border:1px solid var(--line);overflow:hidden;background:#0b0b12;color:#f4f4f8;box-shadow:0 30px 80px -30px rgba(0,0,0,.5)}
+.accueil .fen{display:flex;gap:7px;padding:12px 14px;background:#15141d}
+.accueil .fen i{width:11px;height:11px;border-radius:50%;background:#3a3946}
+.accueil .in{padding:40px 28px 34px;text-align:center}
+.accueil .bt{font-size:46px;display:inline-block;animation:baton2 2.4s ease-in-out infinite;transform-origin:20% 80%}
+@keyframes baton2{0%,100%{transform:rotate(-12deg)}50%{transform:rotate(14deg)}}
+.accueil h3{font-size:clamp(26px,4vw,38px);letter-spacing:-.03em;margin:8px 0}
+.accueil .mot{color:#a1a1b5;max-width:600px;margin:0 auto;font-size:17px}
+.accueil .sig{color:#6f6c85;font-size:12.5px;margin-top:8px}
+.accueil .k3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:26px auto 0;max-width:620px}
+@media (max-width:600px){.accueil .k3{grid-template-columns:1fr}}
+.accueil .k3 div{background:#16161f;border:1px solid #262635;border-radius:14px;padding:14px;text-align:left}
+.accueil .k3 b{font-size:26px;display:block;letter-spacing:-.03em}.accueil .k3 span{color:#a1a1b5;font-size:13px}
+.accueil .cs{display:grid;gap:8px;max-width:620px;margin:16px auto 0;text-align:left}
+.accueil .cs div{background:#16161f;border:1px solid #262635;border-radius:12px;padding:10px 14px 10px 44px;position:relative;font-size:14.5px}
+.accueil .cs div b{position:absolute;left:12px;top:9px;width:22px;height:22px;border-radius:50%;background:#f59e0b;color:#000;display:grid;place-items:center;font-size:12px}
+.illu{font-size:12px;color:var(--ink3);text-align:center;margin-top:10px}
+
+/* partage */
+.cycle{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:40px;position:relative}
+@media (max-width:820px){.cycle{grid-template-columns:1fr 1fr;gap:12px}}
+.cycle div{padding:22px 18px;text-align:center;position:relative}
+.cycle div .rond{width:64px;height:64px;border-radius:50%;margin:0 auto 12px;display:grid;place-items:center;font-size:26px;background:var(--card);border:1px solid var(--line)}
+.cycle div b{display:block;font-size:15px}
+.cycle div span{font-size:13.5px;color:var(--ink2)}
+.cycle div:not(:last-child):after{content:"→";position:absolute;right:-8px;top:42px;color:var(--ink3);font-size:20px}
+@media (max-width:820px){.cycle div:after{display:none}}
+.deux{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:28px}
+@media (max-width:700px){.deux{grid-template-columns:1fr}}
+.deux div{border-radius:var(--r);padding:22px;border:1px solid var(--line);background:var(--card)}
+.deux h3{font-size:17px;margin-bottom:10px}
+.deux ul{list-style:none;display:grid;gap:7px;font-size:14.5px;color:var(--ink2)}
+.deux .oui li:before{content:"✓ ";color:var(--ok);font-weight:700}
+.deux .non li:before{content:"✕ ";color:var(--ko);font-weight:700}
+
+/* installer */
+.onglets{display:flex;gap:6px;justify-content:center;margin:34px 0 18px;flex-wrap:wrap}
+.onglets button{appearance:none;font:inherit;font-weight:650;font-size:15px;border:1px solid var(--line);background:transparent;color:var(--ink2);padding:10px 18px;border-radius:999px;cursor:pointer}
+.onglets button[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.panneau{max-width:820px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px}
+.panneau ol{padding-left:20px;display:grid;gap:8px;color:var(--ink2);margin-bottom:16px}
+.panneau ol b{color:var(--ink)}
+.bloc{position:relative;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:16px 16px 16px 16px;font:13.5px/1.6 var(--mono);white-space:pre-wrap;word-break:break-word;margin-bottom:14px}
+.panneau .btns{justify-content:flex-start}
+.requis{max-width:820px;margin:18px auto 0;font-size:13.5px;color:var(--ink2);text-align:center}
+
+.limites{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:30px}
+@media (max-width:760px){.limites{grid-template-columns:1fr}}
+.limites div{font-size:14.5px;color:var(--ink2);padding:16px 18px;border:1px dashed var(--line);border-radius:16px}
+.limites b{color:var(--ink)}
+footer{padding:40px 0 60px;color:var(--ink3);font-size:13px;text-align:center;border-top:1px solid var(--line)}
+footer a{color:var(--ink2)}
+
+.rv{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.2,1)}
+.rv.vu{opacity:1;transform:none}
+.toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:999px;font-weight:650;font-size:14.5px;opacity:0;transition:.3s;pointer-events:none;z-index:50;max-width:calc(100% - 32px);text-align:center}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}.points i{transform:none;opacity:1}}
+</style>
+</head>
+<body>
+<nav class="nav" aria-label="Navigation"><div class="wrap">
+  <a class="retour" href="../">‹ Apps de Lucas</a>
+  <span class="t"><img src="../assets/orchestrateur-icon.svg" alt="">Orchestrateur</span>
+  <div class="liens"><a href="#banc">Le banc</a><a href="#commandes">Commandes</a><a href="#partage">Partage</a><a class="cta" href="#installer">Installer</a></div>
+</div></nav>
+
+<header class="hero wrap">
+  <span class="pill"><b>Skill Claude Code</b> · v1.1 · gratuit</span>
+  <h1>Claude fait travailler <em>une équipe.</em></h1>
+  <p class="lead">Une session dirige, de vraies sessions exécutent, chacune avec le modèle le moins cher qui suffit. Réglé sur 785 sessions réelles et 206 essais Haiku, Sonnet et Opus 5.5.</p>
+  <div class="btns">
+    <button class="btn p" data-copier="prompt">📋 Copier le prompt <small>à coller dans Claude</small></button>
+    <a class="btn" href="orchestrateur.zip" download>⬇︎ Télécharger <small>.zip · 30 fichiers</small></a>
+  </div>
+  <p class="note">macOS · Claude Code (de préférence l’app de bureau) · Node 18+</p>
+
+  <div class="scene rv" aria-label="Schéma : l’orchestratrice lance quatre sessions, chacune avec son modèle">
+    <svg viewBox="0 0 900 330" role="img">
+      <defs>
+        <linearGradient id="gb" x1="0" x2="1"><stop offset="0" stop-color="#f59e0b"/><stop offset="1" stop-color="#fde68a"/></linearGradient>
+      </defs>
+      <path class="lien" d="M450 130 C450 190,120 190,120 250"/><path class="lien" d="M450 130 C450 190,340 190,340 250"/>
+      <path class="lien" d="M450 130 C450 190,560 190,560 250"/><path class="lien" d="M450 130 C450 190,780 190,780 250"/>
+      <path class="flux" stroke="var(--haiku)" d="M450 130 C450 190,120 190,120 250"/>
+      <path class="flux" stroke="var(--sonnet)" style="animation-delay:-.6s" d="M450 130 C450 190,340 190,340 250"/>
+      <path class="flux" stroke="var(--sonnet)" style="animation-delay:-1.2s" d="M450 130 C450 190,560 190,560 250"/>
+      <path class="flux" stroke="var(--haiku)" style="animation-delay:-1.8s" d="M450 130 C450 190,780 190,780 250"/>
+      <g class="noeud"><rect x="330" y="74" width="240" height="62" rx="18"/>
+        <circle cx="356" cy="105" r="9" fill="var(--opus)"/>
+        <text x="374" y="101">Orchestratrice</text><text class="s" x="374" y="121">Opus · medium — décide, vérifie</text></g>
+      <g class="baton"><path d="M450 74 L512 18" stroke="url(#gb)" stroke-width="6" stroke-linecap="round"/><circle cx="512" cy="18" r="5" fill="#fde68a"/></g>
+      <g class="noeud"><rect x="30" y="250" width="180" height="62" rx="16"/><circle cx="52" cy="281" r="8" fill="var(--haiku)"/><text x="68" y="277">Relevé des logs</text><text class="s" x="68" y="297">Haiku · medium</text></g>
+      <g class="noeud"><rect x="250" y="250" width="180" height="62" rx="16"/><circle cx="272" cy="281" r="8" fill="var(--sonnet)"/><text x="288" y="277">Corriger l’API</text><text class="s" x="288" y="297">Sonnet · low</text></g>
+      <g class="noeud"><rect x="470" y="250" width="180" height="62" rx="16"/><circle cx="492" cy="281" r="8" fill="var(--sonnet)"/><text x="508" y="277">Comparer captures</text><text class="s" x="508" y="297">Sonnet · low</text></g>
+      <g class="noeud"><rect x="690" y="250" width="180" height="62" rx="16"/><circle cx="712" cy="281" r="8" fill="var(--haiku)"/><text x="728" y="277">Extraire en JSON</text><text class="s" x="728" y="297">Haiku · medium</text></g>
+      <g class="pulse"><text class="s" x="600" y="98">· point toutes les 5 min</text><text class="s" x="600" y="118">· relance à 300 k jetons</text></g>
+    </svg>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi rv"><b data-compte="785">785</b><span>sessions relues pour régler la v1</span></div>
+    <div class="kpi rv" style="transition-delay:.08s"><b data-compte="206">206</b><span>essais modèle × effort, notés</span></div>
+    <div class="kpi rv" style="transition-delay:.16s"><b>≈ <span data-compte="15" style="display:inline;margin:0;color:inherit;font-size:inherit">15</span>×</b><span>moins cher : Haiku là où il suffit</span></div>
+    <div class="kpi rv" style="transition-delay:.24s"><b><span data-compte="76" style="display:inline;margin:0;color:inherit;font-size:inherit">76</span> %</b><span>du coût dépensé au-delà de 300 k jetons</span></div>
+  </div>
+  <p class="src">Sources : transcriptions Claude Code du 20 au 29/10/2026 (<code>outils/extraire.mjs</code>), banc du 20/10/2026. Coûts recalculés aux prix publics, pas une facture.</p>
+</header>
+
+<section class="alt" id="probleme"><div class="wrap">
+  <p class="eyebrow">Le défaut n° 1</p>
+  <h2 class="rv">« Lance des sessions. » Claude n’en lançait aucune.</h2>
+  <p class="lead rv">Dans l’app de bureau, l’outil qui lance une session est <b>différé</b> : Claude ne voit que son nom tant qu’il ne l’a pas chargé. Alors il prenait l’outil visible, les agents (qui vivent le temps d’une réponse), ou ne faisait rien.</p>
+  <div class="duo">
+    <div class="rv" id="pts">
+      <div class="points" aria-label="45 demandes d’orchestration : 20 avec sessions, 8 avec des agents à la place, 17 sans rien"></div>
+      <div class="legende"><span style="--c:var(--ok)">20 avec de vraies sessions</span><span style="--c:var(--amber)">8 avec des agents à la place</span><span style="--c:var(--ink3)">17 sans rien</span></div>
+      <p class="src">45 demandes d’orchestration, 20–29/10/2026.</p>
+    </div>
+    <div class="cas rv">
+      <h3>Ce que fait la v1, dès la première ligne</h3>
+      <p>Un diagnostic de 30 secondes : charger l’outil de session, annoncer le moyen, puis lancer tout le plan dans le même tour.</p>
+      <div class="avant">Avant · « je lance 3 agents en parallèle… »<br>→ aucune session ouverte, rien à suivre</div>
+      <div class="apres">v1 · ToolSearch(start_session) → tableau modèle · effort<br>→ 3 sessions lancées, 3 modèles explicites, 3 worktrees</div>
+      <p class="src">Essai à blanc du 29/10 : un Sonnet · low neuf, avec le seul fichier du skill.</p>
+    </div>
+  </div>
+</div></section>
+
+<section id="fait"><div class="wrap">
+  <p class="eyebrow">Ce qu’il fait</p>
+  <h2 class="rv">Huit gestes de chef d’orchestre, chacun appris d’une erreur.</h2>
+  <p class="lead rv">Chaque règle porte le chiffre qui l’a fait naître. Rien d’abstrait : ce sont des défauts relevés sur de vrais chantiers.</p>
+  <div class="etapes">
+    <div class="etape rv"><div class="ic">🧭</div><h3>Diagnostiquer</h3><p>Trouver comment lancer une session ici : l’app, le terminal, ou des agents en le disant.</p><span class="m">25 / 45 sans session avant</span></div>
+    <div class="etape rv"><div class="ic">🎯</div><h3>Découper</h3><p>Une session par tâche à part entière, un agent pour lire ou vérifier : jamais l’un pour l’autre.</p><span class="m">8 fois confondus</span></div>
+    <div class="etape rv"><div class="ic">📋</div><h3>Annoncer</h3><p>Un tableau avant de lancer : session, modèle · effort, pourquoi, critère de fin.</p><span class="m">faite 24 % du temps avant</span></div>
+    <div class="etape rv"><div class="ic">🎚</div><h3>Doser</h3><p>Le modèle le plus bas qui réussit, toujours explicite. Monter le modèle avant l’effort.</p><span class="m">26 % sans modèle avant</span></div>
+    <div class="etape rv"><div class="ic">🚀</div><h3>Lancer sans refus</h3><p>Tout le plan dans le tour de l’utilisateur ; la parade à chaque refus connu de l’app.</p><span class="m">30 refus sur 215</span></div>
+    <div class="etape rv"><div class="ic">⏱</div><h3>Suivre</h3><p>Un point toutes les 5 min par minuterie, transmettre les remarques, repérer la fille qui tourne en rond.</p><span class="m">consignes oubliées : 3</span></div>
+    <div class="etape rv"><div class="ic">🔁</div><h3>Relancer</h3><p>Au-delà de 300 k jetons, une note de reprise et une session neuve coûtent moins.</p><span class="m">59 lourdes, 20 relancées</span></div>
+    <div class="etape rv"><div class="ic">✅</div><h3>Finir</h3><p>Tout arrêter (bancs, serveurs, minuteries) et rendre un résultat qu’on peut ouvrir.</p><span class="m">3 bancs oubliés</span></div>
+  </div>
+</div></section>
+
+<section class="alt" id="banc"><div class="wrap">
+  <p class="eyebrow">Le banc · 206 essais</p>
+  <h2 class="rv">Haiku, Sonnet, Opus 5.5 : ce qui est prouvé.</h2>
+  <p class="lead rv">Onze tâches réelles, chacune notée de 0 à 1 par un critère objectif (tests, comptage, référence), à chaque modèle et chaque effort. Le skill en tire une règle simple : partir du plus bas qui réussit.</p>
+  <div class="verdicts">
+    <div class="verdict rv" style="--c:var(--haiku)"><span class="mod">Haiku 5.5</span><b>Suffit à beaucoup, pour ≈ 1/15 du prix</b><p>Lecture, extraction, bug simple, aiguillage : 1,00 à <code>medium</code>. Mais il <b>casse à <code>low</code></b> (JSON illisible 1 fois sur 2) et <b>décroche sur les captures</b> : 7 à 9 écarts sur 10.</p></div>
+    <div class="verdict rv" style="--c:var(--sonnet)"><span class="mod">Sonnet 5.5</span><b>Le défaut : <code>low</code> vaut <code>high</code></b><p>Sur 11 tâches, <code>low</code> fait aussi bien que <code>high</code>, 1,2 à 6 fois plus vite. 10/10 écarts sur les captures. <code>high</code> s’est même trompé 1 fois sur 2 en ordonnancement.</p></div>
+    <div class="verdict rv" style="--c:var(--opus)"><span class="mod">Opus 5.5</span><b>N’a battu Sonnet sur aucune tâche mesurée</b><p>Pour environ 2 fois le prix. Il garde ce qu’on ne sait pas noter : décider, concevoir, orchestrer. Et seulement à <code>medium</code>.</p></div>
+  </div>
+
+  <div class="banc rv">
+    <div class="taches" role="group" aria-label="Choisir une tâche du banc"></div>
+    <div class="graphe"></div>
+    <p class="lecture"></p>
+  </div>
+  <p class="src">Note moyenne sur 1 et coût moyen par appel (prix publics, avec ≈ 11,7 k jetons de socle Claude Code). 1 à 3 essais par case : un écart de moins de 0,1 est du bruit. Case grisée : non essayé.</p>
+
+  <div class="tbl rv"><table class="table">
+    <thead><tr><th>Ce que fait la session</th><th>Modèle · effort</th><th>La mesure</th></tr></thead>
+    <tbody>
+      <tr><td>Lire, chercher, trier, extraire en JSON</td><td><span class="chip" style="--c:var(--haiku)">Haiku · medium</span></td><td>extraction 1,00 · à <code>low</code> 0,50</td></tr>
+      <tr><td>Question courte, commande à rappeler</td><td><span class="chip" style="--c:var(--haiku)">Haiku · low</span></td><td>6/6 partout, 0,001 $ l’appel</td></tr>
+      <tr><td>Code, script, bug, rédaction libre</td><td><span class="chip" style="--c:var(--sonnet)">Sonnet · low → medium</span></td><td>script 1,00 · <code>high</code> 0,92</td></tr>
+      <tr><td>Captures, comparaison d’images</td><td><span class="chip" style="--c:var(--sonnet)">Sonnet · low</span></td><td>10/10 écarts · Haiku 7 à 9/10</td></tr>
+      <tr><td>Décider, concevoir, orchestrer</td><td><span class="chip" style="--c:var(--opus)">Opus · medium</span></td><td>non mesurable par un test : le jugement</td></tr>
+      <tr><td>Bloqué après deux tentatives</td><td><span class="chip" style="--c:var(--opus)">Opus · high</span></td><td>sur accord ; jamais <code>max</code></td></tr>
+    </tbody>
+  </table></div>
+</div></section>
+
+<section id="reel"><div class="wrap">
+  <p class="eyebrow">En vrai, sur 785 sessions</p>
+  <h2 class="rv">Peu de sessions Opus, presque tout le budget.</h2>
+  <p class="lead rv">Ce que coûtent les sessions principales selon leur modèle. Haiku a fait 298 sessions pour 1 $ ; Opus · medium en a fait 66 pour les trois quarts de la note. D’où la règle : Opus dirige, Sonnet et Haiku exécutent.</p>
+  <div class="reel">
+    <div class="tete"><span>Modèle · effort</span><span>Part des sessions</span><span>Part du coût</span></div>
+    <div class="r rv"><span class="nm">Opus · medium<small>66 sessions · 1 324 $</small></span><div class="piste" style="--c:var(--opus)"><i data-w="8.4"></i><span>8 %</span></div><div class="piste" style="--c:var(--opus)"><i data-w="75.4"></i><span>75 %</span></div></div>
+    <div class="r rv"><span class="nm">Sonnet · medium<small>95 sessions · 298 $</small></span><div class="piste" style="--c:var(--sonnet)"><i data-w="12.1"></i><span>12 %</span></div><div class="piste" style="--c:var(--sonnet)"><i data-w="17"></i><span>17 %</span></div></div>
+    <div class="r rv"><span class="nm">Sonnet · low<small>294 sessions · 41 $</small></span><div class="piste" style="--c:var(--sonnet)"><i data-w="37.5"></i><span>37 %</span></div><div class="piste" style="--c:var(--sonnet)"><i data-w="2.3"></i><span>2 %</span></div></div>
+    <div class="r rv"><span class="nm">Haiku · medium<small>298 sessions · 1 $</small></span><div class="piste" style="--c:var(--haiku)"><i data-w="38"></i><span>38 %</span></div><div class="piste" style="--c:var(--haiku)"><i data-w=".4"></i><span>&lt; 1 %</span></div></div>
+  </div>
+  <p class="src">Sessions principales du 20 au 29/10/2026, 1 757 $ au total aux prix publics (<code>perfs/SYNTHESE.md</code>). Autres combinaisons (Opus low/high, divers) : 30 sessions, 93 $.</p>
+</div></section>
+
+<section class="alt" id="poids"><div class="wrap">
+  <p class="eyebrow">Le poids du contexte</p>
+  <h2 class="rv">Chaque message relit tout. Au-delà de 300 k, on relance.</h2>
+  <p class="lead rv">Une session lourde relit des centaines de milliers de jetons à chaque tour. 59 sessions ont dépassé 300 k ; elles ont fait <b>76 % du coût</b>, et 20 seulement ont été relancées avec une note de reprise. Le skill pose un rappel automatique et la formule pour décider.</p>
+  <div class="jauge rv">
+    <div class="piste-j"><span class="curseur" id="cur"></span></div>
+    <div class="reperes"><span style="left:0%">0</span><span style="left:40%">200 k · prévenir</span><span style="left:60%">300 k · relancer</span><span style="left:100%">500 k</span></div>
+    <label for="ctx" style="font-size:14px;color:var(--ink2)">Faites glisser le contexte de la session :</label>
+    <input type="range" id="ctx" min="20000" max="600000" step="10000" value="320000">
+    <div class="sortie">
+      <div><b id="o-ctx">320 k</b><span>jetons relus à chaque tour</span></div>
+      <div><b id="o-tours">15</b><span>tours restants au-delà desquels relancer coûte moins</span></div>
+      <div><b id="o-verdict">🟠 relancer</b><span id="o-aide">à la fin de cette étape</span></div>
+    </div>
+    <p class="src">Formule du skill : relancer si tours restants &gt; 3,3 M ÷ (contexte − 100 k). Le hook <code>poids-de-session.mjs</code> prévient à 200 k et demande la relance à 300 k.</p>
+  </div>
+</div></section>
+
+<section id="commandes"><div class="wrap">
+  <p class="eyebrow">Nouveau dans la v1.1</p>
+  <h2 class="rv">/orch : le tableau de bord de l’orchestration en cours.</h2>
+  <p class="lead rv">Combien de sessions tournent, avec quel modèle, ce qu’elles coûtent, le poids du contexte, et les règles tenues ou manquées. Lu dans la conversation elle-même : rien n’est envoyé.</p>
+  <div class="cmds" role="group" aria-label="Choisir une commande"></div>
+  <div class="term rv"><div class="barre-t"><i></i><i></i><i></i><span id="t-titre">Claude Code — /orch</span></div><pre id="t-sortie"></pre></div>
+  <p class="cmd-aide" id="t-aide"></p>
+  <p class="src">Sorties réelles de <code>/orch</code>, <code>regles</code>, <code>bilan</code> et <code>conseil</code> (29–30/10/2026, titres des sessions remplacés, mise en forme du terminal). <code>/orch poids</code> à 342 k, la ligne « En direct » et <code>/point 5</code> sont des illustrations.</p>
+</div></section>
+
+<section class="alt" id="accueil"><div class="wrap">
+  <p class="eyebrow">À l’installation</p>
+  <h2 class="rv">Claude vous écrit un mot d’accueil, sur vos chiffres.</h2>
+  <p class="lead rv">L’installation relit vos 30 derniers jours de Claude Code, demande à Haiku (un appel, ≈ 0,01 $) un mot et trois conseils tirés de <b>vos</b> chiffres, et ouvre la page. <code>/orch accueil</code> la rouvre et Claude vous le redit dans la conversation.</p>
+  <div class="accueil rv">
+    <div class="fen"><i></i><i></i><i></i></div>
+    <div class="in">
+      <span class="bt">🪄</span>
+      <h3>Lucas, ta baguette trouve enfin son tempo</h3>
+      <p class="mot">Tu as lancé 1 149 sessions ce mois-ci, et 125 d’entre elles pèsent 86 % du coût : l’orchestre a de la voix. Opus fait 81 % de la dépense, donc il faut lui trouver des remplaçants plus sobres.</p>
+      <p class="sig">— écrit par Claude, sur vos chiffres · skill orchestrateur v1.1.0</p>
+      <div class="k3"><div><b>1 149</b><span>sessions en 30 jours</span></div><div><b>125</b><span>sessions &gt; 300 k jetons</span></div><div><b>86 %</b><span>du coût au-delà de 300 k</span></div></div>
+      <div class="cs"><div><b>1</b>Relance les sessions lourdes avec une note : 125 lourdes pèsent 86 % du coût.</div><div><b>2</b>Dis « lance des sessions » : 64 orchestrations sur 99 n’en ont lancé aucune.</div><div><b>3</b>Sonnet par défaut pour les sessions filles : Opus fait 81 % de la dépense.</div></div>
+    </div>
+  </div>
+  <p class="illu">Exemple réel, généré le 30/10/2026 sur le Mac de l’auteur : mot et conseils tels que Claude les a écrits. Les vôtres partent de vos chiffres.</p>
+</div></section>
+
+<section id="partage"><div class="wrap">
+  <p class="eyebrow">Un skill qui s’améliore</p>
+  <h2 class="rv">Vos chiffres l’affinent. Seulement si vous dites oui.</h2>
+  <p class="lead rv">Une fois par mois, une fenêtre montre l’aperçu de ce qui partirait. Rien ne part sans « Partager ». Les chiffres de tous servent à proposer la version suivante, relue avant d’être publiée.</p>
+  <div class="cycle rv">
+    <div><span class="rond">🗓</span><b>Le 1er du mois</b><span>une fenêtre : aperçu des chiffres du mois</span></div>
+    <div><span class="rond">🙋</span><b>Vous décidez</b><span>Non · Voir le détail · Partager</span></div>
+    <div><span class="rond">🔬</span><b>Le 3 du mois</b><span>analyse de tous les comptes, proposition de version</span></div>
+    <div><span class="rond">🎼</span><b>Version suivante</b><span>relue par un humain, puis publiée ici</span></div>
+  </div>
+  <div class="deux">
+    <div class="oui rv"><h3>Ce qui part (après « Partager »)</h3><ul><li>jetons, coût recalculé, modèle, effort</li><li>nombre de sessions et d’agents lancés, refus d’outils</li><li>poids du contexte, corrections comptées</li><li>le nom du projet, haché (illisible)</li></ul></div>
+    <div class="non rv"><h3>Ce qui ne part jamais</h3><ul><li>vos messages, vos prompts, les réponses de Claude</li><li>les noms de fichiers et de dossiers</li><li>le moindre extrait de code</li><li>quoi que ce soit sans votre clic</li></ul></div>
+  </div>
+</div></section>
+
+<section class="alt" id="installer"><div class="wrap" style="text-align:center">
+  <p class="eyebrow">Installer · 2 minutes</p>
+  <h2 class="rv">Collez un prompt. Claude fait le reste.</h2>
+  <p class="lead rv" style="margin:0 auto">Trois façons, le même résultat : six skills, le rappel de poids, le partage mensuel avec accord, et la page d’accueil.</p>
+  <div class="onglets" role="tablist">
+    <button role="tab" aria-selected="true" data-o="prompt">Prompt à coller</button>
+    <button role="tab" aria-selected="false" data-o="zip">Fichier .zip</button>
+    <button role="tab" aria-selected="false" data-o="terminal">Terminal</button>
+  </div>
+  <div class="panneau" style="text-align:left">
+    <div data-p="prompt">
+      <ol><li><b>Copiez</b> le prompt ci-dessous.</li><li><b>Collez-le</b> dans Claude Code (l’app de bureau, onglet Code, ou <code>claude</code> dans un terminal).</li><li>Claude télécharge, lit le script, installe, puis vous écrit votre mot d’accueil.</li></ol>
+      <div class="bloc" id="b-prompt"></div>
+      <div class="btns"><button class="btn p" data-copier="prompt">📋 Copier le prompt</button></div>
+    </div>
+    <div data-p="zip" hidden>
+      <ol><li><b>Téléchargez</b> le zip et décompressez-le : il donne un dossier <code>orchestration-claude</code>.</li><li>Placez-le dans votre dossier personnel.</li><li>Dans un terminal : la commande ci-dessous, avec votre prénom.</li></ol>
+      <div class="bloc">cd ~/orchestration-claude && ./install.sh votre-prenom</div>
+      <div class="btns"><a class="btn p" href="orchestrateur.zip" download>⬇︎ Télécharger orchestrateur.zip</a><button class="btn" data-copier="zip">Copier la commande</button></div>
+    </div>
+    <div data-p="terminal" hidden>
+      <ol><li>Une seule commande : télécharge, décompresse dans <code>~/orchestration-claude</code>, installe.</li><li><code>install.sh</code> se lit en entier avant : il ne pose que des liens, un hook et une tâche mensuelle.</li></ol>
+      <div class="bloc" id="b-terminal"></div>
+      <div class="btns"><button class="btn p" data-copier="terminal">Copier la commande</button></div>
+    </div>
+  </div>
+  <p class="requis">macOS · Claude Code · Node 18 ou plus · <code>--sans-taches</code> pour ne pas poser le partage mensuel · <code>--sans-accueil</code> pour sauter la page d’accueil.</p>
+  <div class="btns" style="margin-top:22px"><span class="pill">Ensuite : « orchestre ce chantier : … » · <b>/orch</b> · <b>/orch conseil</b> · <b>/point 5</b></span></div>
+</div></section>
+
+<section><div class="wrap">
+  <p class="eyebrow">Honnête</p>
+  <h2 class="rv" style="font-size:clamp(26px,3.6vw,38px)">Ce que les chiffres ne disent pas.</h2>
+  <div class="limites">
+    <div class="rv"><b>Un seul utilisateur.</b> Les 785 sessions viennent d’un seul Mac, sur dix jours. Le partage mensuel est là pour élargir.</div>
+    <div class="rv"><b>Peu d’essais par case.</b> 1 à 3 par combinaison : un écart de moins de 0,1 est du bruit.</div>
+    <div class="rv"><b>Non mesuré.</b> Conception, refactorisation sur plusieurs fichiers, effort <code>max</code> : la règle y suit la documentation, pas un banc.</div>
+    <div class="rv"><b>Coûts recalculés.</b> Aux prix publics de l’API, depuis les jetons : pas votre facture d’abonnement.</div>
+  </div>
+</div></section>
+
+<footer><div class="wrap">Orchestrateur v1.1.0 du 30/10/2026 · <a href="../">Les apps de Lucas</a> · Gratuit, sans compte. Le script d’installation se lit en entier.</div></footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+  const ORIGINE = location.origin.startsWith('http') ? location.origin : 'https://apps.srv875929.hstgr.cloud';
+  const ZIP = ORIGINE + '/orchestrateur/orchestrateur.zip';
+  const TEXTES = {
+    prompt: `Installe le skill d'orchestration pour Claude Code.
+1. Télécharge ${ZIP} et décompresse-le dans mon dossier personnel : il donne ~/orchestration-claude (s'il existe déjà, mets à jour ses fichiers sans toucher à perfs/).
+2. Lis install.sh en entier et résume-moi en trois lignes ce qu'il va poser.
+3. Demande-moi mon prénom, puis lance ./install.sh <prénom> --sans-accueil.
+4. Lance node ~/orchestration-claude/outils/accueil.mjs pour ouvrir ma page d'accueil, puis fais /orch accueil : écris-moi le mot d'accueil sur mes chiffres, bien mis en forme.`,
+    zip: 'cd ~/orchestration-claude && ./install.sh votre-prenom',
+    terminal: `curl -fsSL ${ZIP} -o /tmp/orchestrateur.zip && unzip -oq /tmp/orchestrateur.zip -d ~ && ~/orchestration-claude/install.sh "$(id -un)"`,
+  };
+  document.getElementById('b-prompt').textContent = TEXTES.prompt;
+  document.getElementById('b-terminal').textContent = TEXTES.terminal;
+  const toast = document.getElementById('toast');
+  const dire = (t) => { toast.textContent = t; toast.classList.add('on'); clearTimeout(dire.t); dire.t = setTimeout(() => toast.classList.remove('on'), 2600); };
+  document.querySelectorAll('[data-copier]').forEach((b) => b.addEventListener('click', async () => {
+    const t = TEXTES[b.dataset.copier];
+    try { await navigator.clipboard.writeText(t); }
+    catch { const z = document.createElement('textarea'); z.value = t; document.body.append(z); z.select(); document.execCommand('copy'); z.remove(); }
+    const avant = b.innerHTML; b.classList.add('ok'); b.innerHTML = '✓ Copié';
+    setTimeout(() => { b.classList.remove('ok'); b.innerHTML = avant; }, 1800);
+    dire(b.dataset.copier === 'prompt' ? 'Prompt copié : collez-le dans Claude Code' : 'Commande copiée : collez-la dans un terminal');
+  }));
+
+  // onglets d'installation
+  document.querySelectorAll('.onglets button').forEach((b) => b.addEventListener('click', () => {
+    document.querySelectorAll('.onglets button').forEach((x) => x.setAttribute('aria-selected', x === b));
+    document.querySelectorAll('[data-p]').forEach((p) => p.hidden = p.dataset.p !== b.dataset.o);
+  }));
+
+  // 45 points
+  const pts = document.querySelector('.points');
+  [...Array(20).fill('s'), ...Array(8).fill('a'), ...Array(17).fill('r')].forEach((c, i) => { const e = document.createElement('i'); e.className = c; e.style.transitionDelay = `${i * 22}ms`; pts.append(e); });
+
+  // banc
+  const EFF = ['low', 'medium', 'high', 'xhigh'];
+  const COL = { H: ['Haiku 5.5', 'var(--haiku)', [0, 1, 2]], S: ['Sonnet 5.5', 'var(--sonnet)', [3, 4, 5, 6]], O: ['Opus 5.5', 'var(--opus)', [7, 8, 9, 10]] };
+  const N = null;
+  const BANC = [
+    ['Captures, page dure', '10 écarts à trouver sur 8 captures', [.7, .8, .85, 1, 1, 1, 1, N, 1, 1, N], [.009, .012, .014, .121, .122, .128, .148, N, .249, .282, N], 'Haiku plafonne à 8–9 écarts sur 10 ; Sonnet low trouve tout, pour la moitié du prix d’Opus.'],
+    ['Captures, page facile', '4 écarts sur 4 captures', [1, 1, .5, 1, 1, 1, 1, 1, 1, 1, 1], [.005, .006, .008, .092, .094, .095, .103, .176, .182, .205, .226], 'Tout le monde réussit ; Haiku high rate une fois sur deux. Plus d’effort n’aide pas.'],
+    ['Extraction JSON', '6 factures vers un format strict', [.5, 1, 1, 1, 1, 1, N, 1, 1, 1, N], [.002, .002, .002, .030, .031, .032, N, .059, .061, .063, N], 'Haiku low rend un JSON illisible une fois sur deux ; à medium, 1,00 pour 0,002 $.'],
+    ['Correction de bug', 'fonction Python, 7 tests', [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [.001, .001, .002, .025, .025, .025, .025, .050, .050, .051, .051], '1,00 partout : Haiku le fait pour 1/25 du prix de Sonnet.'],
+    ['Script', 'petit script en lecture seule, contrôles automatiques', [1, .85, .89, 1, .96, .92, N, .89, .85, N, N], [.002, .003, .003, .032, .033, .039, N, .072, .082, N, N], 'Sonnet low fait le meilleur score ; Opus ne fait pas mieux.'],
+    ['Revue de diff', '5 défauts plantés', [1, 1, 1, .9, .9, .9, N, .9, .9, .8, N], [.002, .002, .002, .029, .031, .033, N, .058, .067, .069, N], 'Le même défaut (une exception avalée) échappe à presque tous : ce n’est pas une question d’effort.'],
+    ['Classement', 'cause d’un écart, 20 cas', [.65, .78, .78, .9, .78, .82, .75, .78, .8, .8, .75], [.002, .002, .003, .031, .031, .041, .063, .071, .076, .079, .102], 'Plafond autour de 0,8 pour tous : c’est le critère qui est flou, pas le modèle.'],
+    ['Rédaction', 'note à gabarit strict', [.86, .95, .86, .82, .91, .95, N, .95, .91, N, N], [.002, .003, .003, .029, .034, .040, N, .059, .073, N, N], 'Seule tâche où l’effort aide Sonnet (0,82 → 0,95). Haiku medium fait pareil pour 1/10 du prix.'],
+    ['Aiguillage', 'choisir modèle et effort de 12 demandes', [.84, .84, .88, .83, .82, .82, N, .84, .85, N, N], [.002, .002, .002, .027, .027, .033, N, .055, .062, N, N], 'Égalité à 0,82–0,88 : l’aiguilleur du skill tourne sur Haiku, 14 fois moins cher.'],
+    ['Raisonnement', 'ordonnancement en plusieurs étapes', [1, 1, 1, 1, 1, .5, 1, 1, 1, 1, 1], [.005, .012, .013, .044, .061, .123, .187, .089, .110, .117, .176], 'Sonnet high se trompe une fois sur deux et coûte 3 fois plus que low.'],
+    ['Questions courtes', '6 questions de fait', [1, 1, 1, 1, 1, 1, N, 1, 1, 1, N], [.001, .001, .002, .026, .026, .026, N, .051, .051, .051, N], '6/6 partout. Haiku low : 0,001 $ la réponse.'],
+  ];
+  const taches = document.querySelector('.taches'), graphe = document.querySelector('.graphe'), lecture = document.querySelector('.banc .lecture');
+  const prix = (c) => c == null ? '' : `${c.toFixed(c < .01 ? 3 : 2).replace('.', ',')} $`;
+  function montrer(i) {
+    const [, , n, c, l] = BANC[i];
+    taches.querySelectorAll('button').forEach((b, j) => b.setAttribute('aria-pressed', i === j));
+    graphe.innerHTML = Object.values(COL).map(([nom, coul, idx]) => `<div class="colonne"><h4>${nom}<small>note · coût/appel</small></h4>${idx.map((k, j) =>
+      `<div class="ligne${n[k] == null ? ' na' : ''}" style="--c:${coul}"><span class="e">${EFF[j]}</span><span class="barre"><i data-w="${(n[k] ?? 0) * 100}"></i></span><span class="n">${n[k] == null ? '—' : n[k].toFixed(2).replace('.', ',')}</span><span class="c">${prix(c[k])}</span></div>`).join('')}</div>`).join('');
+    requestAnimationFrame(() => requestAnimationFrame(() => graphe.querySelectorAll('i[data-w]').forEach((e) => e.style.width = e.dataset.w + '%')));
+    lecture.innerHTML = `<b>${BANC[i][0]}</b> — ${BANC[i][1]}. ${l}`;
+  }
+  BANC.forEach(([t, d], i) => { const b = document.createElement('button'); b.textContent = t; b.title = d; b.addEventListener('click', () => montrer(i)); taches.append(b); });
+  montrer(0);
+
+  // jauge de poids
+  const ctx = document.getElementById('ctx'), cur = document.getElementById('cur');
+  function poids() {
+    const v = +ctx.value; cur.style.left = Math.min(100, v / 5000) + '%';
+    document.getElementById('o-ctx').textContent = Math.round(v / 1000) + ' k';
+    document.getElementById('o-tours').textContent = v > 100000 ? Math.floor(3300000 / (v - 100000)) : '∞';
+    const [vd, aide] = v >= 500000 ? ['🔴 tout de suite', 'note de reprise, session neuve'] : v >= 300000 ? ['🟠 relancer', 'à la fin de cette étape'] : v >= 200000 ? ['🟡 préparer', 'écrire la note de reprise'] : ['🟢 léger', 'continuer'];
+    document.getElementById('o-verdict').textContent = vd; document.getElementById('o-aide').textContent = aide;
+  }
+  ctx.addEventListener('input', poids); poids();
+
+  // terminal /orch
+  const s = (c, t) => `<span class="${c}">${t}</span>`;
+  const CMDS = {
+    '/orch': ['Le tableau : sessions, agents, poids, coût, suivi, règles tenues.',
+`${s('h','## 🎛 Orchestration en cours — mon-app depuis 09:54')}
+
+  ${s('d','Sessions lancées')}  ${s('h','5')} — ${s('v','4 Sonnet')} · ${s('o','1 Opus')}
+  ${s('d','Agents')}            0
+  ${s('d','Poids')}             ${s('g','█████')}${s('d','░░░░░░░░░')} 170 k jetons
+  ${s('d','Coût')}              14,98 $ ${s('d','(prix publics)')}
+  ${s('d','Suivi')}             0 minuterie · 11 messages aux sessions · 1 annonce
+  ${s('d','Règles tenues')}     ${s('p','4/5')}
+
+  ${s('g','✓')} des sessions lancées quand on en demande
+  ${s('g','✓')} un modèle explicite pour chaque session
+  ${s('g','✓')} l’annonce modèle · effort faite
+  ${s('k','✗')} un point armé par minuterie ${s('d','— /point 5 (§ 5)')}
+  ${s('g','✓')} aucun lancement refusé
+
+  ${s('p','À faire maintenant :')} armer /point 5.`],
+    '/orch sessions': ['Chaque session lancée : titre, modèle, heure, état, id — plus l’état en direct dans l’app.',
+`${s('h','### Sessions lancées par cette orchestration : 5')}
+
+  ${s('d','Session                         Modèle   Lancée  État')}
+  Corriger l’envoi de fichiers     ${s('o','Opus  ')}   09:56   ${s('g','lancée')}
+  Pied de page et pictogrammes     ${s('v','Sonnet')}   09:56   ${s('g','lancée')}
+  Schéma de la chaîne              ${s('v','Sonnet')}   11:05   ${s('g','lancée')}
+  Cartes en colonnes               ${s('v','Sonnet')}   17:57   ${s('g','lancée')}
+  Textes alternatifs, lot final    ${s('v','Sonnet')}   18:20   ${s('g','lancée')}
+
+  ${s('d','En direct (list_sessions) : 2 travaillent · 1 attend votre réponse · 2 finies')}`],
+    '/orch poids': ['La jauge du contexte, et à partir de combien de tours relancer coûte moins.',
+`${s('h','### Poids de cette session')}
+
+  ${s('p','██████████████')}${s('d','░░░░░░')} ${s('h','342 k')} / 500 k jetons
+  ${s('o','🟠 relancer à la fin de cette étape')}
+
+  Seuils : 200 k avertir · 300 k relancer · 500 k tout de suite.
+  Relancer devient rentable si l’étape demande encore
+  plus de ${s('h','13 tours')} ${s('d','(3,3 M ÷ (contexte − 100 k))')}.`],
+    '/orch conseil': ['Quel modèle pour quel travail, avec la mesure du banc.',
+`${s('h','### Quel modèle, quel effort')}
+
+  Lire, chercher, extraire en JSON   ${s('c','Haiku · medium')}   1,00 · low 0,50
+  Question courte                    ${s('c','Haiku · low')}      6/6, 0,001 $
+  Code, script, bug, rédaction       ${s('v','Sonnet · low')}     1,00 · high 0,92
+  Captures, images                   ${s('v','Sonnet · low')}     10/10 · Haiku 7–9
+  Décider, concevoir, orchestrer     ${s('o','Opus · medium')}    le jugement
+  Bloqué après 2 tentatives          ${s('o','Opus · high')}      sur accord
+
+  ${s('p','Monter le modèle avant l’effort')} : sur 11 tâches, un effort
+  plus haut n’a jamais corrigé un échec de modèle.`],
+    '/orch bilan': ['Votre mois face aux mesures de la v1 (≈ 25 s de lecture).',
+`${s('h','### Bilan des 30 derniers jours — 1 145 sessions, 4 720 $')}
+
+  ${s('d','Modèle    Sessions   Part du coût')}
+  ${s('o','Opus  ')}    136        ${s('o','██████████')}${s('d','░░')} 81 %
+  ${s('v','Sonnet')}    662        ${s('v','██')}${s('d','░░░░░░░░░░')} 19 %
+  ${s('c','Haiku ')}    312        ${s('d','░░░░░░░░░░░░')}  0 %
+
+  ${s('d','Ce que mesure le skill          Chez vous    v1')}
+  Orchestrations sans session      64 / 99      25 / 45
+  Lancements sans modèle           26 %         26 %
+  Sessions > 300 k jetons          125 (35 ✓)   59 (20 ✓)
+  Coût au-delà de 300 k            ${s('k','86 %')}         76 %`],
+    '/orch regles': ['Les règles du skill tenues ✓, manquées ✗ ou sans objet ·, avec la parade.',
+`${s('h','### Règles du skill tenues dans cette session : 4/5')}
+
+  ${s('g','✓')} des sessions lancées quand on en demande
+  ${s('g','✓')} un modèle explicite pour chaque session
+  ${s('g','✓')} l’annonce modèle · effort faite
+  ${s('k','✗')} un point armé par minuterie ${s('d','— /point 5 (§ 5)')}
+  ${s('d','·')} une note de reprise au-delà de 200 k
+  ${s('d','·')} 20 agents au plus
+  ${s('g','✓')} aucun lancement refusé`],
+    '/point 5': ['Un point condensé tout de suite, puis toutes les 5 minutes, armé par minuterie.',
+`${s('h','⏱ 10:41 · point n° 3 — Étape 2 sur 4 : corriger l’API')}
+
+  ${s('d','Fait / en cours')}
+  - 3 sessions sur 4 au travail ; la session « captures » a fini : 10/10
+  - tests de l’API : 41 sur 48 au vert
+
+  ${s('d','Échecs')}
+  - aucun
+
+  ${s('d','Reste (recalé sur le rythme observé)')}
+  - Étape 2 : ≈ 12 min (7 tests, ≈ 1,7 min chacun)
+  - Total : ≈ 35 min, fin vers 11:16
+
+  ${s('p','En clair :')} ça avance au rythme prévu, rien ne vous attend.`],
+  };
+  const cmds = document.querySelector('.cmds'), sortie = document.getElementById('t-sortie'), aide = document.getElementById('t-aide'), titre = document.getElementById('t-titre');
+  let anim;
+  function lancer(k) {
+    cmds.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', b.textContent === k));
+    titre.textContent = 'Claude Code — ' + k; aide.textContent = CMDS[k][0];
+    const html = `${s('p','›')} ${s('h', k)}\n\n` + CMDS[k][1];
+    clearInterval(anim);
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { sortie.innerHTML = html; return; }
+    const lignes = html.split('\n'); let i = 0; sortie.innerHTML = '';
+    anim = setInterval(() => { sortie.innerHTML = lignes.slice(0, ++i).join('\n'); if (i >= lignes.length) clearInterval(anim); }, 45);
+  }
+  Object.keys(CMDS).forEach((k) => { const b = document.createElement('button'); b.textContent = k; b.addEventListener('click', () => lancer(k)); cmds.append(b); });
+
+  // apparitions, compteurs, barres
+  const compte = (el) => { if (matchMedia('(prefers-reduced-motion: reduce)').matches) return; const fin = +el.dataset.compte, t0 = performance.now(); const f = (t) => { const p = Math.min(1, (t - t0) / 1200); el.textContent = Math.round(fin * (1 - (1 - p) ** 3)).toLocaleString('fr-FR'); if (p < 1) requestAnimationFrame(f); }; requestAnimationFrame(f); };
+  let termLance = false;
+  const io = new IntersectionObserver((es) => es.forEach((e) => {
+    if (!e.isIntersecting) return; const el = e.target; el.classList.add('vu');
+    el.querySelectorAll('[data-compte]').forEach(compte);
+    el.querySelectorAll('.piste i[data-w]').forEach((i) => i.style.width = i.dataset.w + '%');
+    if (el.classList.contains('term') && !termLance) { termLance = true; lancer('/orch'); }
+    io.unobserve(el);
+  }), { threshold: .2 });
+  document.querySelectorAll('.rv, #pts, .term').forEach((e) => io.observe(e));
+  if (!('IntersectionObserver' in window)) document.querySelectorAll('.rv').forEach((e) => e.classList.add('vu'));
+})();
+</script>
+</body>
+</html>
