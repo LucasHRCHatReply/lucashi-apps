@@ -545,6 +545,7 @@ footer a{color:var(--ink2)}
     <div class="tuile"><b>+1,5 s</b><span>au démarrage : 4,6 s au lieu de 3,1 s</span></div>
   </div>
   <p class="src">Même question à Claude Code en ligne de commande (Haiku 5.5), avec les serveurs MCP de ce Mac puis avec <code>--strict-mcp-config</code>, deux essais chacun, 30/10/2026. Jetons : 62 103 contre 58 302.</p>
+  <p class="src" style="margin-top:22px">v1.3.1, après un essai réel sur une orchestration de 20 sessions : le tableau sort en 0,3 s au lieu de plus de 120 s, une session qui fait encore tourner une minuterie ou une tâche planifiée n’est jamais proposée à l’archivage, et « tout ranger » écrit une note par session plus une note commune pour la session qui reprend le travail.</p>
   <div class="term rv" id="rg-term"><div class="barre-t"><i></i><i></i><i></i><span>Claude Code — /orch ranger</span></div><pre id="rg-sortie"></pre></div>
   <div class="rg-bas"><button type="button" id="rg-rejouer">Rejouer</button></div>
   <p class="src">Sortie réelle de <code>/orch ranger</code> sur l’orchestration de ce site (30/10/2026, Haiku 5.5 · medium, 42 s, 0,24 $), lignes raccourcies. Les chiffres du bilan sont ceux mesurés avant archivage sur les processus des sessions rangées.</p>
@@ -625,7 +626,7 @@ footer a{color:var(--ink2)}
   </div>
 </div></section>
 
-<footer><div class="wrap">Orchestrateur v1.3.0 du 30/10/2026 · <a href="../">Les apps de Lucas</a> · Gratuit, sans compte. Le script d’installation se lit en entier.</div></footer>
+<footer><div class="wrap">Orchestrateur v1.3.1 du 30/10/2026 · <a href="../">Les apps de Lucas</a> · Gratuit, sans compte. Le script d’installation se lit en entier.</div></footer>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
