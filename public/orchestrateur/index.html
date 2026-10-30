@@ -291,17 +291,35 @@ footer a{color:var(--ink2)}
 .toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:999px;font-weight:650;font-size:14.5px;opacity:0;transition:.3s;pointer-events:none;z-index:50;max-width:calc(100% - 32px);text-align:center}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}.points i{transform:none;opacity:1}}
+
+/* ranger */
+#ranger .tuiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:30px 0 8px}
+#ranger .tuile{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px}
+#ranger .tuile b{display:block;font-size:clamp(26px,3.4vw,36px);font-weight:750;letter-spacing:-.02em;color:var(--amber)}
+#ranger .tuile span{font-size:14px;color:var(--ink2)}
+#ranger .procs{display:flex;gap:3px;height:54px;margin:28px 0 8px;border-radius:12px;overflow:hidden}
+#ranger .procs i{display:block;height:100%;border-radius:4px;transform:scaleY(0);transform-origin:bottom;transition:transform .6s cubic-bezier(.2,.8,.2,1),opacity .4s}
+#ranger .procs.vu i{transform:scaleY(1)}
+#ranger .procs i.finie{background:var(--amber)} #ranger .procs i.attend{background:var(--opus)} #ranger .procs i.relire{background:var(--sonnet)} #ranger .procs i.active{background:var(--ok)}
+#ranger .procs.range i.finie{opacity:.12}
+#ranger .legende{display:flex;flex-wrap:wrap;gap:16px;font-size:13px;color:var(--ink2)}
+#ranger .legende i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+#ranger .rg-bas{display:flex;gap:10px;align-items:center;margin:16px 0 0;flex-wrap:wrap}
+#ranger .rg-bas button{appearance:none;font:600 14px var(--font);border:1px solid var(--amber);background:rgba(245,158,11,.08);color:var(--amber);padding:9px 16px;border-radius:12px;cursor:pointer}
+#ranger .rg-total{font:600 14px var(--mono);color:var(--ink2)}
+#ranger .term{margin-top:34px}
+#ranger .term pre{min-height:420px}
 </style>
 </head>
 <body>
 <nav class="nav" aria-label="Navigation"><div class="wrap">
   <a class="retour" href="../">‹ Apps de Lucas</a>
   <span class="t"><img src="../assets/orchestrateur-icon.svg" alt="">Orchestrateur</span>
-  <div class="liens"><a href="#calcul">Le calcul</a><a href="#banc">Le banc</a><a href="#commandes">Commandes</a><a class="cta" href="#installer">Installer</a></div>
+  <div class="liens"><a href="#calcul">Le calcul</a><a href="#banc">Le banc</a><a href="#commandes">Commandes</a><a href="#ranger">Ranger</a><a class="cta" href="#installer">Installer</a></div>
 </div></nav>
 
 <header class="hero wrap">
-  <span class="pill"><b>Skill Claude Code</b> · v1.2 · gratuit</span>
+  <span class="pill"><b>Skill Claude Code</b> · v1.3 · gratuit</span>
   <h1>Le même travail. <em>66 % moins cher.</em></h1>
   <p class="lead">Claude confie chaque tâche au modèle le moins cher qui la réussit : Haiku pour lire et extraire, Sonnet pour coder et vérifier, Opus seulement pour diriger. Chaque lancement s’annonce, avec la raison. Mesuré sur 206 essais et 786 sessions réelles.</p>
   <div class="btns">
@@ -507,7 +525,32 @@ footer a{color:var(--ink2)}
   <p class="src">Sorties réelles de <code>/orch</code>, <code>regles</code>, <code>bilan</code> et <code>conseil</code> (29–30/10/2026, titres des sessions remplacés, mise en forme du terminal). <code>/orch poids</code> à 342 k, la ligne « En direct » et <code>/point 5</code> sont des illustrations.</p>
 </div></section>
 
-<section class="alt" id="accueil"><div class="wrap">
+<section class="alt" id="ranger"><div class="wrap">
+  <p class="eyebrow">Nouveau dans la v1.3 · ranger</p>
+  <h2 class="rv">/orch ranger : fermer les vieilles sessions rend la mémoire du Mac.</h2>
+  <p class="lead rv">Une session finie n’est pas éteinte. Tant qu’elle n’est pas archivée, son processus reste en mémoire avec <b>tous ses outils chargés</b>, et chaque outil ajouté à Claude l’alourdit. Avec 22 sessions vivantes, ce Mac avait déjà écrit 5,9 Go de sa mémoire sur le disque : les compilations, les tests et les navigateurs que Claude lance ralentissent, chaque étape prend plus de temps, plus de points de suivi, donc plus de jetons.</p>
+  <div class="tuiles rv">
+    <div class="tuile"><b><span data-compte="22">22</span> sessions</b><span>vivantes en mémoire, sur 331 non archivées : <b style="display:inline;font-size:inherit;color:var(--ink)">4,47 Go</b></span></div>
+    <div class="tuile"><b>177 Mo</b><span>une session finie, au repos (médiane ; de 140 à 250 Mo)</span></div>
+    <div class="tuile"><b>2,52 Go</b><span>gardés par les 14 sessions déjà finies</span></div>
+    <div class="tuile"><b>5,9 Go</b><span>de mémoire déjà écrite sur le disque (swap), sur un Mac de 24 Go</span></div>
+  </div>
+  <div class="procs rv" id="rg-procs" role="img" aria-label="Les 22 processus Claude Code vivants, largeur proportionnelle à leur mémoire"></div>
+  <div class="legende"><span><i style="background:var(--amber)"></i>finie (archivable)</span><span><i style="background:var(--opus)"></i>attend une réponse</span><span><i style="background:var(--sonnet)"></i>à relire</span><span><i style="background:var(--ok)"></i>active</span></div>
+  <div class="rg-bas"><button type="button" id="rg-btn">Archiver les sessions finies</button><span class="rg-total" id="rg-total">4,47 Go</span></div>
+  <p class="src">Mémoire vive (RSS) de chaque processus <code>claude</code> et de ses enfants, relevée par <code>ps</code> sur ce Mac le 30/10/2026 à 16 h 20 ; état de chaque session lu dans l’app de bureau ; swap par <code>sysctl vm.swapusage</code> le même jour. L’archivage arrête le processus de la session.</p>
+  <div class="tuiles rv">
+    <div class="tuile"><b>+63 outils</b><span>chargés au démarrage par les serveurs d’outils (MCP) : 92 au lieu de 29</span></div>
+    <div class="tuile"><b>+3 800 jetons</b><span>relus au premier message de chaque session, avant tout travail</span></div>
+    <div class="tuile"><b>+1,5 s</b><span>au démarrage : 4,6 s au lieu de 3,1 s</span></div>
+  </div>
+  <p class="src">Même question à Claude Code en ligne de commande (Haiku 5.5), avec les serveurs MCP de ce Mac puis avec <code>--strict-mcp-config</code>, deux essais chacun, 30/10/2026. Jetons : 62 103 contre 58 302.</p>
+  <div class="term rv" id="rg-term"><div class="barre-t"><i></i><i></i><i></i><span>Claude Code — /orch ranger</span></div><pre id="rg-sortie"></pre></div>
+  <div class="rg-bas"><button type="button" id="rg-rejouer">Rejouer</button></div>
+  <p class="src">Sortie réelle de <code>/orch ranger</code> sur l’orchestration de ce site (30/10/2026, Haiku 5.5 · medium, 42 s, 0,24 $), lignes raccourcies. Les chiffres du bilan sont ceux mesurés avant archivage sur les processus des sessions rangées.</p>
+</div></section>
+
+<section id="accueil"><div class="wrap">
   <p class="eyebrow">À l’installation</p>
   <h2 class="rv">Claude vous écrit un mot d’accueil, sur vos chiffres.</h2>
   <p class="lead rv">L’installation relit vos 30 derniers jours de Claude Code, demande à Haiku (un appel, ≈ 0,01 $) un mot et trois conseils tirés de <b>vos</b> chiffres, et ouvre la page. <code>/orch accueil</code> la rouvre et Claude vous le redit dans la conversation.</p>
@@ -525,7 +568,7 @@ footer a{color:var(--ink2)}
   <p class="illu">Exemple réel, généré le 30/10/2026 sur le Mac de l’auteur : mot et conseils tels que Claude les a écrits. Les vôtres partent de vos chiffres.</p>
 </div></section>
 
-<section id="partage"><div class="wrap">
+<section class="alt" id="partage"><div class="wrap">
   <p class="eyebrow">Un skill qui s’améliore</p>
   <h2 class="rv">Vos chiffres l’affinent. Seulement si vous dites oui.</h2>
   <p class="lead rv">Une fois par mois, une fenêtre montre l’aperçu de ce qui partirait. Rien ne part sans « Partager ». Les chiffres de tous servent à proposer la version suivante, relue avant d’être publiée.</p>
@@ -541,7 +584,7 @@ footer a{color:var(--ink2)}
   </div>
 </div></section>
 
-<section class="alt" id="installer"><div class="wrap" style="text-align:center">
+<section id="installer"><div class="wrap" style="text-align:center">
   <p class="eyebrow">Installer · 2 minutes</p>
   <h2 class="rv">Collez un prompt. Claude fait le reste.</h2>
   <p class="lead rv" style="margin:0 auto">Trois façons, le même résultat : six skills, le déclenchement automatique, le rappel de poids, le partage mensuel avec accord, et la page d’accueil.</p>
@@ -571,7 +614,7 @@ footer a{color:var(--ink2)}
   <div class="btns" style="margin-top:22px"><span class="pill">Ensuite : « orchestre ce chantier : … » · <b>/orch</b> · <b>/orch conseil</b> · <b>/point 5</b></span></div>
 </div></section>
 
-<section><div class="wrap">
+<section class="alt"><div class="wrap">
   <p class="eyebrow">Honnête</p>
   <h2 class="rv" style="font-size:clamp(26px,3.6vw,38px)">Ce que les chiffres ne disent pas.</h2>
   <div class="limites">
@@ -582,7 +625,7 @@ footer a{color:var(--ink2)}
   </div>
 </div></section>
 
-<footer><div class="wrap">Orchestrateur v1.2.0 du 30/10/2026 · <a href="../">Les apps de Lucas</a> · Gratuit, sans compte. Le script d’installation se lit en entier.</div></footer>
+<footer><div class="wrap">Orchestrateur v1.3.0 du 30/10/2026 · <a href="../">Les apps de Lucas</a> · Gratuit, sans compte. Le script d’installation se lit en entier.</div></footer>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
@@ -798,10 +841,51 @@ footer a{color:var(--ink2)}
     if (!e.isIntersecting) return; const el = e.target; el.classList.add('vu');
     el.querySelectorAll('[data-compte]').forEach(compte);
     el.querySelectorAll('.piste i[data-w]').forEach((i) => i.style.width = i.dataset.w + '%');
-    if (el.classList.contains('term') && !termLance) { termLance = true; lancer('/orch'); }
+    if (el.classList.contains('term') && el.id !== 'rg-term' && !termLance) { termLance = true; lancer('/orch'); }
     io.unobserve(el);
   }), { threshold: .2 });
-  document.querySelectorAll('.rv, #pts, .term').forEach((e) => io.observe(e));
+  document.querySelectorAll('.rv, #pts, .term, #rg-procs').forEach((e) => io.observe(e));
+  // ranger : les processus, puis la démonstration
+  const RG = [[503, "active"], [320, "relire"], [315, "active"], [253, "finie"], [237, "finie"], [206, "attend"], [198, "finie"], [190, "finie"], [190, "finie"], [178, "attend"], [177, "finie"], [174, "relire"], [173, "finie"], [169, "finie"], [169, "finie"], [166, "finie"], [166, "finie"], [166, "finie"], [165, "finie"], [161, "finie"], [158, "attend"], [140, "active"]];
+  const procs = document.getElementById('rg-procs'), totalEl = document.getElementById('rg-total');
+  const totRG = RG.reduce((a, r) => a + r[0], 0), finRG = RG.filter((r) => r[1] === 'finie').reduce((a, r) => a + r[0], 0);
+  const go = (mo) => (mo / 1024).toFixed(2).replace('.', ',') + ' Go';
+  RG.forEach(([mo, e], i) => { const b = document.createElement('i'); b.className = e; b.style.flex = mo; b.style.transitionDelay = (i * 30) + 'ms'; b.title = `${mo} Mo · ${e}`; procs.append(b); });
+  document.getElementById('rg-btn').addEventListener('click', (ev) => { const r = procs.classList.toggle('range'); ev.target.textContent = r ? 'Rouvrir' : 'Archiver les sessions finies';
+    totalEl.textContent = r ? `${go(totRG)} → ${go(totRG - finRG)} · ${go(finRG)} rendus` : go(totRG); });
+  const RGD = [
+    [s('p','›') + ' ' + s('h','/orch ranger'), 400], ['', 0],
+    [s('h','## 🧹 Ranger l’orchestration — Orchestration Lucashi-apps'), 300],
+    ['Sessions de la famille   ' + s('h','26') + ' ouvertes — 1 travaille · 11 attendent · 2 à relire · 12 finies', 120],
+    ['Mémoire vive             ' + s('o','███░░░░░░░░░░░') + ' ' + s('h','4,89 Go') + ' sur 24 Go — 22 processus claude', 120],
+    ['Proposé                  🗄 12 à archiver · 📌 14 à garder · 🔁 1 à relancer', 120],
+    ['À rendre                 ' + s('g','886 Mo') + ' de mémoire vive · ' + s('g','3,0 M') + ' jetons de contexte', 300], ['', 0],
+    [s('d','Session                     État          Mémoire        Contexte   Commité  Tri'), 80],
+    ['Orchestrateur : ranger…    ' + s('g','🟢 travaille') + '   ' + s('o','█████') + ' 741 Mo   186 k      ' + s('g','✓') + '        📌 garder — cette session', 80],
+    ['Gestionnaire des apps      ' + s('o','🟠 attend') + '      · fermée       364 k      ' + s('g','✓') + '        📌 garder — « publie releve »', 80],
+    ['Paupière : avis de Lucas   ' + s('o','🟠 attend') + '      · fermée       264 k      ' + s('g','✓') + '        📌 garder — « publie paupiere »', 80],
+    ['MyMeetComp : la caméra     ' + s('g','✅ finie') + '       ' + s('o','███░░') + ' 248 Mo   293 k      ' + s('g','✓') + '        🗄 archiver — 11 commits notés', 80],
+    ['MyMeetComp : sa voix       ' + s('g','✅ finie') + '       ' + s('o','███░░') + ' 233 Mo   296 k      ' + s('g','✓') + '        🗄 archiver', 80],
+    ['Tadis 0.3.1 : la touche    ' + s('g','✅ finie') + '       ' + s('o','██░░░') + ' 207 Mo   112 k      ' + s('g','✓') + '        🗄 archiver', 80],
+    ['Tadis 0.2.0 : dictée       ' + s('g','✅ finie') + '       ' + s('o','██░░░') + ' 198 Mo   313 k      ' + s('g','✓') + '        🔁 relancer — repartir de la note', 80],
+    ['Ocruroeil 0.2 · Relais · Cliché · Glose · … ' + s('d','(8 autres finies, processus déjà fermés)'), 500], ['', 0],
+    [s('c','Claude') + ' — Archiver ces 12 sessions ? Une note de reprise est écrite pour chacune avant.', 900],
+    [s('p','›') + ' ' + s('h','oui'), 700], ['', 0],
+    [s('d','Notes de reprise : ce qui est fait (avec les commits), ce qui reste, comment reprendre'), 200],
+    ...['MyMeetComp : la caméra', 'MyMeetComp : sa voix', 'Tadis 0.3.1', 'Tadis 0.2.0', 'Relief', 'Relais', 'Cliché V0', 'Site des apps', 'Ocruroeil 0.2', 'Tadis V0', 'Glose', 'Cliché défilement'].map((t) => [s('g','✓') + ' ' + t.padEnd(24) + s('d','→ Projets/…/Journal/Sessions/2026-10-30-reprise-….md') + '   ' + s('g','archivée'), 110]), ['', 0],
+    [s('h','## ✨ Orchestration rangée'), 300],
+    ['Sessions archivées       ' + s('h','12') + ' sur 12', 150],
+    ['Processus claude         22 → ' + s('h','18') + '  · 4 fermés', 150],
+    ['Mémoire vive rendue      ' + s('g','████████') + ' ' + s('h','886 Mo'), 150],
+    ['Contexte plus jamais relu ' + s('h','3,0 M jetons') + '  · ces sessions avaient coûté 81,75 $', 150],
+    ['Notes de reprise         ' + s('h','12') + ', une par session, dans le coffre du projet', 0]];
+  const rgS = document.getElementById('rg-sortie'); let rgT;
+  function rgJouer() { clearTimeout(rgT);
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { rgS.innerHTML = RGD.map((l) => l[0]).join('\n'); return; }
+    let i = 0; rgS.innerHTML = ''; const pas = () => { rgS.innerHTML = RGD.slice(0, ++i).map((l) => l[0]).join('\n'); rgS.scrollTop = rgS.scrollHeight; if (i < RGD.length) rgT = setTimeout(pas, RGD[i - 1][1] || 40); }; pas(); }
+  document.getElementById('rg-rejouer').addEventListener('click', rgJouer);
+  new IntersectionObserver((es, o) => es.forEach((e) => { if (e.isIntersecting) { rgJouer(); o.disconnect(); } }), { threshold: .3 }).observe(document.getElementById('rg-term'));
+
   if (!('IntersectionObserver' in window)) document.querySelectorAll('.rv').forEach((e) => e.classList.add('vu'));
 })();
 </script>
