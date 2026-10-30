@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Orchestrateur — skill Claude Code</title>
-<meta name="description" content="Un skill Claude Code qui fait travailler Claude en équipe : une session dirige, de vraies sessions exécutent, chacune avec le modèle le moins cher qui suffit. Réglé sur 785 sessions et 206 essais mesurés.">
+<meta name="description" content="Un skill Claude Code qui confie chaque tâche au modèle le moins cher qui la réussit : −66 % de coût sur 11 tâches mesurées, à note égale, −20 % sur une vraie facture de dix jours.">
 <meta name="robots" content="noindex">
 <meta name="color-scheme" content="dark light">
 <meta property="og:title" content="Orchestrateur — Claude fait travailler une équipe">
@@ -240,6 +240,52 @@ h2{font-size:clamp(32px,5vw,56px);line-height:1.04;letter-spacing:-.035em;font-w
 footer{padding:40px 0 60px;color:var(--ink3);font-size:13px;text-align:center;border-top:1px solid var(--line)}
 footer a{color:var(--ink2)}
 
+/* calcul */
+.cmp{margin-top:36px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px}
+.barres2{display:grid;gap:14px}
+.barres2 .r{display:grid;grid-template-columns:150px 1fr 90px;gap:14px;align-items:center}
+@media (max-width:640px){.barres2 .r{grid-template-columns:1fr 80px}.barres2 .r .nm{grid-column:1/-1}}
+.barres2 .nm{font-weight:700}.barres2 .nm small{display:block;color:var(--ink3);font-weight:500;font-size:12.5px}
+.stack{height:34px;border-radius:10px;background:var(--line);display:flex;overflow:hidden}
+.stack i{display:block;height:100%;width:0;background:var(--c);transition:width 1.1s cubic-bezier(.2,.8,.2,1)}
+.barres2 .tot{font-weight:800;font-size:20px;text-align:right;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.gros{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:22px}
+@media (max-width:700px){.gros{grid-template-columns:1fr}}
+.gros div{background:var(--bg2);border-radius:16px;padding:16px 18px}
+.gros b{display:block;font-size:34px;letter-spacing:-.04em;line-height:1.05;font-variant-numeric:tabular-nums}
+.gros span{font-size:13.5px;color:var(--ink2)}
+.gros .bon b{color:var(--ok)}
+.lignes-t{margin-top:22px;display:grid;gap:6px}
+.lt{display:grid;grid-template-columns:1.3fr 1fr 22px 1.3fr;gap:10px;align-items:center;font-size:14px;padding:9px 12px;border-radius:12px;background:var(--bg2);font-variant-numeric:tabular-nums}
+.lt .f{color:var(--ink3);text-align:center}
+.lt small{color:var(--ink3);font-size:12.5px;margin-left:6px}
+@media (max-width:640px){.lt{grid-template-columns:1fr 1fr;}.lt .t{grid-column:1/-1;font-weight:650}.lt .f{display:none}.lt small{display:block;margin:4px 0 0}}
+.repart{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+/* facture rejouée */
+.cascade{margin-top:36px;display:grid;gap:12px}
+.cascade .r{display:grid;grid-template-columns:260px 1fr 110px;gap:14px;align-items:center}
+@media (max-width:760px){.cascade .r{grid-template-columns:1fr 90px}.cascade .r .nm{grid-column:1/-1}}
+.cascade .nm{font-weight:650}.cascade .nm small{display:block;color:var(--ink3);font-weight:500;font-size:12.5px}
+.cascade .piste{height:30px;border-radius:9px;background:var(--line);position:relative;overflow:hidden}
+.cascade .piste i{position:absolute;top:0;bottom:0;left:var(--g,0%);width:0;background:var(--c);border-radius:9px;transition:width 1s cubic-bezier(.2,.8,.2,1)}
+.cascade .v{font-weight:800;text-align:right;font-size:18px;font-variant-numeric:tabular-nums}
+.cascade .v.moins{color:var(--ok)}
+/* annonce */
+.chat{margin-top:34px;max-width:780px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px;display:grid;gap:12px}
+.bulle{border-radius:16px;padding:12px 16px;font-size:15px;max-width:92%}
+.bulle.u{justify-self:end;background:var(--ink);color:var(--bg)}
+.bulle.c{background:var(--bg2)}
+.bulle.c .an{font-family:var(--mono);font-size:13px;line-height:1.75;display:block}
+.bulle.c .an b{color:var(--amber)}
+.trois{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:36px}
+@media (max-width:860px){.trois{grid-template-columns:1fr}}
+.trois>div{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px}
+.trois .ic{font-size:28px}
+.trois h3{font-size:19px;letter-spacing:-.02em;margin:10px 0 8px}
+.trois p{color:var(--ink2);font-size:14.5px}
+.trois .chiffre{display:block;font-size:40px;font-weight:800;letter-spacing:-.04em;margin-top:14px;line-height:1}
+.trois .chiffre+span{font-size:13px;color:var(--ink3)}
+
 .rv{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.2,1)}
 .rv.vu{opacity:1;transform:none}
 .toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:999px;font-weight:650;font-size:14.5px;opacity:0;transition:.3s;pointer-events:none;z-index:50;max-width:calc(100% - 32px);text-align:center}
@@ -251,18 +297,26 @@ footer a{color:var(--ink2)}
 <nav class="nav" aria-label="Navigation"><div class="wrap">
   <a class="retour" href="../">‹ Apps de Lucas</a>
   <span class="t"><img src="../assets/orchestrateur-icon.svg" alt="">Orchestrateur</span>
-  <div class="liens"><a href="#banc">Le banc</a><a href="#commandes">Commandes</a><a href="#partage">Partage</a><a class="cta" href="#installer">Installer</a></div>
+  <div class="liens"><a href="#calcul">Le calcul</a><a href="#banc">Le banc</a><a href="#commandes">Commandes</a><a class="cta" href="#installer">Installer</a></div>
 </div></nav>
 
 <header class="hero wrap">
-  <span class="pill"><b>Skill Claude Code</b> · v1.1 · gratuit</span>
-  <h1>Claude fait travailler <em>une équipe.</em></h1>
-  <p class="lead">Une session dirige, de vraies sessions exécutent, chacune avec le modèle le moins cher qui suffit. Réglé sur 785 sessions réelles et 206 essais Haiku, Sonnet et Opus 5.5.</p>
+  <span class="pill"><b>Skill Claude Code</b> · v1.2 · gratuit</span>
+  <h1>Le même travail. <em>66 % moins cher.</em></h1>
+  <p class="lead">Claude confie chaque tâche au modèle le moins cher qui la réussit : Haiku pour lire et extraire, Sonnet pour coder et vérifier, Opus seulement pour diriger. Chaque lancement s’annonce, avec la raison. Mesuré sur 206 essais et 786 sessions réelles.</p>
   <div class="btns">
     <button class="btn p" data-copier="prompt">📋 Copier le prompt <small>à coller dans Claude</small></button>
-    <a class="btn" href="orchestrateur.zip" download>⬇︎ Télécharger <small>.zip · 30 fichiers</small></a>
+    <a class="btn" href="orchestrateur.zip" download>⬇︎ Télécharger <small>.zip</small></a>
   </div>
   <p class="note">macOS · Claude Code (de préférence l’app de bureau) · Node 18+</p>
+
+  <div class="kpis">
+    <div class="kpi rv"><b style="color:var(--ok)">−<span data-compte="66" style="display:inline;margin:0;color:inherit;font-size:inherit">66</span> %</b><span title="11 tâches du banc : 1,06 $ tout sur Opus · medium, 0,36 $ réparties par le skill">de coût sur les 11 tâches du banc, face à « tout sur Opus »</span></div>
+    <div class="kpi rv" style="transition-delay:.08s"><b style="white-space:nowrap">0,96 <small style="font-size:.4em;color:var(--ink3);letter-spacing:0">vs 0,94</small></b><span title="Note moyenne sur 1, critère objectif par tâche">note moyenne : pas moins bien, un peu mieux</span></div>
+    <div class="kpi rv" style="transition-delay:.16s"><b style="color:var(--ok)">−<span data-compte="33" style="display:inline;margin:0;color:inherit;font-size:inherit">33</span> %</b><span title="203 s tout sur Opus · medium, 137 s réparties">de temps d’attente, tâche par tâche</span></div>
+    <div class="kpi rv" style="transition-delay:.24s"><b style="color:var(--ok)">−<span data-compte="351" style="display:inline;margin:0;color:inherit;font-size:inherit">351</span> $</b><span title="1 759 $ → 1 408 $, prix publics, outils/simuler.mjs">sur dix jours de vraie facture, rejouée avec deux règles</span></div>
+  </div>
+  <p class="src">Sources : banc du 20/10/2026 (206 essais, prix publics par appel) ; transcriptions Claude Code du 20 au 29/10/2026 rejouées par <code>outils/simuler.mjs</code>. Coûts recalculés aux prix publics, pas une facture d’abonnement.</p>
 
   <div class="scene rv" aria-label="Schéma : l’orchestratrice lance quatre sessions, chacune avec son modèle">
     <svg viewBox="0 0 900 330" role="img">
@@ -286,15 +340,64 @@ footer a{color:var(--ink2)}
       <g class="pulse"><text class="s" x="600" y="98">· point toutes les 5 min</text><text class="s" x="600" y="118">· relance à 300 k jetons</text></g>
     </svg>
   </div>
-
-  <div class="kpis">
-    <div class="kpi rv"><b data-compte="785">785</b><span>sessions relues pour régler la v1</span></div>
-    <div class="kpi rv" style="transition-delay:.08s"><b data-compte="206">206</b><span>essais modèle × effort, notés</span></div>
-    <div class="kpi rv" style="transition-delay:.16s"><b>≈ <span data-compte="15" style="display:inline;margin:0;color:inherit;font-size:inherit">15</span>×</b><span>moins cher : Haiku là où il suffit</span></div>
-    <div class="kpi rv" style="transition-delay:.24s"><b><span data-compte="76" style="display:inline;margin:0;color:inherit;font-size:inherit">76</span> %</b><span>du coût dépensé au-delà de 300 k jetons</span></div>
-  </div>
-  <p class="src">Sources : transcriptions Claude Code du 20 au 29/10/2026 (<code>outils/extraire.mjs</code>), banc du 20/10/2026. Coûts recalculés aux prix publics, pas une facture.</p>
 </header>
+
+<section class="alt" id="calcul"><div class="wrap">
+  <p class="eyebrow">Le calcul, tâche par tâche</p>
+  <h2 class="rv">Tout donner à Opus, ou laisser le skill répartir.</h2>
+  <p class="lead rv">Les onze tâches du banc, chacune notée par un critère objectif (tests, comptage, référence). À gauche, tout part sur Opus · medium. À droite, chaque tâche part là où le skill l’envoie. Aucune ne part sur Opus : il n’a battu Sonnet sur aucune.</p>
+  <div class="cmp rv">
+    <div class="barres2">
+      <div class="r"><span class="nm">Tout sur Opus<small>Opus · medium, 11 tâches</small></span><div class="stack"><i style="--c:var(--opus)" data-w="100"></i></div><span class="tot" id="tot-o"></span></div>
+      <div class="r"><span class="nm">Avec le skill<small id="rep-s"></small></span><div class="stack" id="stack-s"></div><span class="tot" id="tot-s" style="color:var(--ok)"></span></div>
+    </div>
+    <div class="gros">
+      <div class="bon"><b id="g-cout"></b><span>de coût, à travail égal</span></div>
+      <div class="bon"><b id="g-note"></b><span>note moyenne (Opus : <span id="g-note-o"></span>)</span></div>
+      <div class="bon"><b id="g-temps"></b><span>de temps : <span id="g-t"></span></span></div>
+    </div>
+    <div class="lignes-t" id="lignes-t"></div>
+    <p class="src">Coût et note moyens par appel du banc (1 à 3 essais par case ; prix publics, ≈ 11,7 k jetons de socle Claude Code inclus). Les montants sont petits parce que les appels du banc le sont : c’est le rapport qui compte, et il se retrouve sur une vraie facture, plus bas.</p>
+  </div>
+</div></section>
+
+<section id="facture"><div class="wrap">
+  <p class="eyebrow">Sur une vraie facture</p>
+  <h2 class="rv">Rejouée sur 786 sessions : 351 $ de moins en dix jours.</h2>
+  <p class="lead rv">Chaque réponse facturée du 20 au 29/10 (conversations et agents), recalculée avec les mêmes jetons sous deux règles du skill. Hypothèse prudente : on ne compte ni les tâches que l’orchestratrice aurait confiées à Haiku, ni les réponses plus courtes d’une session neuve.</p>
+  <div class="cascade">
+    <div class="r rv"><span class="nm">Facture réelle<small>786 sessions, dont 44 orchestrations</small></span><div class="piste"><i style="--c:var(--ink3)" data-w="100"></i></div><span class="v">1 759 $</span></div>
+    <div class="r rv"><span class="nm">Opus seulement pour diriger<small>270 $ d’Opus hors orchestration, payés au prix de Sonnet</small></span><div class="piste"><i style="--c:var(--ok);--g:92.3%" data-w="7.7"></i></div><span class="v moins">− 135 $</span></div>
+    <div class="r rv"><span class="nm">Relance à 300 k avec une note<small>63 relances ; le contexte relu retombe à 100 k</small></span><div class="piste"><i style="--c:var(--ok);--g:79.8%" data-w="12.5"></i></div><span class="v moins">− 221 $</span></div>
+    <div class="r rv"><span class="nm">Les deux règles<small>soit − 20 %</small></span><div class="piste"><i style="--c:var(--amber)" data-w="80"></i></div><span class="v" style="color:var(--amber)">1 408 $</span></div>
+  </div>
+  <p class="src">Calcul : <code>node outils/simuler.mjs --depuis 2026-10-20 --jusqu 2026-10-29</code>, prix publics de l’API. Les deux règles se recoupent : − 351 $ ensemble, pas − 356 $. Au même rythme, ≈ 1 050 $ par mois (extrapolation, pas une mesure).</p>
+</div></section>
+
+<section class="alt" id="mieux"><div class="wrap">
+  <p class="eyebrow">Plus vite, et vérifié</p>
+  <h2 class="rv">Une équipe qui avance en même temps, et rien n’est « fini » sans preuve.</h2>
+  <div class="trois">
+    <div class="rv"><span class="ic">⚡️</span><h3>En parallèle</h3><p>3 à 5 vraies sessions à la fois, chacune dans son dossier de travail (worktree) : elles ne se marchent pas dessus. Et chacune tourne sur un modèle plus rapide.</p><span class="chiffre">−33 %</span><span>de temps par tâche au banc · Sonnet low 1,2 à 6 × plus rapide que high</span></div>
+    <div class="rv" style="transition-delay:.08s"><span class="ic">🔎</span><h3>Vérifié avant d’être annoncé</h3><p>Chaque session part avec un critère de fin (tests verts, comptage, capture). L’orchestratrice le contrôle et relance la session si le rendu n’y est pas.</p><span class="chiffre">476</span><span>messages de suivi envoyés aux sessions filles en dix jours</span></div>
+    <div class="rv" style="transition-delay:.16s"><span class="ic">📣</span><h3>Annoncé, avec la raison</h3><p>Avant chaque lancement, une ligne : modèle, effort, et pourquoi. Avant le skill, c’était fait une fois sur quatre, et un lancement sur quatre partait sans modèle.</p><span class="chiffre">24 % → auto</span><span>annonces faites avant · un hook la rappelle si elle manque</span></div>
+  </div>
+</div></section>
+
+<section id="auto"><div class="wrap">
+  <p class="eyebrow">Nouveau dans la v1.2 · automatique</p>
+  <h2 class="rv">Vous demandez de lancer. Il annonce qui fait quoi, et pourquoi.</h2>
+  <p class="lead rv">Pas besoin de dire « orchestre » : dès qu’un message demande de lancer, déléguer ou répartir du travail, le skill s’applique de lui-même. Chaque session ou agent lancé s’annonce en une ligne dans la conversation. Si la ligne manque, ou le modèle, un hook le rappelle aussitôt.</p>
+  <div class="chat rv">
+    <div class="bulle u">ok lance les trois améliorations</div>
+    <div class="bulle c">Je lance les trois en parallèle :
+      <span class="an">→ Envoi de fichiers — <b>Sonnet · medium</b> — parce que plusieurs fichiers, vérifié par <code>make test</code><br>→ Écarts sur les captures — <b>Sonnet · low</b> — parce que Haiku rate 1 à 3 écarts sur 10<br>→ Tri des journaux d’erreur — <b>Haiku · medium</b> — parce que lecture pure : même note, 1/15 du prix</span>
+    </div>
+    <div class="bulle c" style="font-size:14px;color:var(--ink2)">Je relis chaque rendu contre son critère avant de vous dire que c’est fait.</div>
+  </div>
+  <p class="illu" style="text-align:left">Illustration. Le déclencheur : <code>hooks/aiguillage.mjs</code>, réglé sur les messages des 7 derniers jours (il réagit à 1 message sur 9 : ceux qui demandent de lancer du travail).</p>
+</div></section>
+
 
 <section class="alt" id="probleme"><div class="wrap">
   <p class="eyebrow">Le défaut n° 1</p>
@@ -395,7 +498,7 @@ footer a{color:var(--ink2)}
 </div></section>
 
 <section id="commandes"><div class="wrap">
-  <p class="eyebrow">Nouveau dans la v1.1</p>
+  <p class="eyebrow">Le tableau de bord</p>
   <h2 class="rv">/orch : le tableau de bord de l’orchestration en cours.</h2>
   <p class="lead rv">Combien de sessions tournent, avec quel modèle, ce qu’elles coûtent, le poids du contexte, et les règles tenues ou manquées. Lu dans la conversation elle-même : rien n’est envoyé.</p>
   <div class="cmds" role="group" aria-label="Choisir une commande"></div>
@@ -441,7 +544,7 @@ footer a{color:var(--ink2)}
 <section class="alt" id="installer"><div class="wrap" style="text-align:center">
   <p class="eyebrow">Installer · 2 minutes</p>
   <h2 class="rv">Collez un prompt. Claude fait le reste.</h2>
-  <p class="lead rv" style="margin:0 auto">Trois façons, le même résultat : six skills, le rappel de poids, le partage mensuel avec accord, et la page d’accueil.</p>
+  <p class="lead rv" style="margin:0 auto">Trois façons, le même résultat : six skills, le déclenchement automatique, le rappel de poids, le partage mensuel avec accord, et la page d’accueil.</p>
   <div class="onglets" role="tablist">
     <button role="tab" aria-selected="true" data-o="prompt">Prompt à coller</button>
     <button role="tab" aria-selected="false" data-o="zip">Fichier .zip</button>
@@ -479,7 +582,7 @@ footer a{color:var(--ink2)}
   </div>
 </div></section>
 
-<footer><div class="wrap">Orchestrateur v1.1.0 du 30/10/2026 · <a href="../">Les apps de Lucas</a> · Gratuit, sans compte. Le script d’installation se lit en entier.</div></footer>
+<footer><div class="wrap">Orchestrateur v1.2.0 du 30/10/2026 · <a href="../">Les apps de Lucas</a> · Gratuit, sans compte. Le script d’installation se lit en entier.</div></footer>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
@@ -547,6 +650,31 @@ footer a{color:var(--ink2)}
   }
   BANC.forEach(([t, d], i) => { const b = document.createElement('button'); b.textContent = t; b.title = d; b.addEventListener('click', () => montrer(i)); taches.append(b); });
   montrer(0);
+
+  // calcul : tout Opus · medium (indice 8) contre le choix du skill
+  const CHOIX = [3, 3, 1, 1, 3, 4, 3, 1, 1, 3, 0];
+  const T_OPUS = [38, 24, 11, 7, 19, 16, 14, 16, 13, 39, 6], T_CHOIX = [27, 19, 9, 6, 8, 10, 6, 14, 10, 22, 6];
+  const NOMS = ['Haiku · low', 'Haiku · medium', 'Haiku · high', 'Sonnet · low', 'Sonnet · medium', 'Sonnet · high', 'Sonnet · xhigh', 'Opus · low', 'Opus · medium'];
+  const coulDe = (k) => k < 3 ? 'var(--haiku)' : k < 7 ? 'var(--sonnet)' : 'var(--opus)';
+  const somme = (a) => a.reduce((x, y) => x + y, 0);
+  const cO = somme(BANC.map((b) => b[3][8])), cS = somme(BANC.map((b, i) => b[3][CHOIX[i]]));
+  const nO = somme(BANC.map((b) => b[2][8])) / BANC.length, nS = somme(BANC.map((b, i) => b[2][CHOIX[i]])) / BANC.length;
+  const virg = (x, d = 2) => x.toFixed(d).replace('.', ',');
+  document.getElementById('tot-o').textContent = virg(cO) + ' $';
+  document.getElementById('tot-s').textContent = virg(cS) + ' $';
+  const cH = somme(BANC.map((b, i) => CHOIX[i] < 3 ? b[3][CHOIX[i]] : 0));
+  const nbH = CHOIX.filter((k) => k < 3).length;
+  document.getElementById('rep-s').textContent = `${nbH} tâches sur Haiku · ${CHOIX.length - nbH} sur Sonnet · 0 sur Opus`;
+  document.getElementById('stack-s').innerHTML = `<i style="--c:var(--haiku)" data-w="${100 * cH / cO}" title="Haiku : ${virg(cH, 3)} $"></i><i style="--c:var(--sonnet)" data-w="${100 * (cS - cH) / cO}" title="Sonnet : ${virg(cS - cH, 3)} $"></i>`;
+  document.getElementById('g-cout').textContent = `−${Math.round(100 * (1 - cS / cO))} %`;
+  document.getElementById('g-note').textContent = virg(nS);
+  document.getElementById('g-note-o').textContent = virg(nO);
+  document.getElementById('g-temps').textContent = `−${Math.round(100 * (1 - somme(T_CHOIX) / somme(T_OPUS)))} %`;
+  document.getElementById('g-t').textContent = `${somme(T_CHOIX)} s au lieu de ${somme(T_OPUS)} s`;
+  document.getElementById('lignes-t').innerHTML = BANC.map((b, i) => { const k = CHOIX[i];
+    return `<div class="lt"><span class="t">${b[0]}</span><span><span class="chip" style="--c:var(--opus)">Opus · medium</span><small>${prix(b[3][8])} · ${virg(b[2][8])}</small></span><span class="f">→</span><span><span class="chip" style="--c:${coulDe(k)}">${NOMS[k]}</span><small>${prix(b[3][k])} · ${virg(b[2][k])}</small></span></div>`; }).join('');
+  const vu = new IntersectionObserver((es) => es.forEach((e) => { if (!e.isIntersecting) return; e.target.querySelectorAll('i[data-w]').forEach((i) => i.style.width = i.dataset.w + '%'); vu.unobserve(e.target); }), { threshold: .3 });
+  document.querySelectorAll('.cmp, .cascade').forEach((x) => vu.observe(x));
 
   // jauge de poids
   const ctx = document.getElementById('ctx'), cur = document.getElementById('cur');

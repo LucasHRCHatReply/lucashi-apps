@@ -520,9 +520,9 @@
       "couleur": "#F59E0B",
       "icone": "assets/orchestrateur-icon.svg",
       "page": "orchestrateur/",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "telechargement": "orchestrateur/orchestrateur.zip",
-      "description": "Un skill Claude Code réglé sur 785 sessions et 206 essais Haiku, Sonnet et Opus 5.5 : il découpe, lance de vraies sessions avec le modèle le moins cher qui suffit, suit, relance les sessions trop lourdes. /orch donne le tableau de bord.",
+      "description": "Un skill Claude Code qui confie chaque tâche au modèle le moins cher qui la réussit : −66 % de coût sur 11 tâches mesurées à note égale, −20 % sur dix jours de vraie facture. Il se déclenche seul et annonce chaque lancement avec sa raison.",
       "source_page": null
     }
   ]
