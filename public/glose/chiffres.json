@@ -1,0 +1,86 @@
+{
+  "_lisez_moi": "Source unique des chiffres de la page de vente et de la vidéo. Chaque chiffre porte sa source. Mis à jour par l'orchestratrice à chaque préversion.",
+  "version": {
+    "valeur": "1.0.0",
+    "source": "App/Version.swift (build 11)"
+  },
+  "recherche_mots_p95_ms": {
+    "valeur": 6.8,
+    "unite": "ms",
+    "contexte": "5 000 notes, 54 requêtes",
+    "source": "Glose --autotest, MESURE recherche, 0.8.0 (6,8 ms) ; 7,1 ms mesuré sur la 1.0.0, 02/11/2026, 1.0.0"
+  },
+  "recherche_sens_top3": {
+    "valeur": "23/30",
+    "pct": 76.7,
+    "contexte": "30 questions formulées sans les mots de la note (mots + sens mêlés)",
+    "source": "glose-banc sens, build/banc-sens.json, 02/11/2026, 1.0.0"
+  },
+  "recherche_sens_p95_ms": {
+    "valeur": 8.6,
+    "unite": "ms",
+    "source": "glose-banc sens (mêlé), 02/11/2026, 1.0.0"
+  },
+  "corpus_identique": {
+    "valeur": "76/76",
+    "contexte": "fichiers Obsidian réenregistrés, identiques à l'octet",
+    "source": "glose-banc corpus Tests/CoreTests/Corpus"
+  },
+  "corpus_obsidian_nuit": {
+    "valeur": "60/60",
+    "contexte": "50 cas limites + 10 notes réelles",
+    "source": "Tests-nuit/obsidian.md"
+  },
+  "frappe_mediane_ms": {
+    "valeur": 9.8,
+    "unite": "ms",
+    "contexte": "fichier de 10 000 lignes, fil principal",
+    "source": "glose-banc fluidite, 0.8.0 (9,8 ms) ; 9,3 ms mesuré sur la 1.0.0, 02/11/2026, 1.0.0"
+  },
+  "synchro_scenarios": {
+    "valeur": "19/19",
+    "contexte": "coupures, conflits, 1 000 notes, noms accentués et emoji, serveur tué en rafale, octet par octet",
+    "source": "make bout-en-bout, Tests/bout-en-bout/robustesse.mjs (plus 8/8 étapes de bout-en-bout.mjs), 02/11/2026, 1.0.0"
+  },
+  "synchro_1000_notes_s": {
+    "valeur": 8.6,
+    "unite": "s",
+    "source": "robustesse.mjs"
+  },
+  "tests_coeur": {
+    "valeur": 240,
+    "source": "swift test, 0.8.0 (240) ; 245 sur la 1.0.0 avec les tests du collage et du sens, 02/11/2026, 1.0.0"
+  },
+  "autotest": {
+    "valeur": "348/348",
+    "source": "Glose --autotest, 02/11/2026, 1.0.0"
+  },
+  "cas_testes_par_agents": {
+    "valeur": 288,
+    "contexte": "obsidian 60, web 40, recherche 58, synchro 55, gros fichiers 75",
+    "source": "~/pboard/Projets/Glose/Tests-nuit/*.md (hors stress test et parcours)"
+  },
+  "parcours_simules": {
+    "valeur": "5/5",
+    "contexte": "profils joués par des agents, parcours allés au bout sur la 0.8.0, 0 plantage : tests simulés, pas des avis d'utilisateurs",
+    "source": "Tests-nuit/testeur-*-0-8-0.md"
+  },
+  "lecons": {
+    "valeur": 12,
+    "source": "App/AutoTestAccompagnement.swift"
+  },
+  "didacticiel_etapes": {
+    "valeur": 7,
+    "source": "UI/GloseTutorial.swift"
+  },
+  "robustesse": {
+    "valeur": "19/19",
+    "source": "Tests/bout-en-bout/robustesse.mjs, 02/11/2026, 1.0.0"
+  },
+  "note_50_mo_ouverture_s": {
+    "valeur": 0.7,
+    "unite": "s",
+    "contexte": "note de 50 Mo, mode simple ; 10,7 s avant correction",
+    "source": "Tests-nuit/defauts.md D18 (688 ms), parcours debug 02/11"
+  }
+}

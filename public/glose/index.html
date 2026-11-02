@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Glose — notes en marge de l'écran</title>
+<meta name="description" content="Glose : un panneau de notes au bord droit de l'écran. Markdown compatible Obsidian, vos fichiers restent la vérité, synchro privée avec le téléphone, recherche par mots et par le sens sans envoyer vos notes nulle part.">
+<meta name="robots" content="noindex">
+<meta name="color-scheme" content="dark light">
+<link rel="icon" href="icone.png">
+<style>
+:root{
+  --bg:#0a0e17; --bg2:#101826; --card:#161f2e; --line:rgba(236,255,255,.12); --ink:#f3f1fa; --ink2:#aeb3c4; --ink3:#7d8396;
+  --lav:#a47fe6; --lav2:#e6dafb; --orch:#8a4fd0; --deep:#4a3482; --ok:#6fe0a3; --warn:#e8c46a;
+  --halo:rgba(138,79,208,.30); --shadow:0 40px 80px -30px rgba(0,0,0,.7);
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,monospace; --r:22px;
+}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){
+  --bg:#f7f5fb; --bg2:#eeeaf6; --card:#ffffff; --line:rgba(40,30,70,.12); --ink:#1b1626; --ink2:#554f68; --ink3:#857f98;
+  --lav:#7b4fc8; --lav2:#4a3482; --orch:#7b4fc8; --deep:#e6dafb; --ok:#1f8a4c; --warn:#8a6d00;
+  --halo:rgba(138,79,208,.16); --shadow:0 40px 80px -34px rgba(60,40,110,.35);
+}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 var(--font);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:var(--lav2)}
+.wrap{max-width:1120px;margin:0 auto;padding:0 max(20px,env(safe-area-inset-left))}
+nav{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 78%,transparent);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;gap:20px;align-items:center;height:52px;font-size:13px;overflow-x:auto;white-space:nowrap;scrollbar-width:none}
+nav b{display:flex;align-items:center;gap:9px;font-size:16px;margin-right:auto;letter-spacing:-.01em}
+nav b img{width:24px;height:24px;border-radius:6px}
+nav a{color:var(--ink2);text-decoration:none}
+nav a:hover{color:var(--ink)}
+section{padding:120px 0;position:relative}
+section.alt{background:var(--bg2)}
+.eyebrow{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--lav)}
+h1{font-size:clamp(46px,8.5vw,92px);line-height:1.02;letter-spacing:-.035em;margin:.15em 0 .2em;font-weight:700}
+h2{font-size:clamp(32px,5vw,56px);line-height:1.06;letter-spacing:-.025em;margin:.15em 0 .3em;font-weight:700}
+h3{font-size:21px;margin:0 0 .3em;letter-spacing:-.01em}
+.lead{font-size:clamp(19px,2.4vw,25px);color:var(--ink2);max-width:760px;line-height:1.4}
+.grad{background:linear-gradient(120deg,var(--lav2),var(--lav) 55%,var(--orch));-webkit-background-clip:text;background-clip:text;color:transparent}
+/* héros */
+.hero{text-align:center;padding:84px 0 40px;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:-10% -10% auto -10%;height:90%;background:radial-gradient(60% 60% at 50% 0%,var(--halo),transparent 70%);pointer-events:none}
+.hero .icon{width:116px;height:116px;border-radius:26px;box-shadow:0 24px 50px -10px rgba(138,79,208,.55),0 0 0 1px var(--line);margin:0 auto 14px;display:block}
+.hero .lead{margin:0 auto}
+.tag{display:inline-block;font-size:12px;font-weight:600;padding:5px 12px;border-radius:99px;border:1px solid var(--line);color:var(--ink2);margin:6px 3px}
+.tag.warn{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 40%,transparent)}
+.hero-shot{display:flex;justify-content:center;margin-top:56px}
+/* fenêtres */
+.panel{border-radius:16px;overflow:hidden;background:#fff;box-shadow:var(--shadow),0 0 0 1px var(--line);line-height:0}
+.panel img{display:block;width:100%;height:auto}
+.hero-shot .panel{width:min(380px,82vw)}
+.cap{font-size:12px;color:var(--ink3);margin-top:10px;line-height:1.4}
+/* pitch */
+.pillars{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:50px}
+.pillar{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px}
+.pillar p{margin:0;color:var(--ink2);font-size:15px}
+@media(max-width:900px){.pillars{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.pillars{grid-template-columns:1fr}}
+/* fonctions */
+.feat{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.feat.rev .txt{order:2}
+.feat .shot{display:flex;justify-content:center;flex-direction:column;align-items:center}
+.feat .shot .panel{width:min(400px,100%)}
+.feat .shot .panel.wide{width:min(480px,100%)}
+.feat p{color:var(--ink2)}
+.gesture{display:inline-flex;gap:8px;align-items:center;margin-top:8px;font-size:14px;color:var(--ink2)}
+kbd{font:600 13px var(--mono);padding:2px 8px;border-radius:7px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+code{font:14px var(--mono);background:var(--card);padding:1px 6px;border-radius:6px}
+@media(max-width:860px){.feat{grid-template-columns:1fr;gap:34px}.feat.rev .txt{order:0}section{padding:84px 0}}
+/* chiffres */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:46px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:26px 24px}
+.stat .v{font-size:clamp(38px,5vw,56px);font-weight:700;letter-spacing:-.03em;line-height:1}
+.stat .c{color:var(--ink2);font-size:15px;margin-top:10px}
+.stat .s{font-size:11px;color:var(--ink3);margin-top:10px;font-family:var(--mono);line-height:1.4;word-break:break-word}
+@media(max-width:900px){.stats{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.stats{grid-template-columns:1fr}}
+/* éprouvée */
+.proof{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:40px}
+.proof .box{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:26px}
+.proof .box p{margin:.2em 0;color:var(--ink2);font-size:15px}
+.profiles{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.profiles span{font-size:13px;padding:6px 12px;border-radius:99px;border:1px dashed var(--line);color:var(--ink2)}
+.note{border-left:3px solid var(--warn);padding:4px 0 4px 16px;color:var(--ink2);margin:30px 0 0;max-width:780px}
+@media(max-width:760px){.proof{grid-template-columns:1fr}}
+/* étapes */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:46px}
+.step{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:26px}
+.step .n{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:700;background:linear-gradient(135deg,var(--lav2),var(--orch));color:#14101f;margin-bottom:14px}
+.step p{margin:0;color:var(--ink2);font-size:15px}
+@media(max-width:800px){.steps{grid-template-columns:1fr}}
+/* table compat */
+table{width:100%;border-collapse:collapse;margin-top:34px;font-size:15px}
+th,td{text-align:left;padding:14px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{width:30%;font-weight:600}
+td{color:var(--ink2)}
+.pill{display:inline-block;font-size:12px;font-weight:600;padding:2px 9px;border-radius:99px;border:1px solid;margin-right:6px;white-space:nowrap}
+.pill.ok{color:var(--ok)}.pill.no{color:var(--warn)}
+@media(max-width:600px){th,td{display:block;width:auto;padding:8px 0}th{border:0;padding-top:16px}}
+/* installer */
+.install{display:grid;grid-template-columns:1.1fr 1fr;gap:56px;align-items:center}
+@media(max-width:860px){.install{grid-template-columns:1fr;gap:34px}}
+footer{padding:40px 0 70px;color:var(--ink3);font-size:13px;border-top:1px solid var(--line)}
+/* apparition */
+.rv{opacity:0;transform:translateY(26px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.7,.2,1)}
+.rv.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
+.dark-only{display:block}.light-only{display:none}
+@media(prefers-color-scheme:light){:root:not([data-theme="dark"]) .dark-only{display:none}:root:not([data-theme="dark"]) .light-only{display:block}}
+</style>
+</head>
+<body>
+<nav><div class="wrap"><b><img src="icone.png" alt="">Glose</b><a href="#fonctions">Fonctions</a><a href="#preuves">Preuves</a><a href="#eprouvee">Éprouvée</a><a href="#compat">Compatibilité</a><a href="#installer">Installer</a></div></nav>
+
+<header class="hero">
+  <div class="wrap">
+    <img class="icon" src="icone.png" alt="Icône de Glose : une feuille annotée dans la marge">
+    <div class="eyebrow">Glose · version <span data-k="version" data-f="valeur">1.0.0</span></div>
+    <h1>Vos notes,<br><span class="grad">en marge de l'écran.</span></h1>
+    <p class="lead">Un panneau de notes au bord droit de l'écran. Du Markdown compatible Obsidian : vos fichiers restent la vérité. Une synchro privée avec le téléphone, et une recherche par mots et par le sens, sans envoyer vos notes nulle part.</p>
+    <div style="margin-top:18px"><span class="tag">macOS 26</span><span class="tag">Fichiers .md ordinaires</span><span class="tag">Recherche 100 % sur le Mac</span><span class="tag warn">Essai privé</span></div>
+    <div class="hero-shot rv">
+      <div>
+        <div class="panel dark-only"><img src="captures/panneau-sombre.png" alt="Le panneau Glose en mode sombre : onglets de projets, recherche, note ouverte et fil du temps"></div>
+        <div class="panel light-only"><img src="captures/panneau.png" alt="Le panneau Glose en mode clair : onglets de projets, recherche, note ouverte et fil du temps"></div>
+        <div class="cap">Le panneau, tel que l'app l'affiche. Notes d'exemple.</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <div class="eyebrow">En une phrase</div>
+    <h2>Une marge pour penser,<br>pas un coffre qui vous garde.</h2>
+    <div class="pillars rv">
+      <div class="pillar"><h3>Au bord de l'écran</h3><p>Le panneau se pose à droite, à côté de ce que vous faites. Vos notes restent à portée.</p></div>
+      <div class="pillar"><h3>Vos fichiers d'abord</h3><p>Chaque note est un fichier <code>.md</code> dans un dossier que vous connaissez. Obsidian l'ouvre sans Glose.</p></div>
+      <div class="pillar"><h3>Le téléphone, en privé</h3><p>Une synchro fichier par fichier avec votre téléphone, par un serveur que vous tenez.</p></div>
+      <div class="pillar"><h3>Chercher sans fuite</h3><p>Par mots, ou par le sens. Tout se calcule sur le Mac : aucun texte ne part.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="alt" id="fonctions">
+  <div class="wrap">
+    <div class="eyebrow">Fonctions</div>
+    <h2>Chaque geste, là où vous le cherchez.</h2>
+    <p class="lead">Neuf écrans réels de l'app, un par fonction.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap feat rv">
+    <div class="txt">
+      <div class="eyebrow">Écrire</div>
+      <h2>Tapez du Markdown, voyez une page.</h2>
+      <p>Tapez <code>## Titre</code> ou <code>**gras**</code> : les signes s'effacent dès que le curseur quitte la ligne. Le fichier reste du Markdown pur.</p>
+      <div class="gesture"><kbd>⌘B</kbd><kbd>⌘I</kbd><kbd>/</kbd> menu de toutes les commandes</div>
+    </div>
+    <div class="shot"><div class="panel"><img src="captures/panneau.png" alt="Une note ouverte dans le panneau : titre, cases à cocher, images" loading="lazy"></div><div class="cap">Titre, cases à cocher, images, fil du temps.</div></div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap feat rev rv">
+    <div class="txt">
+      <div class="eyebrow">Retrouver</div>
+      <h2>Un mot, et la note est là.</h2>
+      <p>La recherche par mots est la réponse exacte. Elle parcourt le projet courant, ou tous les projets d'un clic.</p>
+      <div class="gesture"><kbd>⌘F</kbd> chercher · <kbd>↑</kbd><kbd>↓</kbd> choisir · <kbd>↵</kbd> ouvrir</div>
+    </div>
+    <div class="shot"><div class="panel"><img src="captures/recherche.png" alt="Recherche du mot réunion dans tous les projets : deux résultats avec le mot surligné" loading="lazy"></div><div class="cap">Recherche dans « Tous » les projets.</div></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap feat rv">
+    <div class="txt">
+      <div class="eyebrow">Par le sens</div>
+      <h2>« Voyage » trouve « billets de train ».</h2>
+      <p>La recherche par le sens retrouve une note même si elle n'emploie pas vos mots. Elle tourne sur le Mac, avec le moteur de langue d'Apple : aucun texte ne part vers un service extérieur. Les deux recherches se lisent dans la même liste.</p>
+    </div>
+    <div class="shot"><div class="panel"><img src="captures/recherche-sens.png" alt="Fiche Chercher par le sens : voyage trouve billets de train, valise, vacances" loading="lazy"></div><div class="cap">Fiche-leçon de l'app, ouverte depuis le « i ».</div></div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap feat rev rv">
+    <div class="txt">
+      <div class="eyebrow">Relier</div>
+      <h2>Les notes qui parlent de la même chose se montrent.</h2>
+      <p>Sous une note ouverte, Glose propose des <b>thèmes</b> et des <b>voisines</b>, sans que vous ayez posé de lien. Rien n'est écrit dans vos fichiers tant que vous n'acceptez pas. Un voisin utile devient un lien <code>[[…]]</code> en un clic.</p>
+      <div class="gesture">Tapez <kbd>[[</kbd> pour lier vers une note à la main</div>
+    </div>
+    <div class="shot">
+      <div class="panel wide" style="margin-bottom:18px"><img src="captures/voisines.png" alt="Bandeau Thèmes (#cuisine) et Voisines (Soupe de légumes, Tarte aux pommes, Réglage du freinage) sous une note" loading="lazy"></div>
+      <div class="panel"><img src="captures/liens.png" alt="Liste de notes proposées après avoir tapé [[ dans une note" loading="lazy"></div>
+      <div class="cap">Le bandeau Thèmes et Voisines, et le choix d'un lien interne.</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap feat rv">
+    <div class="txt">
+      <div class="eyebrow">Mettre en forme</div>
+      <h2>Tapez « / », choisissez le bloc.</h2>
+      <p>Un menu propose toutes les mises en forme, titres, encadrés, tableaux, avec leur raccourci.</p>
+      <div class="gesture"><kbd>/</kbd> puis le nom du bloc</div>
+    </div>
+    <div class="shot"><div class="panel"><img src="captures/encadres.png" alt="Menu « / » listant Titre 1 à 6 et Encadré astuce" loading="lazy"></div><div class="cap">Le menu « / » : titres, encadrés, 24 entrées.</div></div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap feat rev rv">
+    <div class="txt">
+      <div class="eyebrow">Corriger</div>
+      <h2>Vous voyez chaque retouche avant qu'elle existe.</h2>
+      <p>Pour corriger un texte, Glose montre chaque changement : le mot retiré, le mot proposé. Vous cochez ce que vous gardez, puis « Appliquer ». <kbd>⌘Z</kbd> défait tout d'un coup.</p>
+      <div class="gesture">Étincelle de la barre d'outils, puis <b>Tout accepter</b> ou case par case</div>
+    </div>
+    <div class="shot"><div class="panel"><img src="captures/corriger.png" alt="Revue des corrections : mots barrés en rouge, mots proposés en vert, cases à cocher, bouton Appliquer" loading="lazy"></div><div class="cap">Un changement accepté sur deux, l'autre en attente.</div></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap feat rv">
+    <div class="txt">
+      <div class="eyebrow">Synchroniser</div>
+      <h2>Le téléphone suit, rien ne se perd.</h2>
+      <p>Les projets que vous cochez dans l'onglet Serveur se synchronisent avec le téléphone, fichier par fichier. Hors ligne, les modifications attendent. Modifiée des deux côtés, une note garde les deux versions : Glose ne tranche jamais à votre place.</p>
+      <div class="gesture">Fenêtre Glose · onglet <b>Serveur</b> · code à 8 chiffres</div>
+    </div>
+    <div class="shot"><div class="panel"><img src="captures/synchro.png" alt="Fiche Synchro et conflits : Ce Mac, Serveur, Téléphone, note.md et note (conflit).md" loading="lazy"></div><div class="cap">Fiche-leçon de l'app : la copie en conflit se range à côté.</div></div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap feat rev rv">
+    <div class="txt">
+      <div class="eyebrow">Garder la main</div>
+      <h2>Le fichier est la seule vérité.</h2>
+      <p>L'index de recherche et la synchro ne sont que des copies jetables : vous pouvez les effacer, les notes restent. Obsidian, un éditeur de code ou le Finder ouvrent vos notes sans Glose. Glose n'écrit un fichier que si le texte a changé.</p>
+    </div>
+    <div class="shot"><div class="panel"><img src="captures/lecon.png" alt="Fiche Le fichier est la vérité : Obsidian, note.md, Glose, index jetable, copie du serveur" loading="lazy"></div><div class="cap">Fiche-leçon de l'app.</div></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap feat rv">
+    <div class="txt">
+      <div class="eyebrow">Démarrer</div>
+      <h2>Au premier lancement, chaque droit a sa pastille.</h2>
+      <p>Orange : un bouton ouvre le bon réglage. Gris : facultatif, sans conséquence. Vert : accordé. Tout se règle plus tard depuis Aide, puis Droits. Un didacticiel de 7 étapes et 12 leçons illustrées accompagnent ensuite.</p>
+    </div>
+    <div class="shot"><div class="panel wide"><img src="captures/premier-lancement.png" alt="Écran Bienvenue dans Glose : liste des droits avec pastilles" loading="lazy"></div><div class="cap">Les chemins affichés sont ceux d'une session de rendu.</div></div>
+  </div>
+</section>
+
+<section class="alt" id="comment">
+  <div class="wrap">
+    <div class="eyebrow">Comment ça marche</div>
+    <h2>Trois gestes suffisent.</h2>
+    <div class="steps rv">
+      <div class="step"><div class="n">1</div><h3>Ouvrir le panneau</h3><p>Il se pose au bord droit de l'écran. Choisissez un projet dans les onglets du haut.</p></div>
+      <div class="step"><div class="n">2</div><h3>Écrire</h3><p>Nouvelle note, puis Markdown en direct. « / » pour les blocs, « [[ » pour lier.</p></div>
+      <div class="step"><div class="n">3</div><h3>Retrouver</h3><p>⌘F : par mots, puis par le sens. Voisines et thèmes sous chaque note.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="preuves">
+  <div class="wrap">
+    <div class="eyebrow">Preuves chiffrées</div>
+    <h2>Des chiffres mesurés, avec leur source.</h2>
+    <p class="lead">Chaque chiffre porte sa source en petit. Un chiffre qui n'a pas pu être mesuré s'écrit « n/a », jamais zéro.</p>
+    <div class="stats rv" id="stats">
+      <div class="stat"><div class="v grad" data-k="recherche_mots_p95_ms" data-f="valeur+unite">6,8 ms</div><div class="c" data-k="recherche_mots_p95_ms" data-f="contexte-mots">Recherche par mots, 19 sur 20 plus rapides que ça · 5 000 notes, 54 requêtes</div><div class="s" data-k="recherche_mots_p95_ms" data-f="source">Glose --autotest, MESURE recherche, 0.8.0 (6,8 ms) ; 7,1 ms mesuré sur la 1.0.0, 02/11/2026, 1.0.0</div></div>
+      <div class="stat"><div class="v grad" data-k="recherche_sens_top3" data-f="valeur">23/30</div><div class="c" data-k="recherche_sens_top3" data-f="contexte-sens">Par le sens : la bonne note parmi les trois premières · 30 questions formulées sans les mots de la note (mots + sens mêlés)</div><div class="s" data-k="recherche_sens_top3" data-f="source">glose-banc sens, build/banc-sens.json, 02/11/2026, 1.0.0</div></div>
+      <div class="stat"><div class="v grad" data-k="corpus_identique" data-f="valeur">76/76</div><div class="c" data-k="corpus_identique" data-f="contexte">fichiers Obsidian réenregistrés, identiques à l'octet</div><div class="s" data-k="corpus_identique" data-f="source">glose-banc corpus Tests/CoreTests/Corpus</div></div>
+      <div class="stat"><div class="v grad" data-k="frappe_mediane_ms" data-f="valeur+unite">9,8 ms</div><div class="c" data-k="frappe_mediane_ms" data-f="contexte-frappe">Frappe, valeur médiane · fichier de 10 000 lignes, fil principal</div><div class="s" data-k="frappe_mediane_ms" data-f="source">glose-banc fluidite, 0.8.0 (9,8 ms) ; 9,3 ms mesuré sur la 1.0.0, 02/11/2026, 1.0.0</div></div>
+      <div class="stat"><div class="v grad" data-k="synchro_scenarios" data-f="valeur">19/19</div><div class="c" data-k="synchro_scenarios" data-f="contexte">coupures, conflits, 1 000 notes, noms accentués et emoji, serveur tué en rafale, octet par octet</div><div class="s" data-k="synchro_scenarios" data-f="source">make bout-en-bout, Tests/bout-en-bout/robustesse.mjs (plus 8/8 étapes de bout-en-bout.mjs), 02/11/2026, 1.0.0</div></div>
+      <div class="stat"><div class="v grad" data-k="note_50_mo_ouverture_s" data-f="valeur+unite">0,7 s</div><div class="c" data-k="note_50_mo_ouverture_s" data-f="contexte">note de 50 Mo, mode simple ; 10,7 s avant correction</div><div class="s" data-k="note_50_mo_ouverture_s" data-f="source">Tests-nuit/defauts.md D18 (688 ms), parcours debug 02/11</div></div>
+    </div>
+    <p class="cap" style="max-width:760px">Sur ce banc de 30 questions, la bonne note est dans les trois premières 23 fois (76,7 %). Le moteur de langue d'Apple ne rapproche pas toutes les paraphrases : quand il manque la note, la recherche par mots la trouve.</p>
+  </div>
+</section>
+
+<section class="alt" id="eprouvee">
+  <div class="wrap">
+    <div class="eyebrow">Éprouvée avant sa sortie</div>
+    <h2>Beaucoup d'essais, dont certains joués par des agents.</h2>
+    <div class="proof rv">
+      <div class="box"><h3><span class="grad" data-k="tests_coeur" data-f="valeur">240</span> tests automatiques du cœur</h3><p>Le moteur de notes est testé à chaque changement.</p><div class="s" style="font-size:11px;color:var(--ink3);font-family:var(--mono);margin-top:8px" data-k="tests_coeur" data-f="source">swift test, 0.8.0 (240) ; 245 sur la 1.0.0 avec les tests du collage et du sens, 02/11/2026, 1.0.0</div></div>
+      <div class="box"><h3><span class="grad" data-k="autotest" data-f="valeur">348/348</span> vérifications dans l'app</h3><p>L'app se contrôle elle-même, écran par écran.</p><div class="s" style="font-size:11px;color:var(--ink3);font-family:var(--mono);margin-top:8px" data-k="autotest" data-f="source">Glose --autotest, 02/11/2026, 1.0.0</div></div>
+      <div class="box"><h3><span class="grad" data-k="cas_testes_par_agents" data-f="valeur">288</span> cas confiés à des agents</h3><p>Des agents d'IA ont joué des cas limites : gros fichiers, notes Obsidian, sécurité, synchro, web.</p><div class="s" style="font-size:11px;color:var(--ink3);font-family:var(--mono);margin-top:8px" data-k="cas_testes_par_agents" data-f="source">~/pboard/Projets/Glose/Tests-nuit/*.md (hors stress test et parcours)</div></div>
+      <div class="box"><h3>Un stress test complet</h3><p>Valeurs limites, pannes, accès simultanés, sécurité.</p></div>
+    </div>
+    <div class="proof rv" style="grid-template-columns:1fr">
+      <div class="box">
+        <h3><span class="grad" data-k="parcours_simules" data-f="valeur">5/5</span> parcours de tests simulés par des agents</h3>
+        <p>Chacun a joué un profil du début à la fin : créer, écrire, chercher, relier, synchroniser, ouvrir une leçon.</p>
+        <div class="profiles"><span>étudiante</span><span>consultant</span><span>développeur</span><span>chercheuse</span><span>utilisateur d'Obsidian</span></div>
+        <div style="font-size:11px;color:var(--ink3);font-family:var(--mono);margin-top:12px" data-k="parcours_simules" data-f="source">Tests-nuit/testeur-*-0-8-0.md</div>
+      </div>
+    </div>
+    <p class="note"><b>À lire sans détour :</b> ces cinq parcours sont des <b>tests simulés par des agents</b>, pas des avis d'utilisateurs. Aucune personne réelle n'a encore donné son avis ; il n'y a donc ni témoignage ni note sur cette page.</p>
+  </div>
+</section>
+
+<section id="compat">
+  <div class="wrap">
+    <div class="eyebrow">Compatibilité</div>
+    <h2>Ce qui marche, et ce qui manque encore.</h2>
+    <table>
+      <tr><th>macOS</th><td><span class="pill ok">pris en charge</span>macOS 26 minimum. Pas de version pour un système plus ancien.</td></tr>
+      <tr><th>Obsidian</th><td><span class="pill ok">compatible</span>Les notes sont des fichiers <code>.md</code> ordinaires, ouvrables dans Obsidian sans Glose. Sur un corpus de fichiers Obsidian réenregistrés par Glose, 76 sur 76 sont restés identiques à l'octet (voir Preuves).</td></tr>
+      <tr><th>iPhone</th><td><span class="pill ok">par la web app</span>Pas d'app iPhone : le téléphone se connecte par une web app, sur le même Wi-Fi que le Mac, avec un code à 8 chiffres.</td></tr>
+      <tr><th>Signature Apple</th><td><span class="pill no">pas encore</span>L'app n'est pas signée par Apple (Developer ID). Au premier lancement, macOS peut demander une confirmation avant de l'ouvrir.</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="alt" id="installer">
+  <div class="wrap install">
+    <div>
+      <div class="eyebrow">Installer</div>
+      <h2>La V1 est en essai privé.</h2>
+      <p class="lead">Glose n'est pas encore proposée au téléchargement. La première version est essayée en privé ; cette page sera mise à jour avec le lien quand elle sera ouverte.</p>
+      <p style="color:var(--ink2)">D'ici là, rien à installer, et rien n'est collecté sur cette page.</p>
+    </div>
+    <div class="shot" style="display:flex;justify-content:center"><div class="panel" style="width:min(340px,100%)"><img src="captures/note-rapide.png" alt="La note rapide : une ligne pour créer une note dans le projet Perso" loading="lazy"></div></div>
+  </div>
+</section>
+
+<footer><div class="wrap">Glose · version <span data-k="version" data-f="valeur">1.0.0</span>. Les captures sont des rendus de la V1 avec des notes d'exemple. Les chiffres viennent de <code>chiffres.json</code>, chacun avec sa source.</div></footer>
+
+<script>
+(function(){
+  /* apparition au défilement */
+  var els=document.querySelectorAll('.rv');
+  if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in')});}
+  else{var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});els.forEach(function(e){io.observe(e)});}
+  /* chiffres : le HTML porte un repli identique au JSON actuel ; le fetch le met à jour */
+  function fmt(n){return typeof n==='number'?n.toLocaleString('fr-FR'):String(n)}
+  function apply(d){
+    document.querySelectorAll('[data-k]').forEach(function(el){
+      var o=d[el.dataset.k]; if(!o)return; var f=el.dataset.f, t=null;
+      if(f==='valeur') t=fmt(o.valeur);
+      else if(f==='valeur+unite') t=fmt(o.valeur)+(o.unite?' '+o.unite:'');
+      else if(f==='source') t=o.source;
+      else if(f==='contexte') t=o.contexte;
+      else if(f==='contexte-mots') t='Recherche par mots, 19 sur 20 plus rapides que ça'+(o.contexte?' · '+o.contexte:'');
+      else if(f==='contexte-sens') t='Par le sens : la bonne note parmi les trois premières'+(o.contexte?' · '+o.contexte:'');
+      else if(f==='contexte-frappe') t='Frappe, valeur médiane'+(o.contexte?' · '+o.contexte:'');
+      if(t!=null&&t!=='undefined'){el.textContent=t; if(f!=='source'&&o.source) el.title='Source : '+o.source;}
+    });
+  }
+  try{fetch('chiffres.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(apply).catch(function(){})}catch(e){}
+})();
+</script>
+</body>
+</html>
