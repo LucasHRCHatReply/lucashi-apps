@@ -315,7 +315,7 @@ footer a{color:var(--ink2)}
 <nav class="nav" aria-label="Navigation"><div class="wrap">
   <a class="retour" href="../">‹ Apps de Lucas</a>
   <span class="t"><img src="../assets/orchestrateur-icon.svg" alt="">Orchestrateur</span>
-  <div class="liens"><a href="#calcul">Le calcul</a><a href="#banc">Le banc</a><a href="#commandes">Commandes</a><a href="#ranger">Ranger</a><a class="cta" href="#installer">Installer</a></div>
+  <div class="liens"><a href="#calcul">Le calcul</a><a href="#banc">Le banc</a><a href="#commandes">Commandes</a><a href="#ranger">Ranger</a><a href="#sessiondesk">Bureau</a><a class="cta" href="#installer">Installer</a></div>
 </div></nav>
 
 <header class="hero wrap">
@@ -549,6 +549,19 @@ footer a{color:var(--ink2)}
   <div class="term rv" id="rg-term"><div class="barre-t"><i></i><i></i><i></i><span>Claude Code — /orch ranger</span></div><pre id="rg-sortie"></pre></div>
   <div class="rg-bas"><button type="button" id="rg-rejouer">Rejouer</button></div>
   <p class="src">Sortie réelle de <code>/orch ranger</code> sur l’orchestration de ce site (30/10/2026, Haiku 5.5 · medium, 42 s, 0,24 $), lignes raccourcies. Les chiffres du bilan sont ceux mesurés avant archivage sur les processus des sessions rangées.</p>
+</div></section>
+
+<section id="sessiondesk"><div class="wrap">
+  <p class="eyebrow">Nouveau · /sessiondesk</p>
+  <h2 class="rv">/sessiondesk : le bureau de votre orchestration.</h2>
+  <p class="lead rv">Une page s’ouvre : la session qui dirige au centre, ses sous-sessions et ses agents à leur poste, qui travaille, qui a fini, qui attend une réponse. « Voir plus » raconte en français ce que chacun a fait et rendu. Le menu en haut passe d’une orchestration à l’autre, sur tous vos projets.</p>
+  <img class="rv" src="sessiondesk.jpg" width="2560" height="1720" loading="lazy" alt="La page Session Desk : l’orchestration du site, 28 sessions, 234 agents, chacun à son bureau" style="width:100%;height:auto;border-radius:18px;border:1px solid var(--line);margin:28px 0 8px">
+  <div class="tuiles rv">
+    <div class="tuile"><b>0,45 s</b><span>pour lire 28 sessions et 234 agents, sans modèle</span></div>
+    <div class="tuile"><b>Haiku</b><span>seulement pour le récit « voir plus », gardé en cache tant que rien ne change</span></div>
+    <div class="tuile"><b>15 s</b><span>la page se relit seule ; deux vues : Bureau et Liste</span></div>
+  </div>
+  <p class="src">Capture réelle de la page sur l’orchestration de ce site (02/11/2026). Temps de calcul : message du commit e0ca6f8 du dépôt du skill. Tout reste sur le Mac : la page est servie en local (127.0.0.1).</p>
 </div></section>
 
 <section id="accueil"><div class="wrap">
