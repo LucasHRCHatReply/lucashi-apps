@@ -662,7 +662,6 @@ D'où il vient : un skill gratuit, sans compte, publié sur ${ORIGINE}/orchestra
 5. Lance node ~/orchestration-claude/outils/accueil.mjs pour ouvrir ma page d'accueil, puis fais /orch accueil.`,
     zip: 'cd ~/orchestration-claude && ./install.sh votre-prenom',
     terminal: `curl -fsSL ${ZIP} -o /tmp/orchestrateur.zip && echo "${SHA}  /tmp/orchestrateur.zip" | shasum -a 256 -c - && unzip -oq /tmp/orchestrateur.zip -d ~ && ~/orchestration-claude/install.sh "$(id -un)"`,
-  };
   });
   const afficher = () => { remplir(); document.getElementById('b-prompt').textContent = TEXTES.prompt; document.getElementById('b-terminal').textContent = TEXTES.terminal; };
   afficher();
