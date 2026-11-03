@@ -618,6 +618,12 @@ footer a{color:var(--ink2)}
   <p class="eyebrow">Installer · 2 minutes</p>
   <h2 class="rv">Collez un prompt. Claude fait le reste.</h2>
   <p class="lead rv" style="margin:0 auto">Trois façons, le même résultat : six skills, le déclenchement automatique, le rappel de poids, le partage mensuel avec accord, et la page d’accueil.</p>
+  <div class="limites" style="text-align:left;margin:26px 0 8px">
+    <div class="rv"><b>1. Claude Code, pas une conversation claude.ai.</b> Le prompt s’exécute dans l’app de bureau Claude, onglet <b>Code</b>, ou avec <code>claude</code> dans un terminal. Collé dans une conversation normale, Claude ne peut ni télécharger ni installer : il refuse.</div>
+    <div class="rv"><b>2. Un Mac.</b> macOS uniquement pour l’instant.</div>
+    <div class="rv"><b>3. Node.js 18 ou plus.</b> Les hooks sont écrits en Node. Test : <code>node --version</code> dans un terminal. S’il manque, installer depuis nodejs.org ; le prompt le vérifie avant de continuer.</div>
+    <div class="rv"><b>4. Vos usages restent sur le Mac.</b> L’outil lit l’historique local de Claude Code pour calculer vos chiffres. Rien n’est envoyé sans votre « oui », et le partage mensuel est facultatif (<code>--sans-taches</code> pour ne pas le poser).</div>
+  </div>
   <div class="onglets" role="tablist">
     <button role="tab" aria-selected="true" data-o="prompt">Prompt à coller</button>
     <button role="tab" aria-selected="false" data-o="zip">Fichier .zip</button>
