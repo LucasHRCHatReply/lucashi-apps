@@ -655,7 +655,7 @@ footer a{color:var(--ink2)}
 Ce prompt se colle dans Claude Code (onglet Code de l'app Claude, ou la commande claude dans un terminal), pas dans le chat de claude.ai, qui ne peut rien installer sur ce Mac.
 D'où il vient : un skill gratuit, sans compte, publié sur ${ORIGINE}/orchestrateur/ (les apps de Lucas). Version ${VERSION}. Tout le code se lit avant de l'installer, et rien ne s'installe sans mon accord.
 
-1. Télécharge ${ZIP} dans un dossier temporaire. Vérifie son empreinte : shasum -a 256 doit donner ${SHA}. Si elle diffère, arrête-toi et dis-le-moi.
+1. Crée un dossier temporaire avec mktemp -d (pas mkdir), puis télécharge-y ${ZIP} avec curl. Vérifie son empreinte : shasum -a 256 doit donner ${SHA}. Si elle diffère, arrête-toi et dis-le-moi.
 2. Décompresse-le dans ce dossier temporaire, lis install.sh en entier, et résume-moi en 5 lignes au plus : ce qu'il copie et où, les hooks qu'il ajoute à ~/.claude/settings.json (et la sauvegarde qu'il en fait), les tâches planifiées qu'il pose, et tout appel réseau. Puis attends mon accord.
 3. Avec mon accord seulement : place le dossier orchestration-claude dans mon dossier personnel (s'il existe déjà, mets à jour ses fichiers sans toucher à perfs/), demande-moi mon prénom, puis lance ./install.sh <prénom> --sans-accueil.
 4. Dis-moi comment tout retirer : ~/orchestration-claude/desinstaller.sh enlève les hooks, les skills et les tâches, et garde une sauvegarde de settings.json.
