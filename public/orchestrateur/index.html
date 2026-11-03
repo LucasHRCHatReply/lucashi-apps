@@ -564,6 +564,22 @@ footer a{color:var(--ink2)}
   <p class="src">Capture réelle de /sessiondesk 1.2 sur l’orchestration des apps (02/11/2026). Écart de coût mesuré sur 222 sessions de ce Mac contre le relevé <code>cost-state</code> de Claude Code ; rafraîchissement : empreinte des fichiers, 5,9 ms. Commit 8ac2b6d du dépôt du skill. Techniques reprises après lecture du code de ccusage, sniffly, claude-code-viewer et claude-code-hooks-multi-agent-observability. Tout reste sur le Mac : la page est servie en local (127.0.0.1).</p>
 </div></section>
 
+<section class="alt" id="v2"><div class="wrap">
+  <p class="eyebrow">Nouveau dans la v2.0</p>
+  <h2 class="rv">Un vérificateur à 0,002 $, des questions en cartes, un plugin.</h2>
+  <p class="lead rv">La v2 ajoute un agent qui contrôle chaque rendu avant qu’il soit annoncé comme fini, fait remonter les questions des sessions filles dans l’orchestratrice sous forme de cartes, et s’installe aussi par un plugin public. Elle apporte aussi une méthode pour écrire les briefs, que les mesures n’ont pas encore prouvée.</p>
+  <div class="tuiles rv">
+    <div class="tuile"><b>16/16</b><span>défauts détectés par le vérificateur (Haiku 5.5 · medium) sur 12 cas dont 8 défauts semés, 2 répétitions ; 0 fausse alerte sur 8</span></div>
+    <div class="tuile"><b>0,0023 $</b><span>par vérification en Haiku 5.5 · medium, contre 0,030 $ en Sonnet 5.5 · low (même score, 16/16)</span></div>
+    <div class="tuile"><b>− 22 %</b><span>de jetons pour une question en carte (≈ 550) contre une question écrite librement (≈ 710)</span></div>
+    <div class="tuile"><b>20 → 19</b><span>défauts confirmés par la revue de fiabilité, dont 19 corrigés avant la sortie</span></div>
+  </div>
+  <p class="src">Chiffres du journal des versions, entrée 2.0.0 (03/11/2026). Bancs du vérificateur : cas petits, effet plafond possible. Les questions en cartes passent par un hook (12/12 tests) ; une autorisation d’outil ne se transmet pas par message d’une session à l’autre : trois filles ont refusé un accord relayé, c’est donc l’utilisateur qui l’accorde. Le bandeau au-dessus de la saisie reste replié par défaut. Plugin public : <a href="https://github.com/LucasHRCHatReply/orchestrateur-releases">orchestrateur-releases</a> (<code>/plugin marketplace add</code>, puis <code>/plugin install orchestrateur@orchestration</code>).</p>
+  <div class="limites" style="margin-top:28px">
+    <div class="rv"><b>Méthode du brief : non prouvée.</b> Tirée d’une veille de 23 sources, elle a passé un banc A/B (≈ 5,9 $). Faux « fait » : 0 % contre 0 % sur 80 essais. Hors périmètre : 0 contre 0 sur 30. Les deux étaient déjà au plancher, donc rien à améliorer à mesurer. Questions posées sur les demandes ambiguës : 5/10 contre 6/10, soit + 10 points pour un seuil de 15 : hypothèse infirmée ; 0 question sur 9 demandes claires ; coût × 1,31. Elle sera remesurée sur des tâches où un brief flou échoue vraiment.</div>
+  </div>
+</div></section>
+
 <section id="accueil"><div class="wrap">
   <p class="eyebrow">À l’installation</p>
   <h2 class="rv">Claude vous écrit un mot d’accueil, sur vos chiffres.</h2>
