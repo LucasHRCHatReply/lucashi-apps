@@ -57,7 +57,7 @@
       "page": "jauge/",
       "depot": "LucasHRCHatReply/jauge-releases",
       "zip": "Jauge.zip",
-      "version": "1.9.0",
+      "version": "1.9.2",
       "source_page": "~/Jauge/site",
       "requis": [
         "MacBook à puce Apple (M1 ou plus récent)",
@@ -210,12 +210,12 @@
       ],
       "depot": "LucasHRCHatReply/glisse-releases",
       "zip": "Glisse.zip",
-      "version": "0.8.0",
+      "version": "0.9.0",
       "source_page": "~/Swish/site",
       "build_page": "python3 build.py",
       "page_construite": "~/Downloads/Glisse.html",
       "dmg": "Glisse.dmg",
-      "description": "Glisse ajoute des gestes à la barre de titre des fenêtres : deux ou trois doigts qui glissent ou pincent calent la fenêtre (moitiés, quarts, tiers, huitièmes), la passent en plein écran, la minimisent ou la ferment. Une affiche montre où elle ira avant que vous leviez les doigts. Version de test."
+      "description": "Glisse ajoute des gestes à la barre de titre des fenêtres : deux ou trois doigts qui glissent ou pincent calent la fenêtre (moitiés, quarts, tiers, huitièmes), la passent en plein écran, la minimisent ou la ferment. Une affiche montre où elle ira avant que vous leviez les doigts. Aimantation entre fenêtres et poignée commune depuis la 0.9.0. Version de test."
     },
     {
       "id": "veillon",
@@ -318,7 +318,7 @@
       "page": "corolle/",
       "depot": "LucasHRCHatReply/corolle-releases",
       "zip": "Corolle.zip",
-      "version": "0.5.0",
+      "version": "0.5.1",
       "source_page": "~/Corolle/site",
       "requis": [
         "Mac à puce Apple (M1 ou plus récent), avec trackpad",
@@ -462,7 +462,33 @@
       ],
       "depot": "LucasHRCHatReply/tadis-releases",
       "zip": "Tadis.zip",
-      "version": "0.3.1"
+      "version": "0.4.0"
+    },
+    {
+      "id": "glose",
+      "preversion": true,
+      "nom": "Glose",
+      "phrase": "Vos notes, en marge de l'écran.",
+      "famille": "bureau",
+      "couleur": "#EC623C",
+      "icone": "assets/glose-icon.png?v=20261103",
+      "captures": [],
+      "page": "glose/",
+      "description": "Un panneau de notes au bord droit de l'écran, en Markdown compatible Obsidian. Les notes se rangent seules, la recherche porte sur les mots et sur le sens, et la relecture propose des corrections avec l'avant et l'après. Version de test.",
+      "bande": [
+        {
+          "src": "assets/bande/glose-panneau.png",
+          "alt": "Glose : le panneau de notes, recherche et fil du temps"
+        }
+      ],
+      "requis": [
+        "Mac à puce Apple",
+        "macOS 26 ou plus",
+        "Aucun compte"
+      ],
+      "depot": "LucasHRCHatReply/glose-releases",
+      "zip": "Glose.zip",
+      "version": "1.2.1"
     },
     {
       "id": "ocruroeil",
@@ -493,7 +519,7 @@
       "icone": "assets/cliche-icon.png?v=20261028n",
       "captures": [],
       "page": "cliche/",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "preversion": true,
       "depot": "LucasHRCHatReply/cliche-releases",
       "zip": "Cliche.zip",

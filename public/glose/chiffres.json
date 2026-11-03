@@ -1,8 +1,8 @@
 {
   "_lisez_moi": "Source unique des chiffres de la page de vente et de la vidéo. Chaque chiffre porte sa source. Mis à jour par l'orchestratrice à chaque préversion.",
   "version": {
-    "valeur": "1.0.0",
-    "source": "App/Version.swift (build 11)"
+    "valeur": "1.2.1",
+    "source": "docs/Versions/1.2.1.md"
   },
   "recherche_mots_p95_ms": {
     "valeur": 6.8,
