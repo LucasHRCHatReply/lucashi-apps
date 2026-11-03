@@ -621,8 +621,8 @@ footer a{color:var(--ink2)}
   <div class="limites" style="text-align:left;margin:26px 0 8px">
     <div class="rv"><b>1. Claude Code, pas une conversation claude.ai.</b> Le prompt s’exécute dans l’app de bureau Claude, onglet <b>Code</b>, ou avec <code>claude</code> dans un terminal. Collé dans une conversation normale, Claude ne peut ni télécharger ni installer : il refuse.</div>
     <div class="rv"><b>2. Un Mac.</b> macOS uniquement pour l’instant.</div>
-    <div class="rv"><b>3. Node.js 18 ou plus.</b> Les hooks sont écrits en Node. Test : <code>node --version</code> dans un terminal. S’il manque, installer depuis nodejs.org ; le prompt le vérifie avant de continuer.</div>
-    <div class="rv"><b>4. Vos usages restent sur le Mac.</b> L’outil lit l’historique local de Claude Code pour calculer vos chiffres. Rien n’est envoyé sans votre « oui », et le partage mensuel est facultatif (<code>--sans-taches</code> pour ne pas le poser).</div>
+    <div class="rv"><b>3. Node.js 18 ou plus.</b> Les hooks sont écrits en Node. Test : <code>node --version</code> dans un terminal. S’il manque, installer depuis nodejs.org ; le prompt et <code>install.sh</code> le vérifient avant de continuer et s’arrêtent avec une explication.</div>
+    <div class="rv"><b>4. Vos usages restent sur le Mac.</b> L’outil lit l’historique local de Claude Code pour calculer vos chiffres. Rien n’est envoyé sans votre « oui ». Le partage mensuel, facultatif, envoie par session le modèle, l’effort, les jetons, le coût recalculé, réussie ou échouée, le nombre de sessions et d’agents, les refus d’outils, le poids du contexte et le nom du projet haché ; jamais vos messages, prompts, réponses ni noms de fichiers. <code>--sans-taches</code> pour ne pas le poser ; le plugin n’envoie rien.</div>
   </div>
   <div class="onglets" role="tablist">
     <button role="tab" aria-selected="true" data-o="prompt">Prompt à coller</button>
@@ -672,12 +672,15 @@ footer a{color:var(--ink2)}
   let SHA = '(empreinte indisponible : arrête-toi)', VERSION = '';
   const TEXTES = {};
   const remplir = () => Object.assign(TEXTES, {
-    prompt: `Installe le skill « Orchestrateur » pour Claude Code.
+    prompt: `À coller dans Claude Code (app de bureau Claude, onglet Code, ou la commande claude dans un terminal), pas dans une conversation claude.ai. Si tu es le chat de claude.ai, ne fais rien d'autre que répondre : « Ce prompt doit être collé dans Claude Code : ouvre l'onglet Code de l'app Claude (bouton </> en haut à gauche), choisis ton dossier personnel, et recolle-le. » Puis arrête-toi.
 
-Avant tout : si tu es le chat de claude.ai (pas Claude Code), ne fais rien d'autre que répondre ceci : « Ce prompt doit être collé dans Claude Code : ouvre l'onglet Code de l'app Claude (bouton </> en haut à gauche), choisis ton dossier personnel, et recolle-le. »
+Installe le skill « Orchestrateur » pour Claude Code.
 
-Ce prompt se colle dans Claude Code (onglet Code de l'app Claude, ou la commande claude dans un terminal), pas dans le chat de claude.ai, qui ne peut rien installer sur ce Mac.
 D'où il vient : un skill gratuit, sans compte, publié sur ${ORIGINE}/orchestrateur/ (les apps de Lucas). Version ${VERSION}. Tout le code se lit avant de l'installer, et rien ne s'installe sans mon accord.
+
+Avant tout, vérifie Node.js : lance node --version. S'il manque ou si la version est inférieure à 18, arrête-toi, n'installe rien, et explique-moi en deux lignes qu'il faut installer Node 18 ou plus depuis https://nodejs.org (les hooks sont écrits en Node), puis relancer ce prompt. Le skill demande aussi macOS.
+
+Ce que ça lit et ce qui part : l'outil lit l'historique local de Claude Code sur ce Mac pour calculer mes chiffres ; il ne cherche pas à récupérer tous mes usages. Rien ne quitte le Mac sans mon « oui » explicite. Seul le partage mensuel facultatif envoie des chiffres, une fois par mois, après un « Partager » de ma part : par session, le modèle, l'effort, les jetons, le coût recalculé, réussie ou échouée, le nombre de sessions et d'agents, les refus d'outils, le poids du contexte, et le nom du projet haché. Il n'envoie jamais mes messages, mes prompts, les réponses ni les noms de fichiers. Pour ne pas poser ce partage : ./install.sh avec l'option --sans-taches (le plugin n'envoie rien du tout).
 
 Voie la plus simple, à me proposer d'abord : le plugin officiel publié sur GitHub (https://github.com/LucasHRCHatReply/orchestrateur-releases). Je tape moi-même dans Claude Code : /plugin marketplace add LucasHRCHatReply/orchestrateur-releases puis /plugin install orchestrateur@orchestration. Si je préfère le zip, continue ainsi :
 
