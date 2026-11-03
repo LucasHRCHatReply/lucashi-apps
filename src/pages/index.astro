@@ -51,7 +51,7 @@ const etat = (a: App) => a.type === 'skill' ? `Skill ${a.version ?? ''}`.trim()
   : a.preversion ? 'Préversion' : 'Bientôt';
 const fichier = (a: App) => a.telechargement?.split('/').pop() ?? a.dmg ?? a.zip;
 // Un skill se partage aussi par un prompt à coller dans Claude Code (il télécharge et installe).
-const promptSkill = (a: App) => `Installe le skill ${a.nom} pour Claude Code : télécharge ${url('/' + a.telechargement)}, décompresse-le dans mon dossier personnel, lis install.sh en entier et résume-le-moi en trois lignes, demande-moi mon prénom, lance ./install.sh <prénom>, puis fais /orch accueil.`;
+const promptSkill = (a: App) => `Installe le skill « ${a.nom} » pour Claude Code (à coller dans Claude Code, pas dans le chat claude.ai). Il est gratuit, sans compte, publié sur ${url('/' + a.telechargement).replace(/[^/]+$/, '')} (les apps de Lucas). Télécharge ${url('/' + a.telechargement)} dans un dossier temporaire, vérifie son empreinte (shasum -a 256) contre ${url('/' + a.telechargement)}.sha256, lis install.sh en entier, résume-moi en 5 lignes ce qu'il modifie (hooks de ~/.claude/settings.json, tâches planifiées, réseau) et attends mon accord. Ensuite seulement : place le dossier dans mon dossier personnel, demande-moi mon prénom, lance ./install.sh <prénom>, dis-moi que desinstaller.sh retire tout, puis fais /orch accueil.`;
 const telecharger = (a: App) => a.telechargement ? a.telechargement : a.depot && fichier(a) ? `https://github.com/${a.depot}/releases/latest/download/${fichier(a)}` : null;
 const sansAccent = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 const index = (a: App) => sansAccent([a.nom, a.phrase, a.description ?? '', nomFamille(fam(a))].join(' '));

@@ -323,7 +323,7 @@ footer a{color:var(--ink2)}
   <h1>Le même travail. <em>57 % moins cher.</em></h1>
   <p class="lead">Claude confie chaque tâche au modèle le moins cher qui la réussit : Haiku pour lire et extraire, Sonnet pour coder et vérifier, Opus seulement pour diriger. Chaque lancement s’annonce, avec la raison. Mesuré sur 206 essais et 786 sessions réelles.</p>
   <div class="btns">
-    <button class="btn p" data-copier="prompt">📋 Copier le prompt <small>à coller dans Claude</small></button>
+    <button class="btn p" data-copier="prompt">📋 Copier le prompt <small>à coller dans Claude Code</small></button>
     <a class="btn" href="orchestrateur.zip" download>⬇︎ Télécharger <small>.zip</small></a>
   </div>
   <p class="note">macOS · Claude Code (de préférence l’app de bureau) · Node 18+</p>
@@ -639,24 +639,35 @@ footer a{color:var(--ink2)}
   </div>
 </div></section>
 
-<footer><div class="wrap">Orchestrateur v1.3.1 du 30/10/2026 · <a href="../">Les apps de Lucas</a> · Gratuit, sans compte. Le script d’installation se lit en entier.</div></footer>
+<footer><div class="wrap">Orchestrateur · <a href="../">Les apps de Lucas</a> · Gratuit, sans compte. Le script d’installation se lit en entier.</div></footer>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 (() => {
   const ORIGINE = location.origin.startsWith('http') ? location.origin : 'https://apps.srv875929.hstgr.cloud';
   const ZIP = ORIGINE + '/orchestrateur/orchestrateur.zip';
-  const TEXTES = {
-    prompt: `Installe le skill d'orchestration pour Claude Code.
-1. Télécharge ${ZIP} et décompresse-le dans mon dossier personnel : il donne ~/orchestration-claude (s'il existe déjà, mets à jour ses fichiers sans toucher à perfs/).
-2. Lis install.sh en entier et résume-moi en trois lignes ce qu'il va poser.
-3. Demande-moi mon prénom, puis lance ./install.sh <prénom> --sans-accueil.
-4. Lance node ~/orchestration-claude/outils/accueil.mjs pour ouvrir ma page d'accueil, puis fais /orch accueil : écris-moi le mot d'accueil sur mes chiffres, bien mis en forme.`,
+  // Empreinte et version écrites par outils/paquet.sh à côté du zip ; lues au chargement, avant toute copie.
+  let SHA = '(empreinte indisponible : arrête-toi)', VERSION = '';
+  const TEXTES = {};
+  const remplir = () => Object.assign(TEXTES, {
+    prompt: `Installe le skill « Orchestrateur » pour Claude Code.
+
+Ce prompt se colle dans Claude Code (onglet Code de l'app Claude, ou la commande claude dans un terminal), pas dans le chat de claude.ai, qui ne peut rien installer sur ce Mac.
+D'où il vient : un skill gratuit, sans compte, publié sur ${ORIGINE}/orchestrateur/ (les apps de Lucas). Version ${VERSION}. Tout le code se lit avant de l'installer, et rien ne s'installe sans mon accord.
+
+1. Télécharge ${ZIP} dans un dossier temporaire. Vérifie son empreinte : shasum -a 256 doit donner ${SHA}. Si elle diffère, arrête-toi et dis-le-moi.
+2. Décompresse-le dans ce dossier temporaire, lis install.sh en entier, et résume-moi en 5 lignes au plus : ce qu'il copie et où, les hooks qu'il ajoute à ~/.claude/settings.json (et la sauvegarde qu'il en fait), les tâches planifiées qu'il pose, et tout appel réseau. Puis attends mon accord.
+3. Avec mon accord seulement : place le dossier orchestration-claude dans mon dossier personnel (s'il existe déjà, mets à jour ses fichiers sans toucher à perfs/), demande-moi mon prénom, puis lance ./install.sh <prénom> --sans-accueil.
+4. Dis-moi comment tout retirer : ~/orchestration-claude/desinstaller.sh enlève les hooks, les skills et les tâches, et garde une sauvegarde de settings.json.
+5. Lance node ~/orchestration-claude/outils/accueil.mjs pour ouvrir ma page d'accueil, puis fais /orch accueil.`,
     zip: 'cd ~/orchestration-claude && ./install.sh votre-prenom',
-    terminal: `curl -fsSL ${ZIP} -o /tmp/orchestrateur.zip && unzip -oq /tmp/orchestrateur.zip -d ~ && ~/orchestration-claude/install.sh "$(id -un)"`,
+    terminal: `curl -fsSL ${ZIP} -o /tmp/orchestrateur.zip && echo "${SHA}  /tmp/orchestrateur.zip" | shasum -a 256 -c - && unzip -oq /tmp/orchestrateur.zip -d ~ && ~/orchestration-claude/install.sh "$(id -un)"`,
   };
-  document.getElementById('b-prompt').textContent = TEXTES.prompt;
-  document.getElementById('b-terminal').textContent = TEXTES.terminal;
+  });
+  const afficher = () => { remplir(); document.getElementById('b-prompt').textContent = TEXTES.prompt; document.getElementById('b-terminal').textContent = TEXTES.terminal; };
+  afficher();
+  Promise.all(['orchestrateur.zip.sha256', 'orchestrateur.version'].map((f) => fetch(f, { cache: 'no-store' }).then((r) => r.ok ? r.text() : '')))
+    .then(([h, v]) => { if (/^[0-9a-f]{64}\s*$/.test(h)) SHA = h.trim(); VERSION = v.trim(); afficher(); }).catch(() => {});
   const toast = document.getElementById('toast');
   const dire = (t) => { toast.textContent = t; toast.classList.add('on'); clearTimeout(dire.t); dire.t = setTimeout(() => toast.classList.remove('on'), 2600); };
   document.querySelectorAll('[data-copier]').forEach((b) => b.addEventListener('click', async () => {
