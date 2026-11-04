@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0b0d17">
+<title>Déclic — apprendre en voyant</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b0d17'/%3E%3Cpath d='M17 4 8 18h7l-2 10 11-15h-7z' fill='%23ffd166'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="jeu.css">
+</head>
+<body>
+<div class="fond" aria-hidden="true"></div>
+<header class="haut">
+  <button class="logo" id="logo" aria-label="Accueil"><span class="eclair">⚡</span> Déclic</button>
+  <div class="haut-d">
+    <button class="son" id="son" aria-label="Son">🔊</button>
+    <span class="cerveau" id="cerveau" title="GPT tourne sur un Mac relié au jeu"><i></i><span>cerveau</span></span>
+    <span class="xp" id="xp" title="Points gagnés sur cet appareil">0 XP</span>
+  </div>
+</header>
+<main id="scene"></main>
+<footer class="pied">📖 Faits et photos : <a href="https://fr.wikipedia.org" rel="noopener">Wikipédia</a> et <a href="https://commons.wikimedia.org" rel="noopener">Wikimédia Commons</a> (licences libres, auteur et licence sur la page de chaque photo) · ✏️ schémas et questions écrits par GPT · 🔒 rien n'est gardé sur toi</footer>
+<script src="jeu.js" type="module"></script>
+</body>
+</html>
