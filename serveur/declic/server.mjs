@@ -1,6 +1,7 @@
 // Déclic — serveur du jeu. Aucune dépendance. Il ne parle jamais à GPT : il prépare le travail (sources Wikipédia,
 // prompt), le met en file, et un worker sur un Mac (abonnement ChatGPT via Codex) vient le chercher et le rendre.
 import http from 'node:http'
+import { spawn } from 'node:child_process'
 import { readFile, mkdir, writeFile, readdir } from 'node:fs/promises'
 import { createHash, randomUUID, timingSafeEqual } from 'node:crypto'
 import path from 'node:path'
@@ -150,6 +151,12 @@ async function api(req, res, url) {
   // --- côté worker (le Mac) ---
   if (p.startsWith('/api/worker/')) {
     if (!jetonValide(req)) return json(res, 401, { erreur: 'jeton' })
+    if (m === 'GET' && p === '/api/worker/reprise') { const f = await readFile(path.join(ICI, 'LISEZ-MOI.md')); res.writeHead(200, { 'content-type': 'text/markdown; charset=utf-8', 'cache-control': 'no-store' }); return res.end(f) }
+    if (m === 'GET' && p === '/api/worker/source.tgz') {   // le code complet, pour qu'une session sur le Mac reprenne le développement
+      res.writeHead(200, { 'content-type': 'application/gzip', 'cache-control': 'no-store' })
+      const t = spawn('tar', ['-czf', '-', '--exclude', 'data', '--exclude', 'node_modules', '-C', ICI, '.'], { stdio: ['ignore', 'pipe', 'ignore'] })
+      t.stdout.pipe(res); return
+    }
     if (m === 'GET' && p === '/api/worker/prendre') {
       const fin = Date.now() + Math.min(Number(url.searchParams.get('attente') || 20), 25) * 1000
       do {

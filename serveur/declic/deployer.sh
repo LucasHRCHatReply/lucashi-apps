@@ -5,7 +5,7 @@
 set -euo pipefail
 HOTE="declic.srv875929.hstgr.cloud"; IP="31.97.156.179"; ICI="$(cd "$(dirname "$0")" && pwd)"
 SSH=(ssh -i "$HOME/.ssh/hostinger_vps" -o BatchMode=yes "root@$IP")
-envoyer() { rsync -az --delete --exclude data --exclude node_modules --exclude '*.test.mjs' -e "ssh -i $HOME/.ssh/hostinger_vps -o BatchMode=yes" "$ICI/" "root@$IP:/srv/declic/"; }
+envoyer() { rsync -az --delete --exclude data --exclude node_modules -e "ssh -i $HOME/.ssh/hostinger_vps -o BatchMode=yes" "$ICI/" "root@$IP:/srv/declic/"; }
 case "${1:-}" in
   installer)
     "${SSH[@]}" 'id declic >/dev/null 2>&1 || useradd --system --home /var/lib/declic --shell /usr/sbin/nologin declic; mkdir -p /srv/declic /var/lib/declic /etc/declic; chown declic /var/lib/declic

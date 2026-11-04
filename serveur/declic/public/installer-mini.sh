@@ -34,6 +34,9 @@ cat > "$PLIST" <<P
  <key>StandardOutPath</key><string>$DOSSIER/worker.log</string><key>StandardErrorPath</key><string>$DOSSIER/worker.log</string>
 </dict></plist>
 P
+# la note de reprise et le code complet, pour qu'une session Claude sur ce Mac reprenne le développement
+curl -fsS -H "Authorization: Bearer $TOKEN" "$SITE/api/worker/reprise" -o "$DOSSIER/REPRISE.md" || echo "(note de reprise non téléchargée)"
+if [ ! -d "$HOME/declic-source" ]; then mkdir -p "$HOME/declic-source" && curl -fsS -H "Authorization: Bearer $TOKEN" "$SITE/api/worker/source.tgz" | tar -xzf - -C "$HOME/declic-source" || echo "(code non téléchargé)"; fi
 chmod 600 "$PLIST"
 launchctl bootout "gui/$(id -u)/$ETIQ" 2>/dev/null || true
 launchctl bootstrap "gui/$(id -u)" "$PLIST"
