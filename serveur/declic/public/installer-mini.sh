@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 # Installe le worker de Déclic sur un Mac : il tourne en arrière-plan (launchd), redémarre seul, et fait faire
-# le travail par GPT (petit modèle) via Codex, connecté au compte ChatGPT. Rien n'est ouvert sur ce Mac.
+# le travail par Claude Sonnet (effort bas) via Claude Code, connecté au compte Max. Rien n'est ouvert sur ce Mac.
 # Usage : copier le jeton sur ce Mac (presse-papiers universel), puis  curl -fsSL <site>/installer-mini.sh | zsh
 set -eu
 SITE="https://declic.srv875929.hstgr.cloud"
@@ -8,10 +8,12 @@ DOSSIER="$HOME/declic-worker"; PLIST="$HOME/Library/LaunchAgents/fr.lucashi.decl
 
 NODE="$(command -v node || true)"
 [ -n "$NODE" ] && [ "$("$NODE" -p 'process.versions.node.split(".")[0]')" -ge 20 ] || { echo "Node 20 ou plus est requis (nodejs.org). Rien n'a été modifié."; exit 3; }
-CODEX=""
-for c in /Applications/ChatGPT.app/Contents/Resources/codex-cli/bin/codex "$(command -v codex || true)"; do [ -x "$c" ] && CODEX="$c" && break; done
-[ -n "$CODEX" ] || { echo "Codex est introuvable : installe l'app ChatGPT (ou « npm i -g @openai/codex ») et connecte-la à ton compte. Rien n'a été modifié."; exit 3; }
-"$CODEX" login status 2>&1 | grep -qi "logged in" || { echo "Codex n'est pas connecté : lance « $CODEX login », choisis « Sign in with ChatGPT », puis relance cette commande."; exit 3; }
+CLAUDE="$(command -v claude || true)"
+[ -n "$CLAUDE" ] || { for c in "$HOME/.local/bin/claude" /usr/local/bin/claude /opt/homebrew/bin/claude; do [ -x "$c" ] && CLAUDE="$c" && break; done; }
+[ -n "$CLAUDE" ] || { echo "Claude Code est introuvable (npm i -g @anthropic-ai/claude-code, ou claude.ai/download). Rien n'a été modifié."; exit 3; }
+echo "Essai de Claude Code (Sonnet, effort bas)…"
+REP="$(cd "$(mktemp -d)" && echo 'Réponds par le mot ok' | "$CLAUDE" -p --model sonnet --effort low --tools '' --no-session-persistence --setting-sources '' --output-format text 2>&1 | tail -3)"
+echo "$REP" | grep -qi "ok" || { echo "Claude Code n'a pas répondu (pas connecté au compte Max ?) : $REP. Lance « claude » une fois pour te connecter, puis relance. Rien n'a été modifié."; exit 3; }
 
 TOKEN="${DECLIC_TOKEN:-$(pbpaste | grep -E '^DECLIC_TOKEN=' | head -1 | cut -d= -f2)}"
 [ ${#TOKEN} -ge 24 ] || { echo "Le jeton manque (variable DECLIC_TOKEN ou presse-papiers). Sur le Mac de Lucas : pbcopy < ~/.config/declic/worker.env, puis relance."; exit 4; }
@@ -25,8 +27,8 @@ cat > "$PLIST" <<P
  <key>ProgramArguments</key><array><string>/usr/bin/caffeinate</string><string>-i</string><string>$NODE</string><string>$DOSSIER/worker.mjs</string></array>
  <key>EnvironmentVariables</key><dict>
   <key>DECLIC_URL</key><string>$SITE</string><key>DECLIC_TOKEN</key><string>$TOKEN</string>
-  <key>CODEX</key><string>$CODEX</string><key>PARALLELE</key><string>2</string>
-  <key>PATH</key><string>/usr/bin:/bin:/usr/local/bin:$(dirname "$NODE")</string><key>HOME</key><string>$HOME</string>
+  <key>MOTEUR</key><string>claude</string><key>CLAUDE</key><string>$CLAUDE</string><key>MODELE</key><string>sonnet</string><key>EFFORT</key><string>low</string><key>PARALLELE</key><string>2</string>
+  <key>PATH</key><string>/usr/bin:/bin:/usr/local/bin:$(dirname "$NODE"):$(dirname "$CLAUDE")</string><key>HOME</key><string>$HOME</string>
  </dict>
  <key>RunAtLoad</key><true/><key>KeepAlive</key><true/>
  <key>StandardOutPath</key><string>$DOSSIER/worker.log</string><key>StandardErrorPath</key><string>$DOSSIER/worker.log</string>
