@@ -580,7 +580,23 @@ footer a{color:var(--ink2)}
   </div>
 </div></section>
 
-<section id="accueil"><div class="wrap">
+<section id="index-code"><div class="wrap">
+  <p class="eyebrow">Mesuré le 04/11/2026 · version 2.0.3</p>
+  <h2 class="rv">Un index de code ne rend pas les sous-sessions meilleures.</h2>
+  <p class="lead rv">CodeGraph, un outil qui indexe le dépôt pour répondre plus vite aux questions sur le code, a été testé sur 738 fichiers avec Haiku 5.5 · medium et Sonnet 5.5 · low. Mêmes réponses exactes, mêmes tours, plus de jetons : le skill n’en branche donc pas dans les sous-sessions, et le dit.</p>
+  <div class="tuiles rv">
+    <div class="tuile"><b>11/16 = 11/16</b><span>réponses exactes sans et avec CodeGraph, pour les deux modèles ; tours identiques (32 et 33)</span></div>
+    <div class="tuile"><b>+ 19 % · + 30 %</b><span>de jetons avec CodeGraph (Haiku : 273 221 → 323 844 ; Sonnet : 165 561 → 215 574)</span></div>
+    <div class="tuile"><b>+ 32 % à + 41 %</b><span>de coût selon le calcul : prix publics ou relevé du CLI, qui surcompte Haiku 5.5</span></div>
+    <div class="tuile"><b>0,28 $</b><span>de relevé pour 64 essais ; 0,87 $ pour 80 essais sur un dépôt de 130 fichiers (27/40 sans, 30/40 avec : bruit)</span></div>
+  </div>
+  <p class="src">Source : <code>resultats-gros.csv</code> et <code>resultats-outils.csv</code> du banc d’outils, journal des versions 2.0.3. Critère écrit d’avance : utile si les tours ou le coût baissent d’au moins 30 % à réponses égales ; il ne l’est pas. Intégré : la règle « pas d’index de code pour les sous-sessions » et, si un index existe déjà, le brief nomme l’outil et colle son bloc (un sous-agent ne reçoit pas les instructions MCP). Pas intégré : CodeGraph lui-même ; Understand-Anything, non mesuré (4 à 8 $ estimés, non autorisés).</p>
+  <div class="limites" style="margin-top:28px">
+    <div class="rv"><b>Limites.</b> Questions simples (2 tours chacune, un <code>grep</code> suffit), réponse attendue calculée par regex de mots, usage réel de l’outil non tracé, plus de 738 fichiers et Opus non mesurés. La méthode du brief reste non prouvée.</div>
+  </div>
+</div></section>
+
+<section class="alt" id="accueil"><div class="wrap">
   <p class="eyebrow">À l’installation</p>
   <h2 class="rv">Claude vous écrit un mot d’accueil, sur vos chiffres.</h2>
   <p class="lead rv">L’installation relit vos 30 derniers jours de Claude Code, demande à Haiku (un appel, ≈ 0,01 $) un mot et trois conseils tirés de <b>vos</b> chiffres, et ouvre la page. <code>/orch accueil</code> la rouvre et Claude vous le redit dans la conversation.</p>
@@ -598,7 +614,7 @@ footer a{color:var(--ink2)}
   <p class="illu">Exemple réel, généré le 30/10/2026 sur le Mac de l’auteur : mot et conseils tels que Claude les a écrits. Les vôtres partent de vos chiffres.</p>
 </div></section>
 
-<section class="alt" id="partage"><div class="wrap">
+<section id="partage"><div class="wrap">
   <p class="eyebrow">Un skill qui s’améliore</p>
   <h2 class="rv">Vos chiffres l’affinent. Seulement si vous dites oui.</h2>
   <p class="lead rv">Une fois par mois, une fenêtre montre l’aperçu de ce qui partirait. Rien ne part sans « Partager ». Les chiffres de tous servent à proposer la version suivante, relue avant d’être publiée.</p>
@@ -614,7 +630,7 @@ footer a{color:var(--ink2)}
   </div>
 </div></section>
 
-<section id="installer"><div class="wrap" style="text-align:center">
+<section class="alt" id="installer"><div class="wrap" style="text-align:center">
   <p class="eyebrow">Installer · 2 minutes</p>
   <h2 class="rv">Collez un prompt. Claude fait le reste.</h2>
   <p class="lead rv" style="margin:0 auto">Trois façons, le même résultat : six skills, le déclenchement automatique, le rappel de poids, le partage mensuel avec accord, et la page d’accueil.</p>
@@ -650,7 +666,7 @@ footer a{color:var(--ink2)}
   <div class="btns" style="margin-top:22px"><span class="pill">Ensuite : « orchestre ce chantier : … » · <b>/orch</b> · <b>/orch conseil</b> · <b>/point 5</b></span></div>
 </div></section>
 
-<section class="alt"><div class="wrap">
+<section><div class="wrap">
   <p class="eyebrow">Honnête</p>
   <h2 class="rv" style="font-size:clamp(26px,3.6vw,38px)">Ce que les chiffres ne disent pas.</h2>
   <div class="limites">
