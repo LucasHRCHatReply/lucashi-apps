@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Orchestrateur — skill Claude Code</title>
-<meta name="description" content="Un skill Claude Code qui confie chaque tâche au modèle le moins cher qui la réussit : −57 % de coût sur 11 tâches mesurées, à note égale, −16 % sur une vraie facture de dix jours.">
+<meta name="description" content="Un skill Claude Code qui confie chaque tâche au modèle le moins cher qui la réussit : −57 % de coût sur 11 tâches mesurées, à note égale, −16 % dans une simulation de sessions passées.">
 <meta name="robots" content="noindex">
 <meta name="color-scheme" content="dark light">
 <meta property="og:title" content="Orchestrateur — Claude fait travailler une équipe">
@@ -310,6 +310,7 @@ footer a{color:var(--ink2)}
 #ranger .term{margin-top:34px}
 #ranger .term pre{min-height:420px}
 </style>
+<link rel="stylesheet" href="../assets/presentation.css">
 </head>
 <body>
 <nav class="nav" aria-label="Navigation"><div class="wrap">
@@ -319,9 +320,9 @@ footer a{color:var(--ink2)}
 </div></nav>
 
 <header class="hero wrap">
-  <span class="pill"><b>Skill Claude Code</b> · v2.0 · gratuit</span>
-  <h1>Le même travail. <em>57 % moins cher.</em></h1>
-  <p class="lead">Claude confie chaque tâche au modèle le moins cher qui la réussit : Haiku pour lire et extraire, Sonnet pour coder et vérifier, Opus seulement pour diriger. Chaque lancement s’annonce, avec la raison. Mesuré sur 206 essais et 786 sessions réelles.</p>
+  <span class="pill"><b>Skill Claude Code</b> · v2.0.3 · gratuit</span>
+  <h1>Faites travailler plusieurs sessions Claude Code ensemble.</h1>
+  <p class="lead">Ce skill pour Claude Code aide à répartir une tâche entre plusieurs sessions et à choisir un modèle adapté. Par exemple, une session peut explorer le code pendant qu’une autre prépare les tests. Il annonce les lancements et demande des preuves avant de conclure.</p>
   <div class="btns">
     <button class="btn p" data-copier="prompt">📋 Copier le prompt <small>à coller dans Claude Code</small></button>
     <a class="btn" href="orchestrateur.zip" download>⬇︎ Télécharger <small>.zip</small></a>
@@ -332,9 +333,9 @@ footer a{color:var(--ink2)}
     <div class="kpi rv"><b style="color:var(--ok)">−<span data-compte="57" style="display:inline;margin:0;color:inherit;font-size:inherit">57</span> %</b><span title="11 tâches du banc : 0,61 $ tout sur Opus · medium, 0,26 $ réparties par le skill (coût recalculé le 02/11/2026)">de coût sur les 11 tâches du banc, face à « tout sur Opus »</span></div>
     <div class="kpi rv" style="transition-delay:.08s"><b style="white-space:nowrap">0,96 <small style="font-size:.4em;color:var(--ink3);letter-spacing:0">vs 0,94</small></b><span title="Note moyenne sur 1, critère objectif par tâche">note moyenne : pas moins bien, un peu mieux</span></div>
     <div class="kpi rv" style="transition-delay:.16s"><b style="color:var(--ok)">−<span data-compte="33" style="display:inline;margin:0;color:inherit;font-size:inherit">33</span> %</b><span title="203 s tout sur Opus · medium, 135 s réparties">de temps d’attente, tâche par tâche</span></div>
-    <div class="kpi rv" style="transition-delay:.24s"><b style="color:var(--ok)">−<span data-compte="357" style="display:inline;margin:0;color:inherit;font-size:inherit">357</span> $</b><span title="2 206 $ → 1 849 $, prix publics, outils/simuler.mjs (02/11/2026)">sur dix jours de vraie facture, rejouée avec deux règles</span></div>
+    <div class="kpi rv" style="transition-delay:.24s"><b style="color:var(--ok)">−<span data-compte="357" style="display:inline;margin:0;color:inherit;font-size:inherit">357</span> $</b><span title="2 206 $ → 1 849 $, prix publics, outils/simuler.mjs (02/11/2026)">sur dix jours de sessions passées, simulées avec deux règles</span></div>
   </div>
-  <p class="src">Sources : banc du 20/10/2026 (206 essais, prix publics par appel) ; transcriptions Claude Code du 20 au 29/10/2026 rejouées par <code>outils/simuler.mjs</code>. Coûts recalculés aux prix publics, pas une facture d’abonnement.</p>
+  <p class="src">Ces estimations ne garantissent aucune économie sur un abonnement. Sources : banc du 20/10/2026 (206 essais, prix publics par appel) ; transcriptions Claude Code du 20 au 29/10/2026 rejouées par <code>outils/simuler.mjs</code>. Coûts recalculés aux prix publics, pas une facture d’abonnement.</p>
 
   <div class="scene rv" aria-label="Schéma : l’orchestratrice lance quatre sessions, chacune avec son modèle">
     <svg viewBox="0 0 900 330" role="img">
@@ -375,16 +376,16 @@ footer a{color:var(--ink2)}
       <div class="bon"><b id="g-temps"></b><span>de temps : <span id="g-t"></span></span></div>
     </div>
     <div class="lignes-t" id="lignes-t"></div>
-    <p class="src">Coût et note moyens par appel du banc (1 à 3 essais par case ; prix publics, ≈ 11,7 k jetons de socle Claude Code inclus). Les montants sont petits parce que les appels du banc le sont : c’est le rapport qui compte, et il se retrouve sur une vraie facture, plus bas.</p>
+    <p class="src">Coût et note moyens par appel du banc (1 à 3 essais par case ; prix publics, ≈ 11,7 k jetons de socle Claude Code inclus). Les montants sont petits parce que les appels du banc le sont : c’est le rapport qui compte, ; une simulation de sessions passées figure plus bas.</p>
   </div>
 </div></section>
 
 <section id="facture"><div class="wrap">
-  <p class="eyebrow">Sur une vraie facture</p>
+  <p class="eyebrow">Simulation de sessions passées</p>
   <h2 class="rv">Rejouée sur 786 sessions : 357 $ de moins en dix jours.</h2>
   <p class="lead rv">Chaque réponse facturée du 20 au 29/10 (conversations et agents), recalculée avec les mêmes jetons sous deux règles du skill. Hypothèse prudente : on ne compte ni les tâches que l’orchestratrice aurait confiées à Haiku, ni les réponses plus courtes d’une session neuve.</p>
   <div class="cascade">
-    <div class="r rv"><span class="nm">Facture réelle<small>786 sessions, dont 44 orchestrations</small></span><div class="piste"><i style="--c:var(--ink3)" data-w="100"></i></div><span class="v">2 206 $</span></div>
+    <div class="r rv"><span class="nm">Estimation initiale<small>786 sessions, dont 44 orchestrations</small></span><div class="piste"><i style="--c:var(--ink3)" data-w="100"></i></div><span class="v">2 206 $</span></div>
     <div class="r rv"><span class="nm">Opus seulement pour diriger<small>309 $ d’Opus hors orchestration, payés au prix de Sonnet</small></span><div class="piste"><i style="--c:var(--ok);--g:95.9%" data-w="4.1"></i></div><span class="v moins">− 90 $</span></div>
     <div class="r rv"><span class="nm">Relance à 300 k avec une note<small>63 relances ; le contexte relu retombe à 100 k</small></span><div class="piste"><i style="--c:var(--ok);--g:87.9%" data-w="12.1"></i></div><span class="v moins">− 267 $</span></div>
     <div class="r rv"><span class="nm">Les deux règles<small>soit − 16 %</small></span><div class="piste"><i style="--c:var(--amber)" data-w="83.8"></i></div><span class="v" style="color:var(--amber)">1 849 $</span></div>

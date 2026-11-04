@@ -239,3 +239,6 @@ html:not(.js) .ac-outils{display:none}
   .ac-essentiel a,.ac-app{-webkit-backdrop-filter:none;backdrop-filter:none;background:var(--bg)}
 }
 button.ac-btn{background:transparent;font-family:inherit;cursor:pointer}
+
+/* Une lecture plus calme sur petits écrans. */
+.ac-hero h1{text-wrap:balance}.ac-app p{text-wrap:pretty}@media(max-width:600px){.ac-hero h1{overflow-wrap:break-word}.ac-app p{line-height:1.5}}

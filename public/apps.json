@@ -4,7 +4,7 @@
     {
       "id": "pince",
       "nom": "Pince",
-      "phrase": "Le presse-papiers qui garde tout et colle d'une touche.",
+      "phrase": "Retrouvez et collez les textes et images copiés.",
       "famille": "capture",
       "couleur": "#009EFF",
       "icone": "assets/pince-icon.png?v=20261028n",
@@ -38,7 +38,7 @@
     {
       "id": "jauge",
       "nom": "Jauge",
-      "phrase": "Garde la batterie du MacBook entre deux niveaux.",
+      "phrase": "Choisissez le niveau de charge de votre MacBook.",
       "famille": "systeme",
       "couleur": "#2FBF4F",
       "icone": "assets/jauge-icon.png?v=20261028n",
@@ -80,7 +80,7 @@
     {
       "id": "penombre",
       "nom": "Penombre",
-      "phrase": "Assombrit tout, sauf la fenêtre active.",
+      "phrase": "Concentrez-vous sur une fenêtre en assombrissant les autres.",
       "famille": "bureau",
       "couleur": "#6E56F0",
       "icone": "assets/penombre-icon.png?v=20261028n",
@@ -118,7 +118,7 @@
     {
       "id": "filoir",
       "nom": "Filoir",
-      "phrase": "Des filoirs flottants en verre, pour déposer vos fichiers.",
+      "phrase": "Une étagère temporaire pour regrouper et déplacer des fichiers.",
       "famille": "bureau",
       "couleur": "#16A8BC",
       "icone": "assets/filoir-icon.png?v=20261028n",
@@ -155,7 +155,7 @@
     {
       "id": "autofoldericon",
       "nom": "AutoFolderIcon",
-      "phrase": "Pose toute seule une icône teintée sur chaque dossier, d'après son nom.",
+      "phrase": "Reconnaissez vos dossiers grâce à des icônes adaptées à leur nom.",
       "famille": "bureau",
       "couleur": "#4A90F5",
       "icone": "assets/autofoldericon-icon.png?v=20261028n",
@@ -196,7 +196,7 @@
     {
       "id": "glisse",
       "nom": "Glisse",
-      "phrase": "Cale la fenêtre d'un geste sur la barre de titre.",
+      "phrase": "Rangez les fenêtres d’un geste sur le trackpad.",
       "famille": "bureau",
       "couleur": "#FF7A3D",
       "icone": "assets/glisse-icon.png?v=20261028n",
@@ -215,12 +215,13 @@
       "build_page": "python3 build.py",
       "page_construite": "~/Downloads/Glisse.html",
       "dmg": "Glisse.dmg",
-      "description": "Glisse ajoute des gestes à la barre de titre des fenêtres : deux ou trois doigts qui glissent ou pincent calent la fenêtre (moitiés, quarts, tiers, huitièmes), la passent en plein écran, la minimisent ou la ferment. Une affiche montre où elle ira avant que vous leviez les doigts. Aimantation entre fenêtres et poignée commune depuis la 0.9.0. Version de test."
+      "description": "Glisse ajoute des gestes à la barre de titre des fenêtres : deux ou trois doigts qui glissent ou pincent calent la fenêtre (moitiés, quarts, tiers, huitièmes), la passent en plein écran, la minimisent ou la ferment. Une affiche montre où elle ira avant que vous leviez les doigts. Aimantation entre fenêtres et poignée commune depuis la 0.9.0. Version de test.",
+      "preversion": true
     },
     {
       "id": "veillon",
       "nom": "Veillon",
-      "phrase": "Le Mac sous les yeux : processeur, mémoire, disque, et un grand nettoyage.",
+      "phrase": "Surveillez les ressources du Mac et faites de la place.",
       "famille": "systeme",
       "couleur": "#84D896",
       "icone": "assets/veillon-icon.png?v=20261028n",
@@ -262,7 +263,7 @@
     {
       "id": "lueur",
       "nom": "Lueur",
-      "phrase": "Le rétroéclairage du clavier, depuis la barre des menus.",
+      "phrase": "Réglez l’éclairage du clavier depuis la barre des menus.",
       "famille": "systeme",
       "couleur": "#F2A93B",
       "icone": "assets/lueur-icon.png?v=20261028n",
@@ -300,7 +301,7 @@
     {
       "id": "corolle",
       "nom": "Corolle",
-      "phrase": "Glissez un fichier : une roue d'actions s'ouvre sous le curseur.",
+      "phrase": "Déposez un fichier sur une roue d’actions adaptées.",
       "famille": "bureau",
       "couleur": "#F2762E",
       "icone": "assets/corolle-icon.png?v=20261028n",
@@ -340,7 +341,7 @@
     {
       "id": "paupiere",
       "nom": "Paupière",
-      "phrase": "Le Mac reste éveillé, vous choisissez comment : écran éteint, verrouillé, voilé ou capot fermé.",
+      "phrase": "Gardez le Mac éveillé pendant un téléchargement ou une présentation.",
       "famille": "systeme",
       "couleur": "#2B3A67",
       "icone": "assets/paupiere-icon.png?v=20261028n",
@@ -364,7 +365,7 @@
     {
       "id": "releve",
       "nom": "Relève",
-      "phrase": "Toutes mes apps à jour d'un coup, sans jamais casser l'ancienne.",
+      "phrase": "Mettez à jour les apps de la collection et gardez un retour en arrière.",
       "famille": "systeme",
       "couleur": "#23CC99",
       "icone": "assets/releve-icon.png?v=20261028n",
@@ -394,7 +395,7 @@
     {
       "id": "relais",
       "nom": "Relais",
-      "phrase": "Votre Mac vous parle, vous lui répondez depuis l'iPhone.",
+      "phrase": "Répondez depuis l’iPhone aux questions du Mac ; préversion à accès limité.",
       "famille": "appareils",
       "couleur": "#16A8BC",
       "icone": "assets/relais-icon.png?v=20261028n",
@@ -415,7 +416,7 @@
     {
       "id": "relief",
       "nom": "Relief",
-      "phrase": "Votre montre Garmin lue par le câble, sans compte.",
+      "phrase": "Consultez vos sorties Garmin sur le Mac, par câble.",
       "famille": "appareils",
       "couleur": "#84D896",
       "icone": "assets/relief-icon.png?v=20261028n",
@@ -442,7 +443,7 @@
       "id": "tadis",
       "preversion": true,
       "nom": "Tadis",
-      "phrase": "Dicte et transcrit, sur le Mac, sans envoyer votre voix.",
+      "phrase": "Dictez et transcrivez des enregistrements sur le Mac.",
       "famille": "capture",
       "couleur": "#EC623C",
       "icone": "assets/tadis-icon.png?v=20261028n",
@@ -468,7 +469,7 @@
       "id": "glose",
       "preversion": true,
       "nom": "Glose",
-      "phrase": "Vos notes, en marge de l'écran.",
+      "phrase": "Gardez vos notes à portée de main pendant votre travail.",
       "famille": "bureau",
       "couleur": "#EC623C",
       "icone": "assets/glose-icon.png?v=20261103",
@@ -494,7 +495,7 @@
       "id": "ocruroeil",
       "preversion": true,
       "nom": "Ocruroeil",
-      "phrase": "Un scan ou une photo devient un vrai document, cherchable et modifiable.",
+      "phrase": "Retrouvez et copiez le texte de vos scans et photos.",
       "famille": "capture",
       "couleur": "#5B48E8",
       "icone": "assets/ocruroeil-icon.png?v=20261028n",
@@ -513,7 +514,7 @@
     {
       "id": "cliche",
       "nom": "Cliché",
-      "phrase": "Capture l'écran, annote, enregistre. Nom provisoire.",
+      "phrase": "Capturez et annotez votre écran ; la vidéo est en préversion.",
       "famille": "capture",
       "couleur": "#2896E6",
       "icone": "assets/cliche-icon.png?v=20261028n",
@@ -542,13 +543,13 @@
       "nom": "Orchestrateur",
       "type": "skill",
       "famille": "skills",
-      "phrase": "Claude fait travailler une équipe : de vraies sessions, chacune avec le modèle qui suffit.",
+      "phrase": "Répartissez une tâche entre plusieurs sessions Claude Code.",
       "couleur": "#F59E0B",
       "icone": "assets/orchestrateur-icon.svg",
       "page": "orchestrateur/",
-      "version": "1.2.0",
+      "version": "2.0.3",
       "telechargement": "orchestrateur/orchestrateur.zip",
-      "description": "Un skill Claude Code qui confie chaque tâche au modèle le moins cher qui la réussit : −66 % de coût sur 11 tâches mesurées à note égale, −20 % sur dix jours de vraie facture. Il se déclenche seul et annonce chaque lancement avec sa raison.",
+      "description": "Un skill Claude Code pour répartir le travail entre plusieurs sessions. Banc de 11 tâches : −57 % de coût estimé ; simulation de sessions passées : −16 %. Ces résultats ne garantissent pas une économie sur un abonnement.",
       "source_page": null
     }
   ]

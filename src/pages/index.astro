@@ -68,13 +68,13 @@ const caps = apps.flatMap((a) => (a.bande ?? a.captures ?? []).map((c) => ({ a, 
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Apps de Lucas</title>
-<meta name="description" content={`${nbApps} apps macOS que je construis pour moi : presse-papiers, batterie, fenêtres, dictée. Gratuites, sans compte, sans télémétrie.`}>
+<meta name="description" content={`${nbApps} apps pour le Mac : presse-papiers, batterie, fenêtres et dictée. Trouvez celle qui répond à votre besoin.`}>
 <meta name="color-scheme" content="light dark">
 {!INDEXABLE && <meta name="robots" content="noindex">}
 <link rel="canonical" href={url('/')}>
 <meta property="og:type" content="website">
 <meta property="og:title" content="Apps de Lucas">
-<meta property="og:description" content="Des apps macOS que je construis pour moi. Gratuites, sans compte, sans télémétrie.">
+<meta property="og:description" content="Des outils pour le Mac, créés à partir de besoins quotidiens et partagés avec vous.">
 <meta property="og:url" content={url('/')}>
 <meta property="og:image" content={url('/assets/og.png')}>
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
@@ -93,8 +93,8 @@ const caps = apps.flatMap((a) => (a.bande ?? a.captures ?? []).map((c) => ({ a, 
 </nav>
 <main>
   <header class="ac-hero wrap">
-    <h1>Des apps Mac, faites pour moi.</h1>
-    <p>{nbApps} apps gratuites, sans compte. La bonne en quelques secondes :</p>
+    <h1>Des apps pour simplifier votre quotidien sur Mac.</h1>
+    <p>{nbApps} apps pour travailler, ranger et retrouver. Choisissez par besoin :</p>
     <ul class="ac-essentiel" aria-label="L'essentiel">
       {ESSENTIEL.map((e) => (
         <li><a href={e.app.page} style={`--c:${e.app.couleur}`} title={e.app.phrase}>
@@ -172,11 +172,11 @@ const caps = apps.flatMap((a) => (a.bande ?? a.captures ?? []).map((c) => ({ a, 
     )}
     <section id="construis"><div class="wrap">
       <h2 class="t rv">Ce que je construis</h2>
-      <p class="lead rv">Des répliques personnelles d'apps que j'aime, en mieux sur ce qui me manquait.</p>
+      <p class="lead rv">Je crée ces outils à partir de besoins rencontrés au quotidien, puis je les partage pour qu’ils puissent servir à d’autres.</p>
       <div class="trois">
-        <div class="rv"><b>Natif et léger</b><span>SwiftUI, Liquid Glass, rien qui tourne pour rien.</span></div>
-        <div class="rv" style="--d:90ms"><b>Sans compte</b><span>Aucune inscription, aucune télémétrie, aucun serveur.</span></div>
-        <div class="rv" style="--d:180ms"><b>Mises à jour intégrées</b><span>Chaque app se met à jour depuis ses réglages.</span></div>
+        <div class="rv"><b>Natif et léger</b><span>Des applications conçues pour le Mac, chacune pour un usage précis.</span></div>
+        <div class="rv" style="--d:90ms"><b>Sans compte</b><span>La plupart s’utilisent sans compte. Relais demande un serveur privé et un abonnement Claude.</span></div>
+        <div class="rv" style="--d:180ms"><b>À votre rythme</b><span>Les conditions et les mises à jour sont précisées sur chaque page.</span></div>
       </div>
     </div></section>
     <footer><div class="wrap"><span>© Lucas Hirschauer</span><span>Apps signées, non notarisées par Apple. Le script d'installation se lit en entier.</span></div></footer>

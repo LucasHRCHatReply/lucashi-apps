@@ -27,6 +27,8 @@ if [ -n "$SRC" ]; then
   # le retour « Toutes les apps » reste relatif : le site est servi sous plusieurs noms (VPS, puis app.lucashi.fr)
   sed -i '' 's#href="https://app.lucashi.fr/"#href="../"#g' "public/$ID/index.html"
 fi
+node scripts/poser-arguments.mjs "$ID"
+node scripts/refonte-presentations.mjs "$ID"
 scripts/controle.sh
 git config core.hooksPath scripts/hooks
 git add -A

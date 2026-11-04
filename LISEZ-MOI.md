@@ -19,8 +19,7 @@ Production : `SITE_URL=https://app.lucashi.fr INDEXABLE=true npm run build`.
 ~/lucashi-apps/scripts/mettre-a-jour.sh pince
 ```
 
-Le script reconstruit la page de vente depuis le dépôt local de l'app (champ `source_page` de `apps.json`), la recopie
-dans `public/pince/index.html`, lance le contrôle, commite et pousse. Le site est à jour deux minutes plus tard (le VPS reconstruit).
+Le script reconstruit la page de vente depuis le dépôt local de l'app (champ `source_page` de `apps.json`), la recopie dans `public/pince/index.html`, réapplique les textes de `scripts/arguments.json` et les corrections de `scripts/refonte-presentations.mjs`, puis lance le contrôle, commite et pousse. Le site est à jour deux minutes plus tard (le VPS reconstruit).
 `--sans-push` s'arrête avant le push.
 
 ## Ajouter une app (deux commandes)

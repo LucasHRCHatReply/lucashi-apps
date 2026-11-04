@@ -1,0 +1,10 @@
+/* Lisibilité commune : chaque page conserve sa composition et sa palette. */
+header h1 { text-wrap: balance; }
+header .lead, header .tag { text-wrap: pretty; }
+@media (max-width: 600px) {
+  header h1 { overflow-wrap: break-word; }
+  header .lead, header .tag { line-height: 1.5; }
+}
+/* Les longs exemples de commande restent défilables dans leur colonne. */
+.install > * { min-width: 0; }
+@media (max-width: 600px) { html { overflow-x: clip; } }
