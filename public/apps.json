@@ -139,7 +139,7 @@
       "page": "filoir/",
       "depot": "LucasHRCHatReply/filoir-releases",
       "zip": "Filoir.zip",
-      "version": "1.5.0",
+      "version": "1.5.1",
       "source_page": "~/Tiroir/site",
       "build_page": "python3 build.py",
       "page_construite": "~/Downloads/Filoir.html",
