@@ -1,24 +1,24 @@
 // Corrections éditoriales à réappliquer après la reconstruction d'une page source.
 import fs from 'node:fs';
 const titres = {
- pince:'Retrouvez et collez ce que vous avez copié.',
- jauge:'Choisissez le niveau de charge de votre MacBook.',
- penombre:'Concentrez-vous sur une fenêtre, le reste s’assombrit.',
- filoir:'Une étagère temporaire pour déplacer vos fichiers.',
- autofoldericon:'Reconnaissez vos dossiers grâce à leurs icônes.',
- glisse:'Rangez vos fenêtres d’un geste sur le trackpad.',
- veillon:'Voyez ce qui occupe votre Mac et libérez de la place.',
- lueur:'Réglez l’éclairage du clavier depuis la barre des menus.',
- corolle:'Déposez un fichier sur l’action à effectuer.',
- paupiere:'Gardez votre Mac éveillé le temps nécessaire.',
- releve:'Mettez à jour vos apps et gardez un retour en arrière.',
- relais:'Répondez aux questions de votre Mac depuis l’iPhone.',
- relief:'Retrouvez vos sorties Garmin sur votre Mac, par câble.',
- tadis:'Dictez et transcrivez vos enregistrements sur le Mac.',
- glose:'Gardez vos notes à portée de main pendant votre travail.',
- ocruroeil:'Retrouvez et copiez le texte de vos scans et photos.',
- cliche:'Capturez et annotez votre écran sur Mac.',
- orchestrateur:'Faites travailler plusieurs sessions Claude Code ensemble.'
+ pince:'Tout ce que vous copiez, retrouvé en trois touches.',
+ jauge:'Arrêtez la charge à 80 %. Ou là où vous voulez.',
+ penombre:'Une fenêtre dans la lumière. Le reste dans l’ombre.',
+ filoir:'Secouez un fichier : une étagère apparaît.',
+ autofoldericon:'Vos dossiers s’habillent tout seuls.',
+ glisse:'Deux doigts sur la barre de titre : la fenêtre est rangée.',
+ veillon:'Voyez ce qui ralentit votre Mac. Nettoyez-le d’un clic.',
+ lueur:'Le clavier s’éclaire comme vous l’avez décidé.',
+ corolle:'Glissez un fichier, appuyez sur Maj : la roue fait le reste.',
+ paupiere:'Votre Mac reste éveillé. Même capot fermé.',
+ releve:'Toutes vos apps à jour d’un clic. Avec un retour en arrière.',
+ relais:'Votre Mac pose une question. Vous répondez de l’iPhone.',
+ relief:'Votre montre Garmin, lue par câble. Sans compte.',
+ tadis:'Parlez. Le texte s’écrit là où est le curseur.',
+ glose:'Vos notes au bord de l’écran, jamais dans le chemin.',
+ ocruroeil:'Un scan redevient un vrai document.',
+ cliche:'Capturez, annotez, filmez l’écran. Au même endroit.',
+ orchestrateur:'Une tâche, plusieurs sessions Claude Code. Le bon modèle pour chacune.'
 };
 const replacements = {
  filoir: [["Filoir — filoirs flottants pour Mac", "Filoir — une étagère temporaire pour vos fichiers"],["Une image : <b>Cliché</b> (en développement) l'annotera.","Une image : <b>Cliché</b>, disponible en préversion, peut l’annoter."],["Cliché (en développement, pas encore téléchargeable)",'<a href="../cliche/">Cliché (préversion)</a>'],["Cliché n'est pas encore publiée.","Cliché est disponible en préversion."]],

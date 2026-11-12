@@ -9,9 +9,9 @@
   },
   "jauge": {
     "probleme": [
-      "Votre MacBook reste souvent branché au bureau.",
-      "Vous souhaitez choisir un niveau de charge adapté à cet usage.",
-      "Et pouvoir charger à fond avant un déplacement."
+      "Votre MacBook passe ses journées branché, à 100 %.",
+      "Rester plein sur secteur, c'est ce qui use le plus une batterie.",
+      "Et macOS ne vous laisse pas choisir où la charge s'arrête."
     ],
     "solution": "Jauge arrête la charge au niveau que vous choisissez, 80 % par exemple, et le tient même app fermée. Un bouton pour charger à fond la veille d'un déplacement."
   },
@@ -41,17 +41,17 @@
   },
   "glisse": {
     "probleme": [
-      "Vous voulez placer deux fenêtres côte à côte pour comparer des documents.",
-      "Il faut les disposer et ajuster leur taille.",
-      "Un geste rapide peut simplifier cette manipulation répétée."
+      "Deux fenêtres côte à côte : il faut viser un bord, tirer, ajuster.",
+      "Puis recommencer pour la seconde.",
+      "Dix fois par jour."
     ],
     "solution": "Glisse cale la fenêtre d'un geste à deux doigts sur sa barre de titre : moitié, quart ou plein écran, sans rien viser."
   },
   "veillon": {
     "probleme": [
-      "Le Mac ralentit ou manque de place.",
-      "Vous cherchez ce qui utilise le processeur, la mémoire ou le disque.",
-      "Ces informations et les possibilités de nettoyage sont réparties à plusieurs endroits."
+      "Le Mac rame, le ventilateur souffle, le disque est plein.",
+      "Qui est le coupable ? Il faut ouvrir le Moniteur d'activité, les Réglages, le Finder.",
+      "Et pour faire de la place, encore un autre outil."
     ],
     "solution": "Veillon montre d'un coup d'œil le processeur, la mémoire et le disque, dit ce qui les occupe, et fait le grand nettoyage en un clic."
   },
@@ -125,6 +125,6 @@
       "Pour filmer l'écran, c'est encore un autre outil.",
       "Trois apps pour un seul geste."
     ],
-    "solution": "Cliché capture, annote et enregistre l'écran au même endroit."
+    "solution": "Cliché capture, annote et enregistre l'écran au même endroit. La capture reste en vignette à l'écran : une flèche, un flou, et elle est prête à coller."
   }
 }

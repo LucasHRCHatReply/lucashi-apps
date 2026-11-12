@@ -1,0 +1,20 @@
+{
+  "pince": [["cliche", "Une capture copiée se retrouve dans l'historique de Pince."], ["glose", "Ce qui doit durer passe du presse-papier à une note."], ["filoir", "Pince garde ce que vous copiez, Filoir les fichiers que vous déplacez."]],
+  "jauge": [["veillon", "Cycles, température, santé : la batterie vue de plus près."], ["paupiere", "Le Mac reste éveillé pendant qu'il reste branché."], ["lueur", "L'autre réglage du MacBook que macOS cache : le clavier."]],
+  "penombre": [["glisse", "Rangez les fenêtres d'un geste, puis éclairez-en une seule."], ["paupiere", "Vous vous absentez : un voile couvre l'écran, le Mac continue."], ["glose", "Une note au bord de l'écran, sans quitter la fenêtre éclairée."]],
+  "filoir": [["corolle", "Le fichier posé dans le filoir se convertit d'un geste sur la roue."], ["ocruroeil", "Un scan dans le filoir : « Reconnaître le texte dans Ocruroeil »."], ["tadis", "Un mémo vocal dans le filoir : « Transcrire dans Tadis »."]],
+  "autofoldericon": [["filoir", "Des dossiers reconnaissables, et une étagère pour y ranger les fichiers."], ["corolle", "Glissez un fichier : convertir, alléger ou zipper avant de le ranger."], ["releve", "Met à jour AutoFolderIcon et les autres apps d'un clic."]],
+  "glisse": [["penombre", "Les fenêtres rangées, une seule reste éclairée."], ["filoir", "Entre deux fenêtres, une étagère pour poser les fichiers."], ["releve", "Met à jour Glisse et les autres apps d'un clic."]],
+  "veillon": [["jauge", "Veillon lit la batterie, Jauge décide où la charge s'arrête."], ["paupiere", "Empêche la veille pendant une longue tâche."], ["releve", "Des apps à jour, c'est aussi de l'entretien."]],
+  "lueur": [["jauge", "L'autre réglage du MacBook que macOS cache : la limite de charge."], ["penombre", "Le soir : clavier éclairé, une seule fenêtre dans la lumière."], ["paupiere", "Le Mac reste éveillé, le clavier reste réglé."]],
+  "corolle": [["filoir", "Posez plusieurs fichiers sur l'étagère avant de les traiter."], ["ocruroeil", "Pour un scan entier : texte, titres et tableaux reconstruits."], ["cliche", "Capturez l'écran, puis glissez la capture sur la roue."]],
+  "paupiere": [["jauge", "Branché toute la journée : la charge s'arrête où vous voulez."], ["penombre", "Le même voile, pour se concentrer sur une fenêtre."], ["veillon", "Voyez ce que fait le Mac pendant qu'il reste éveillé."]],
+  "releve": [["pince", "Le presse-papier qui garde tout. Relève la tient à jour."], ["filoir", "L'étagère à fichiers. Relève la tient à jour."], ["jauge", "La limite de charge. Relève la tient à jour."]],
+  "relais": [["orchestrateur", "Plusieurs sessions Claude Code travaillent ; leurs questions arrivent sur l'iPhone."], ["paupiere", "Le Mac reste éveillé pour finir la tâche pendant votre absence."], ["glose", "Des notes qui suivent aussi sur le téléphone."]],
+  "relief": [["glose", "Notez vos séances à côté de vos courbes."], ["releve", "Met à jour Relief et les autres apps d'un clic."]],
+  "tadis": [["glose", "Dictez directement dans une note."], ["filoir", "Un mémo vocal dans le filoir : « Transcrire dans Tadis »."], ["ocruroeil", "La voix devient du texte ; le papier aussi."]],
+  "glose": [["tadis", "Dictez la note au lieu de la taper."], ["pince", "Ce que vous copiez reste à trois touches, le temps de le noter."], ["ocruroeil", "Le texte d'un scan, prêt à coller dans une note."]],
+  "ocruroeil": [["cliche", "Pour une zone de l'écran : entourez, le texte est copié."], ["filoir", "Un scan dans le filoir s'ouvre dans Ocruroeil d'un clic."], ["corolle", "Convertissez ou allégez le PDF obtenu d'un geste."]],
+  "cliche": [["pince", "Chaque capture copiée reste dans l'historique."], ["ocruroeil", "Pour un document entier plutôt qu'une zone d'écran."], ["filoir", "Une image dans le filoir : « Annoter dans Cliché »."]],
+  "orchestrateur": [["relais", "Les questions des sessions arrivent sur l'iPhone."], ["paupiere", "Le Mac reste éveillé pendant une longue orchestration."], ["glose", "Les notes du chantier, au bord de l'écran."]]
+}

@@ -4,7 +4,7 @@
     {
       "id": "pince",
       "nom": "Pince",
-      "phrase": "Retrouvez et collez les textes et images copiés.",
+      "phrase": "Tout ce que vous copiez, retrouvé en trois touches.",
       "famille": "capture",
       "couleur": "#009EFF",
       "icone": "assets/pince-icon.png?v=20261028n",
@@ -38,7 +38,7 @@
     {
       "id": "jauge",
       "nom": "Jauge",
-      "phrase": "Choisissez le niveau de charge de votre MacBook.",
+      "phrase": "Arrêtez la charge du MacBook à 80 %, ou là où vous voulez.",
       "famille": "systeme",
       "couleur": "#2FBF4F",
       "icone": "assets/jauge-icon.png?v=20261028n",
@@ -80,7 +80,7 @@
     {
       "id": "penombre",
       "nom": "Penombre",
-      "phrase": "Concentrez-vous sur une fenêtre en assombrissant les autres.",
+      "phrase": "Une fenêtre dans la lumière, le reste dans l’ombre.",
       "famille": "bureau",
       "couleur": "#6E56F0",
       "icone": "assets/penombre-icon.png?v=20261028n",
@@ -118,7 +118,7 @@
     {
       "id": "filoir",
       "nom": "Filoir",
-      "phrase": "Une étagère temporaire pour regrouper et déplacer des fichiers.",
+      "phrase": "Secouez un fichier : une étagère apparaît pour le poser.",
       "famille": "bureau",
       "couleur": "#16A8BC",
       "icone": "assets/filoir-icon.png?v=20261028n",
@@ -155,7 +155,7 @@
     {
       "id": "autofoldericon",
       "nom": "AutoFolderIcon",
-      "phrase": "Reconnaissez vos dossiers grâce à des icônes adaptées à leur nom.",
+      "phrase": "Vos dossiers s’habillent tout seuls, d’après leur nom.",
       "famille": "bureau",
       "couleur": "#4A90F5",
       "icone": "assets/autofoldericon-icon.png?v=20261028n",
@@ -196,7 +196,7 @@
     {
       "id": "glisse",
       "nom": "Glisse",
-      "phrase": "Rangez les fenêtres d’un geste sur le trackpad.",
+      "phrase": "Deux doigts sur la barre de titre : la fenêtre est rangée.",
       "famille": "bureau",
       "couleur": "#FF7A3D",
       "icone": "assets/glisse-icon.png?v=20261028n",
@@ -221,7 +221,7 @@
     {
       "id": "veillon",
       "nom": "Veillon",
-      "phrase": "Surveillez les ressources du Mac et faites de la place.",
+      "phrase": "Voyez ce qui ralentit votre Mac et nettoyez-le d’un clic.",
       "famille": "systeme",
       "couleur": "#84D896",
       "icone": "assets/veillon-icon.png?v=20261028n",
@@ -263,7 +263,7 @@
     {
       "id": "lueur",
       "nom": "Lueur",
-      "phrase": "Réglez l’éclairage du clavier depuis la barre des menus.",
+      "phrase": "Le clavier s’éclaire comme vous l’avez décidé.",
       "famille": "systeme",
       "couleur": "#F2A93B",
       "icone": "assets/lueur-icon.png?v=20261028n",
@@ -301,7 +301,7 @@
     {
       "id": "corolle",
       "nom": "Corolle",
-      "phrase": "Déposez un fichier sur une roue d’actions adaptées.",
+      "phrase": "Glissez un fichier, appuyez sur Maj : une roue d’actions s’ouvre.",
       "famille": "bureau",
       "couleur": "#F2762E",
       "icone": "assets/corolle-icon.png?v=20261028n",
@@ -341,7 +341,7 @@
     {
       "id": "paupiere",
       "nom": "Paupière",
-      "phrase": "Gardez le Mac éveillé pendant un téléchargement ou une présentation.",
+      "phrase": "Votre Mac reste éveillé le temps qu’il faut, même capot fermé.",
       "famille": "systeme",
       "couleur": "#2B3A67",
       "icone": "assets/paupiere-icon.png?v=20261028n",
@@ -365,7 +365,7 @@
     {
       "id": "releve",
       "nom": "Relève",
-      "phrase": "Mettez à jour les apps de la collection et gardez un retour en arrière.",
+      "phrase": "Toutes vos apps à jour d’un clic, avec un retour en arrière.",
       "famille": "systeme",
       "couleur": "#23CC99",
       "icone": "assets/releve-icon.png?v=20261028n",
@@ -416,7 +416,7 @@
     {
       "id": "relief",
       "nom": "Relief",
-      "phrase": "Consultez vos sorties Garmin sur le Mac, par câble.",
+      "phrase": "Votre montre Garmin, lue par câble, sans compte.",
       "famille": "appareils",
       "couleur": "#84D896",
       "icone": "assets/relief-icon.png?v=20261028n",
@@ -443,7 +443,7 @@
       "id": "tadis",
       "preversion": true,
       "nom": "Tadis",
-      "phrase": "Dictez et transcrivez des enregistrements sur le Mac.",
+      "phrase": "Parlez : le texte s’écrit là où est le curseur.",
       "famille": "capture",
       "couleur": "#EC623C",
       "icone": "assets/tadis-icon.png?v=20261028n",
@@ -469,7 +469,7 @@
       "id": "glose",
       "preversion": true,
       "nom": "Glose",
-      "phrase": "Gardez vos notes à portée de main pendant votre travail.",
+      "phrase": "Vos notes au bord de l’écran, jamais dans le chemin.",
       "famille": "bureau",
       "couleur": "#EC623C",
       "icone": "assets/glose-icon.png?v=20261103",
@@ -495,7 +495,7 @@
       "id": "ocruroeil",
       "preversion": true,
       "nom": "Ocruroeil",
-      "phrase": "Retrouvez et copiez le texte de vos scans et photos.",
+      "phrase": "Un scan ou une photo redevient un vrai document.",
       "famille": "capture",
       "couleur": "#5B48E8",
       "icone": "assets/ocruroeil-icon.png?v=20261028n",

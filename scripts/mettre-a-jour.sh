@@ -29,6 +29,7 @@ if [ -n "$SRC" ]; then
 fi
 node scripts/poser-arguments.mjs "$ID"
 node scripts/refonte-presentations.mjs "$ID"
+node scripts/poser-liens.mjs "$ID"
 scripts/controle.sh
 git config core.hooksPath scripts/hooks
 git add -A
