@@ -139,13 +139,13 @@
       "page": "filoir/",
       "depot": "LucasHRCHatReply/filoir-releases",
       "zip": "Filoir.zip",
-      "version": "1.5.1",
+      "version": "1.5.2",
       "source_page": "~/Tiroir/site",
       "build_page": "python3 build.py",
       "page_construite": "~/Downloads/Filoir.html",
       "requis": [
         "Mac à puce Apple (M1 ou plus récent)",
-        "macOS 15 ou plus (Liquid Glass natif sous macOS 26)",
+        "macOS 15 ou plus (Liquid Glass natif sous macOS 26, flou classique sous macOS 15)",
         "Aucun compte, aucune télémétrie, aucun mot de passe administrateur"
       ],
       "dmg": "Filoir.dmg",
