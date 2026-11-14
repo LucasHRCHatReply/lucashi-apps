@@ -543,13 +543,13 @@
       "nom": "Orchestrateur",
       "type": "skill",
       "famille": "skills",
-      "phrase": "Répartissez une tâche entre plusieurs sessions Claude Code.",
+      "phrase": "Une session Claude, toute une équipe : chaque tâche part au bon modèle.",
       "couleur": "#F59E0B",
       "icone": "assets/orchestrateur-icon.svg",
       "page": "orchestrateur/",
-      "version": "2.0.3",
+      "version": "3.0.0",
       "telechargement": "orchestrateur/orchestrateur.zip",
-      "description": "Un skill Claude Code pour répartir le travail entre plusieurs sessions. Banc de 11 tâches : −57 % de coût estimé ; simulation de sessions passées : −16 %. Ces résultats ne garantissent pas une économie sur un abonnement.",
+      "description": "Un skill Claude Code qui découpe un chantier, lance de vraies sessions sur le modèle le plus bas qui suffit, confie images et veille à GPT si vous l'avez, et vérifie chaque rendu. Banc de 11 tâches : −57 % de coût estimé face à « tout sur Opus », note 0,96 contre 0,94. Ces estimations ne garantissent aucune économie sur un abonnement.",
       "source_page": null
     }
   ]
