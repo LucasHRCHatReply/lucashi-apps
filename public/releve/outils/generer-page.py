@@ -25,7 +25,7 @@ html=f'''<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Relève — toutes vos apps à jour, d'un coup</title>
-<meta name="description" content="Relève vit dans la barre des menus du Mac et met à jour toutes les apps de la collection d'un clic. Empreinte et signature contrôlées, l'ancienne version reste si quoi que ce soit échoue. Gratuit, sans compte.">
+<meta name="description" content="Relève vit dans la barre des menus du Mac et met à jour toutes les apps de la collection d'un clic. Installée seulement si l'empreinte est juste et la signature celle de l'éditeur ; l'ancienne version est remise toute seule si la nouvelle ne démarre pas. Gratuit, sans compte.">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="images/icone-s.png">
 <style>
@@ -64,19 +64,19 @@ kbd{{font:600 .86em var(--mono);padding:.15em .5em;border-radius:7px;background:
 @media (max-width:820px){{.nav .links a:not(.cta){{display:none}}}}
 
 /* Héros */
-.hero{{position:relative;text-align:center;padding:104px 16px 0;overflow:hidden;
+.hero{{position:relative;text-align:center;padding:84px 16px 0;overflow:hidden;
   background:radial-gradient(ellipse 60% 46% at 50% 8%,var(--glow),transparent 70%),var(--bg)}}
-.hero img.ic{{width:88px;height:88px;border-radius:21px;box-shadow:0 18px 60px -8px var(--glow),0 8px 24px -10px var(--shadow)}}
-.hero h1{{font-size:clamp(33px,7vw,84px);max-width:16ch;margin:18px auto 0}}
-.hero p.tag{{font-size:clamp(18px,2.2vw,26px);margin:16px auto 0;color:var(--ink2);max-width:34ch}}
-.cta-row{{display:flex;gap:14px;justify-content:center;margin-top:28px;flex-wrap:wrap;align-items:center}}
-.btn-p{{background:var(--accent);color:var(--on-acc);padding:15px 32px;border-radius:999px;font-weight:750;font-size:18px;text-decoration:none;transition:transform .2s;box-shadow:0 14px 40px -12px var(--accent-d);display:inline-block}}
+.hero img.ic{{width:58px;height:58px;border-radius:14px;box-shadow:0 18px 60px -8px var(--glow),0 8px 24px -10px var(--shadow)}}
+.hero h1{{font-size:clamp(33px,6vw,66px);max-width:18ch;margin:14px auto 0}}
+.hero p.tag{{font-size:clamp(18px,1.8vw,21px);margin:10px auto 0;color:var(--ink2);max-width:46ch}}
+.cta-row{{display:flex;gap:14px;justify-content:center;margin-top:20px;flex-wrap:wrap;align-items:center}}
+.btn-p{{background:var(--accent);color:var(--on-acc);padding:13px 30px;border-radius:999px;font-weight:750;font-size:18px;text-decoration:none;transition:transform .2s;box-shadow:0 14px 40px -12px var(--accent-d);display:inline-block}}
 .btn-p:hover{{transform:scale(1.04)}}
 .btn-s{{padding:14px 26px;border-radius:999px;font-weight:600;font-size:16px;text-decoration:none;color:var(--ink);border:1px solid var(--line);display:inline-block}}
 .only-phone{{display:none!important}}
 @media (max-width:820px){{.only-desk{{display:none!important}}.only-phone{{display:inline-block!important}}}}
 
-.stage{{position:relative;margin:48px auto 0;width:min(980px,100%)}}
+.stage{{position:relative;margin:22px auto 0;width:min(860px,100%)}}
 .menubar{{display:flex;align-items:center;justify-content:flex-end;gap:16px;height:30px;padding:0 14px;border-radius:12px 12px 0 0;font-size:12.5px;font-weight:600;
   background:rgba(40,52,47,.88);color:#f1f8f5;box-shadow:0 20px 40px -20px var(--shadow)}}
 .menubar .it{{opacity:.7}}
@@ -103,15 +103,16 @@ kbd{{font:600 .86em var(--mono);padding:.15em .5em;border-radius:7px;background:
 .win figcaption{{font-size:12.5px;color:var(--ink3);padding:10px 14px;border-top:1px solid var(--line);background:var(--alt)}}
 .hero .win{{border-radius:12px 12px 0 0;border-bottom:0}}
 .hero .win .bar{{border-radius:0}}
-.peek{{max-height:400px;overflow:hidden;-webkit-mask-image:linear-gradient(#000 70%,transparent);mask-image:linear-gradient(#000 70%,transparent)}}
+.peek{{max-height:470px;overflow:hidden;-webkit-mask-image:linear-gradient(#000 70%,transparent);mask-image:linear-gradient(#000 70%,transparent)}}
 .hero .win figcaption{{display:none}}
 .hero .win{{box-shadow:0 -10px 90px -30px var(--glow),0 40px 90px -34px var(--shadow)}}
 @media (max-width:820px){{
   .sc{{overflow-x:auto;-webkit-overflow-scrolling:touch}}
   .win .sc img{{width:640px;max-width:none}}
   .crop .sc img{{width:660px;max-width:none}}
-  .peek{{overflow:hidden;max-height:300px}}
-  .peek img{{width:900px;max-width:none;margin-left:-190px}}
+  .peek{{overflow:hidden;max-height:none;-webkit-mask-image:none;mask-image:none}}
+  .peek img,.hero .win .sc img{{width:100%;max-width:none;margin-left:0}}
+  .hero .win .sc{{overflow:hidden}}
   .notif{{display:none}}
 }}
 .crop{{border-radius:12px;overflow:hidden;border:1px solid var(--line);box-shadow:0 26px 60px -30px var(--shadow);background:var(--card)}}
@@ -153,12 +154,12 @@ section.alt{{background:var(--alt)}}
 /* Sûreté : section toujours sombre */
 .nuit{{--bg:#06100b;--alt:#0c1812;--card:#111e18;--ink:#f1f8f5;--ink2:#a7bab2;--ink3:#72857d;--line:rgba(255,255,255,.13);--acc-text:#23CC99;--shadow:rgba(0,0,0,.85);
   background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(35,204,153,.16),transparent 70%),#06100b;color:var(--ink)}}
-.flow{{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:34px;list-style:none;counter-reset:f}}
+.flow{{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:34px;list-style:none;counter-reset:f}}
 @media (max-width:980px){{.flow{{grid-template-columns:1fr 1fr}}}}
 @media (max-width:520px){{.flow{{grid-template-columns:1fr}}}}
 .flow li{{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 16px 18px;position:relative;counter-increment:f;animation:fl 10s infinite}}
 .flow li::before{{content:counter(f);display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--on-acc);font-weight:800;font-size:14px;margin-bottom:10px}}
-.flow li:nth-child(2){{animation-delay:1.6s}}.flow li:nth-child(3){{animation-delay:3.2s}}.flow li:nth-child(4){{animation-delay:4.8s}}.flow li:nth-child(5){{animation-delay:6.4s}}
+.flow li:nth-child(2){{animation-delay:2.4s}}.flow li:nth-child(3){{animation-delay:4.8s}}.flow li:nth-child(4){{animation-delay:7.2s}}
 @keyframes fl{{0%,22%,100%{{border-color:var(--line);box-shadow:none}}4%,16%{{border-color:var(--accent);box-shadow:0 0 36px -8px rgba(35,204,153,.6)}}}}
 .flow b{{display:block;font-size:17px;margin-bottom:4px}}
 .flow p{{font-size:14.5px;color:var(--ink2)}}
@@ -199,6 +200,15 @@ section.alt{{background:var(--alt)}}
 .compat li b{{display:block;color:var(--ink);font-size:17px;margin-bottom:4px}}
 .limits{{margin-top:22px;font-size:15px;color:var(--ink2);max-width:72ch;border-left:2px solid var(--accent);padding-left:14px}}
 .dl{{margin-top:28px;display:flex;gap:14px;flex-wrap:wrap;align-items:center}}
+/* commande d'abord */
+.heroinst{{width:min(860px,100%);margin:18px auto 0;text-align:left}}
+.heroinst .cmdbox{{margin:0}}
+.heroinst .cmdbox pre{{flex:1 1 380px;padding:12px 16px;font-size:13px}}
+.heroinst .cmdbox button{{align-self:center}}
+.heroinst .small{{margin-top:8px;text-align:center}}
+.cmdblock{{margin-top:28px;border:1px solid var(--accent);border-radius:20px;background:var(--card);padding:18px 6px 10px}}
+.cmdblock .sub{{padding:0 16px 4px;color:var(--ink2);font-size:16px}}
+.cmdblock .small{{margin:8px 16px 6px}}
 details.cmd{{margin-top:34px;border:1px solid var(--line);border-radius:20px;background:var(--card);padding:6px}}
 details.cmd summary{{cursor:pointer;padding:14px 16px;font-weight:650;font-size:17px;list-style:none}}
 details.cmd summary::-webkit-details-marker{{display:none}}
@@ -226,69 +236,51 @@ footer a{{color:var(--ink2)}}
 <body>
 <nav class="nav">
   <a class="logo" href="#"><img src="images/icone-s.png" alt="">Relève</a>
-  <div class="links"><a href="#lot">Tout mettre à jour</a><a href="#surete">Sûreté</a><a href="#decouvrir">Découvrir</a><a class="cta" href="#installer">Installer</a></div>
+  <div class="links"><a href="#lot">Mises à jour</a><a href="#surete">Sûreté</a><a href="#catalogue">Catalogue</a><a class="cta" href="#installer">Installer</a></div>
 </nav>
 
 <header class="hero">
   <img class="ic" src="images/icone.png" alt="Icône de Relève">
   <h1>Toutes vos apps à jour. <span class="grad">D'un coup.</span></h1>
-  <p class="tag">Relève vit dans la barre des menus, repère les apps en retard et les remplace toutes, sans jamais casser l'ancienne version.</p>
-  <div class="cta-row">
-    <a class="btn-p only-desk" href="{DMG}">Télécharger le .dmg</a>
-    <a class="btn-p only-phone" href="{MAIL}">M'envoyer le lien pour mon Mac</a>
-    <a class="btn-s" href="#installer">Comment l'installer</a>
-  </div>
-  <p class="small">Gratuit, sans compte · version 0.1.0 · macOS 14 ou plus, Mac à puce Apple</p>
+  <p class="tag">Relève vit dans la barre des menus du Mac, repère les apps de la collection en retard et les met toutes à jour d'un clic.</p>
+  <div class="heroinst only-desk"><div class="cmdbox"><pre>curl -fsSL https://raw.githubusercontent.com/LucasHRCHatReply/releve-releases/main/installer.sh | zsh</pre><button type="button" class="copier">Copier</button></div>
+    <p class="small">Dans Terminal. Signée, mais pas vérifiée par Apple : macOS demande une confirmation la première fois avec le .dmg. <a href="{DMG}">Télécharger le .dmg</a></p></div>
+  <div class="cta-row only-phone"><a class="btn-p" href="{MAIL}">M'envoyer le lien pour mon Mac</a></div>
+  <p class="small">Gratuit, sans compte · version 0.4.0 · macOS 14 ou plus</p>
 
   <div class="stage">
     <div class="menubar" aria-hidden="true"><span class="it">Wi‑Fi</span><span class="it">100 %</span><span class="rl">{ICON_MB}<b id="cnt">7</b></span><span class="it">Lun 17:02</span></div>
     <div class="notif" aria-hidden="true"><img src="images/icone-s.png" alt=""><div><b>Relève</b><span>7 apps ont une nouvelle version.</span></div></div>
-    {win('maj-avant','Relève, onglet Mises à jour : sept apps en retard et le bouton Tout mettre à jour (7)','', 'heroWin', False, False, True)}
+    {win('fenetre','Relève, onglet Mises à jour : un portable 3D dont les icônes passent au vert, sept apps en retard et le bouton Tout mettre à jour (7)','', 'heroWin', False, False, True)}
   </div>
-  <p class="ill">Barre des menus et notification : illustration. Fenêtre : capture de la vraie app sur un Mac d'essai fictif, dont les icônes sont remplacées par des initiales.</p>
+  <p class="ill">Barre des menus et notification : illustration. Fenêtre : capture de la vraie app sur un Mac d'essai fictif.</p>
 </header>
-
-<section id="probleme">
-  <div class="wrap">
-    <span class="eyebrow">Le problème</span>
-    <h2 class="rv">Un Mac à jour. L'autre, oublié.</h2>
-    <p class="lead rv">Avec plusieurs Mac, personne ne se souvient de qui a quelle version de quoi.</p>
-    <div class="macs rv" role="img" aria-label="Illustration : deux Mac, l'un avec Corolle 0.4.0 à jour, l'autre avec Corolle 0.3.0 en retard">
-      <div class="mac"><h3>Premier Mac</h3><ul><li>Corolle 0.4.0<span class="chip">à jour</span></li><li>Glisse 0.6.3<span class="chip">à jour</span></li><li>Lueur 0.1.1<span class="chip">à jour</span></li></ul></div>
-      <div class="vs">et pourtant</div>
-      <div class="mac"><h3>Second Mac</h3><ul><li>Corolle 0.3.0<span class="chip late">en retard</span></li><li>Glisse 0.6.2<span class="chip late">en retard</span></li><li>Lueur 0.1.0<span class="chip late">en retard</span></li></ul></div>
-    </div>
-    <p class="ill">Illustration.</p>
-    <p class="solve rv">Relève le voit sur chaque Mac, et le règle d'un clic.</p>
-  </div>
-</section>
 
 <section class="alt" id="lot">
   <div class="wrap split wide">
     <div class="txt rv">
-      <span class="eyebrow">Tout mettre à jour</span>
+      <span class="eyebrow">Mises à jour</span>
       <h2>Un clic. Chaque geste est écrit.</h2>
-      <p class="d">Un bouton vert dans l'onglet Mises à jour : Relève fait le tour des apps en retard, une par une, et note chaque étape dans le Journal.</p>
+      <p class="d">Le bouton vert fait le tour des apps en retard, une par une. Les apps fermées se mettent à jour toutes seules ; une app ouverte attend votre clic.</p>
       <ol class="steps4" aria-label="Les quatre étapes de chaque app"><li>Télécharger</li><li>Contrôler</li><li>Remplacer</li><li>Relancer</li></ol>
     </div>
-    <div class="rv">{win('journal-log','Onglet Journal de Relève : chaque étape de la mise à jour d’une app, ligne par ligne, avec les refus en rouge','Onglet Journal, capture de la vraie app (Mac d’essai fictif). Les lignes rouges sont des refus provoqués pour l’essai.')}</div>
+    <div class="rv">{win('fenetre-apres','Onglet Mises à jour après un lot : des refus provoqués pour l’essai, avec leur raison en clair','Un lot d’essai sur un Mac d’essai fictif : les refus sont provoqués, chacun dit pourquoi.')}</div>
   </div>
 </section>
 
 <section class="nuit" id="surete">
   <div class="wrap">
     <span class="eyebrow">Sûreté</span>
-    <h2 class="rv">Si quoi que ce soit cloche, l'ancienne reste.</h2>
-    <p class="lead rv" style="max-width:52ch">Cinq contrôles avant, pendant et après le remplacement. Un échec sur une app n'arrête pas les autres.</p>
+    <h2 class="rv">Installée seulement si tout est juste.</h2>
+    <p class="lead rv" style="max-width:52ch">Une mise à jour n'est installée que si son empreinte est juste et si elle porte la signature de l'éditeur.</p>
     <ol class="flow rv">
-      <li><b>Empreinte</b><p>L'empreinte SHA-256 du téléchargement doit être celle qui a été publiée.</p></li>
-      <li><b>Signature</b><p>Même équipe de développement, signature valide, version annoncée.</p></li>
+      <li><b>Empreinte</b><p>Le téléchargement doit avoir l'empreinte publiée avec la version.</p></li>
+      <li><b>Signature</b><p>La nouvelle version doit porter la signature de l'éditeur, sinon elle est refusée.</p></li>
       <li><b>Fermeture propre</b><p>L'app est fermée comme vous le feriez, jamais de force.</p></li>
-      <li><b>Remplacement</b><p>L'ancienne est mise de côté, la nouvelle prend sa place.</p></li>
-      <li><b>Retour arrière</b><p>Si la nouvelle ne démarre pas, l'ancienne revient.</p></li>
+      <li><b>Retour automatique</b><p>Si la nouvelle ne démarre pas ou ne se vérifie pas, l'ancienne est remise toute seule.</p></li>
     </ol>
-    <p class="keep rv"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#23CC99" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6z"/><path d="M8.5 12l2.5 2.5L15.5 10"/></svg>Un refus, et rien n'a été touché : l'app en place reste telle quelle.</p>
-    <div class="rv">{win('maj-apres','Onglet Mises à jour après un lot : quatre refus (empreinte fausse, empreinte absente, nouvelle version qui ne démarre pas, app qui ne se ferme pas) et deux mises à jour réussies','Un lot d’essai sur un Mac d’essai fictif : quatre refus provoqués, dont un retour arrière (« la version 1.1.1 est remise »), et deux mises à jour réussies.','',True)}</div>
+    <p class="keep rv"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#23CC99" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6z"/><path d="M8.5 12l2.5 2.5L15.5 10"/></svg>Un refus avant le remplacement, et l'app en place reste telle quelle.</p>
+    <p class="small rv" style="max-width:62ch">Le retour en arrière est automatique : il n'y a pas de bouton pour revenir à l'ancienne version après coup.</p>
   </div>
 </section>
 
@@ -297,43 +289,39 @@ footer a{{color:var(--ink2)}}
     <span class="eyebrow">Au service de votre Mac</span>
     <h2 class="rv">Elle s'adapte à ce qui tourne.</h2>
     <div class="rows3">
-      <article class="row3 rv"><div class="t"><h3>Jamais en pleine session</h3><p>Une app qui garde le Mac éveillé, comme Paupière, n'est pas interrompue : sa mise à jour attend la vérification suivante.</p></div>{crop('session','App en session : « Paupiere 0.2.0 », pastille En session')}</article>
-      <article class="row3 rv"><div class="t"><h3>Un seul mot de passe</h3><p>Les apps installées pour tous les utilisateurs demandent le mot de passe une fois pour tout le lot, pas une fois par app.</p></div>{crop('mdp','Ligne d’une app à mettre à jour, avec la mention mot de passe administrateur')}</article>
-      <article class="row3 rv"><div class="t"><h3>Les doublons, à la Corbeille</h3><p>Deux copies de la même app ? Relève suit la plus récente et propose la plus ancienne à la Corbeille, d'un clic.</p></div>{crop('doublons','Deux copies de Veillon : la plus ancienne porte la pastille Doublon et un bouton Corbeille')}</article>
+      <article class="row3 rv"><div class="t"><h3>Jamais en pleine session</h3><p>Une app qui garde le Mac éveillé n'est pas interrompue : sa mise à jour est reportée.</p></div>{crop('session','Ligne d’une app en session, avec la pastille En session')}</article>
+      <article class="row3 rv"><div class="t"><h3>Un seul mot de passe</h3><p>Les apps installées pour tous les utilisateurs demandent le mot de passe une fois pour le lot.</p></div>{crop('mdp','Ligne d’une app à mettre à jour, avec la mention mot de passe administrateur')}</article>
+      <article class="row3 rv"><div class="t"><h3>Les doublons, à la Corbeille</h3><p>Une seule copie de chaque app reste ; les autres vont à la Corbeille, avec un bouton Annuler.</p></div>{crop('doublons','Une copie de Veillon mise à la Corbeille, avec le bouton Annuler')}</article>
     </div>
     <p class="slide">Sur téléphone, faire glisser une capture pour la voir en entier.</p>
-    <p class="ill">Captures de la vraie app, Mac d'essai fictif (chemins remplacés par /Applications ou ~/Applications ; icônes remplacées par des initiales).</p>
+    <p class="ill">Captures de la vraie app, Mac d'essai fictif (chemins abrégés, icônes remplacées par des initiales).</p>
   </div>
 </section>
 
-<section class="alt" id="decouvrir">
+<section class="alt" id="catalogue">
   <div class="wrap split rev">
     <div class="txt rv">
-      <span class="eyebrow">Découvrir</span>
+      <span class="eyebrow">Catalogue</span>
       <h2>Ce qu'il vous manque, en un clic.</h2>
-      <p class="d">L'onglet Découvrir liste les apps de la collection pas encore sur ce Mac. « Installer » les pose avec les mêmes contrôles ; « Page » ouvre leur présentation.</p>
+      <p class="d">L'onglet Catalogue liste les apps de la collection : installer, mettre à jour, ouvrir. « Page » ouvre leur présentation.</p>
     </div>
-    <div class="rv">{win('decouvrir-carte','Onglet Découvrir : Pince, version 1.4.3 publiée, avec les boutons Installer et Page','Onglet Découvrir, capture de la vraie app (Mac d’essai fictif, une seule app absente).')}</div>
+    <div class="rv">{win('catalogue','Onglet Catalogue : Pince absente avec le bouton Installer, Jauge à jour, trois apps à mettre à jour','Onglet Catalogue, capture de la vraie app (Mac d’essai fictif).')}</div>
   </div>
 </section>
 
-<section id="gestes">
-  <div class="wrap">
-    <span class="eyebrow">Comment ça marche</span>
-    <h2 class="rv">Trois gestes.</h2>
-    <ol class="inst-step rv">
-      <li><div class="vig" aria-hidden="true"><svg viewBox="0 0 64 54" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M50 22a19 19 0 0 0-34-8l-4 5"/><path d="M12 9v11h11"/><path d="M14 32a19 19 0 0 0 34 8l4-5"/><path d="M52 45V34H41"/></svg></div><span class="n">1</span><h3>Vérifier</h3><p>Relève regarde au lancement, puis régulièrement. Le bouton Vérifier force un tour tout de suite.</p><span class="where">Barre latérale › Mises à jour</span></li>
-      <li><div class="vig" aria-hidden="true"><svg viewBox="0 0 64 54" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><rect x="12" y="14" width="30" height="30" rx="8"/><path d="M28 4v22M20 19l8 8 8-8"/><path d="M46 20a8 8 0 0 1 6 8v10a8 8 0 0 1-8 8H30"/></svg></div><span class="n">2</span><h3>Tout mettre à jour</h3><p>Le bouton vert, en haut à droite. Chaque app est contrôlée, remplacée, relancée.</p><span class="where">Mises à jour › Tout mettre à jour</span></li>
-      <li><div class="vig" aria-hidden="true"><svg viewBox="0 0 64 54" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M34 6l5 13 13 5-13 5-5 13-5-13-13-5 13-5z"/><path d="M12 8v8M8 12h8"/><path d="M50 38v8M46 42h8"/></svg></div><span class="n">3</span><h3>Découvrir</h3><p>Les apps de la collection que ce Mac n'a pas encore, installables d'un clic.</p><span class="where">Barre latérale › Découvrir</span></li>
-    </ol>
-  </div>
-</section>
-
-<section class="alt" id="installer">
+<section id="installer">
   <div class="wrap">
     <span class="eyebrow">Installer</span>
-    <h2 class="rv">Trois gestes, avec le .dmg.</h2>
+    <h2 class="rv">Une commande. Ou le .dmg.</h2>
     <p class="lead rv" style="max-width:56ch">Gratuit, sans compte, sans télémétrie.</p>
+    <div class="cmdblock rv">
+      <p class="sub">Dans Terminal (<kbd>⌘ Espace</kbd>, « Terminal »), collez la commande. Elle installe Relève, et la remet à jour si vous la relancez.</p>
+      <div class="cmdbox"><pre>curl -fsSL https://raw.githubusercontent.com/LucasHRCHatReply/releve-releases/main/installer.sh | zsh</pre><button type="button" class="copier">Copier</button></div>
+      <p class="small">Le script se lit en entier : <a href="{REL}/blob/main/installer.sh" rel="noopener">installer.sh</a>.</p>
+    </div>
+    <p class="notar rv"><b>Relève est signée, mais pas vérifiée par Apple</b> (cette vérification demande un compte développeur payant) : avec le .dmg, macOS demande une confirmation la première fois. La commande ci-dessus l'évite.</p>
+
+    <h3 class="rv" style="margin-top:34px;font-size:22px">Ou avec le .dmg</h3>
     <ol class="inst-step rv">
       <li><span class="n">1</span><h3>Ouvrir le .dmg</h3><p>Double-clic sur <b>Releve.dmg</b> dans Téléchargements.</p></li>
       <li><span class="n">2</span><h3>Glisser dans Applications</h3><p>Déposez Relève sur le dossier Applications.</p></li>
@@ -343,26 +331,16 @@ footer a{{color:var(--ink2)}}
       <a class="btn-p only-desk" href="{DMG}">Télécharger le .dmg</a>
       <a class="btn-p only-phone" href="{MAIL}">M'envoyer le lien pour mon Mac</a>
     </div>
-    <p class="notar"><b>Relève est signée, mais pas vérifiée par Apple</b> (cette vérification, la notarisation, demande un compte développeur payant) : macOS demande donc une confirmation la première fois.</p>
 
-    <details class="cmd">
-      <summary>Ou en une commande Terminal : elle installe, puis met à jour</summary>
-      <p class="sub">Dans Terminal (<kbd>⌘ Espace</kbd>, « Terminal »), collez la commande. Elle télécharge Relève, contrôle l'empreinte et la signature, et lève le blocage de macOS sur Relève seulement. Le script se lit en entier : <a href="{REL}/blob/main/installer.sh" rel="noopener">installer.sh</a>.</p>
-      <div class="cmdbox"><pre id="cmd">curl -fsSL https://raw.githubusercontent.com/LucasHRCHatReply/releve-releases/main/installer.sh | zsh</pre><button type="button" id="copier">Copier</button></div>
-    </details>
-
-    <h2 class="rv" style="margin-top:70px;font-size:clamp(26px,3.2vw,40px)">Compatibilité, sans détour.</h2>
     <ul class="compat rv">
-      <li><b>macOS 14 ou plus</b>Sur un Mac à puce Apple (M1 ou plus récent). Pas de Mac Intel.</li>
-      <li><b>Les apps de la collection</b>Relève ne touche qu'aux apps signées par l'équipe du développeur. Une autre app de cette équipe est listée « hors catalogue », sans mise à jour.</li>
-      <li><b>Signée, non notarisée</b>Installation par le .dmg ou la commande Terminal, comme les autres apps de la collection.</li>
-      <li><b>Gratuit, sans compte</b>Aucun compte, aucune télémétrie. Le mot de passe du Mac n'est demandé que pour les apps installées pour tous les utilisateurs.</li>
+      <li><b>macOS 14 ou plus</b>Relève ne demande rien d'autre.</li>
+      <li><b>Les apps de la collection</b>Relève ne touche qu'aux apps signées par l'équipe de l'éditeur. Une autre app de cette équipe est listée « hors catalogue », sans mise à jour.</li>
     </ul>
-    <p class="limits">Première version, essayée sur un Mac d'essai avec de fausses apps : les captures de cette page en viennent. Pas de Mac App Store.</p>
+    <p class="limits">Essayée sur un Mac d'essai avec de fausses apps : les captures de cette page en viennent. Pas de Mac App Store.</p>
   </div>
 </section>
 
-<footer><div class="wrap">Relève 0.1.0 · <a href="{REL}/releases">Toutes les versions</a> · <a href="{REL}/blob/main/installer.sh">Lire le script d'installation</a></div></footer>
+<footer><div class="wrap">Relève 0.4.0 · <a href="{REL}/releases">Toutes les versions</a> · <a href="{REL}/blob/main/installer.sh">Lire le script d'installation</a></div></footer>
 
 <script>
 (function(){{
@@ -372,13 +350,15 @@ footer a{{color:var(--ink2)}}
   // Compteur de la barre des menus : monte jusqu'à 7
   var c=document.getElementById("cnt");
   if(c&&!matchMedia("(prefers-reduced-motion:reduce)").matches){{var n=0;c.textContent="0";var t=setInterval(function(){{n++;c.textContent=n;if(n>=7)clearInterval(t)}},260)}}
-  // Copier la commande
-  var b=document.getElementById("copier"),p=document.getElementById("cmd"),tm=0;
-  if(b&&p)b.addEventListener("click",function(){{
-    var txt=p.textContent;
-    function dire(s,ok){{clearTimeout(tm);b.textContent=s;b.classList.toggle("ok",ok);tm=setTimeout(function(){{b.textContent="Copier";b.classList.remove("ok")}},2000)}}
-    function secours(){{var r=document.createRange();r.selectNodeContents(p);var s=getSelection();s.removeAllRanges();s.addRange(r);dire("Sélectionnée : ⌘C",false)}}
-    if(navigator.clipboard&&navigator.clipboard.writeText){{navigator.clipboard.writeText(txt).then(function(){{dire("Copié ✓",true)}},secours)}}else secours();
+  // Copier la commande (chaque bouton copie le bloc qui le précède)
+  document.querySelectorAll(".copier").forEach(function(b){{
+    var p=b.previousElementSibling,tm=0;
+    b.addEventListener("click",function(){{
+      var txt=p.textContent;
+      function dire(s,ok){{clearTimeout(tm);b.textContent=s;b.classList.toggle("ok",ok);tm=setTimeout(function(){{b.textContent="Copier";b.classList.remove("ok")}},2000)}}
+      function secours(){{var r=document.createRange();r.selectNodeContents(p);var s=getSelection();s.removeAllRanges();s.addRange(r);dire("Sélectionnée : ⌘C",false)}}
+      if(navigator.clipboard&&navigator.clipboard.writeText){{navigator.clipboard.writeText(txt).then(function(){{dire("Copié ✓",true)}},secours)}}else secours();
+    }});
   }});
 }})();
 </script>
