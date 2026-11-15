@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Tadis pour macOS</title>
-<meta name="description" content="Maintenez un raccourci, parlez : Tadis écrit le texte là où est le curseur, et transcrit vos fichiers audio et vidéo. Tout reste sur le Mac. Pour les Mac à puce Apple.">
+<meta name="description" content="Appuyez sur ⌥Espace, parlez, validez par Entrée : Tadis écrit le texte là où est le curseur, et transcrit vos fichiers audio et vidéo. Tout reste sur le Mac. Pour les Mac à puce Apple.">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="../assets/tadis-icon.png?v=20261028n">
 <style>
@@ -192,9 +192,9 @@ footer{padding:36px 0 56px;color:var(--ink3);font-size:14px;border-top:1px solid
 <header class="hero"><div class="wrap">
   <div>
     <img class="hl" src="../assets/tadis-icon.png?v=20261028n" alt="Icône de Tadis" width="72" height="72">
-    <span class="pre">Préversion 0.5.0</span>
+    <span class="pre">Préversion 0.6.0</span>
     <h1>Parlez. Le texte s’écrit là où est le curseur.</h1>
-    <p class="lead">Pour les Mac à puce Apple : maintenez un raccourci, parlez, relâchez. Tadis écrit dans l'app ouverte, sans que votre voix quitte le Mac.</p>
+    <p class="lead">Pour les Mac à puce Apple : appuyez sur ⌥Espace, parlez : le texte s’affiche en direct, Entrée l’écrit dans l'app ouverte, sans que votre voix quitte le Mac.</p>
     <p class="free"><b>Gratuit</b>, sans compte · macOS 26 ou plus</p>
     <div id="installer-cmd" data-lucashi-installation data-compact data-nom="Tadis" data-depot="LucasHRCHatReply/tadis-releases" data-couleur="#C8431F"></div>
     <noscript><pre>curl -fsSL https://raw.githubusercontent.com/LucasHRCHatReply/tadis-releases/main/installer.sh | zsh</pre></noscript>
@@ -231,15 +231,15 @@ footer{padding:36px 0 56px;color:var(--ink3);font-size:14px;border-top:1px solid
 <main>
 <section class="s alt" id="voir"><div class="wrap">
   <div class="split">
-    <div><div class="eyebrow">La fonction phare</div><h2>Maintenez, parlez, relâchez.</h2>
-      <p class="how">Le texte s'écrit <b>au curseur</b>, dans l'app au premier plan. Raccourci par défaut : <b>⇧⌘</b> (réglable).</p>
+    <div><div class="eyebrow">La fonction phare</div><h2>Appuyez, parlez, validez.</h2>
+      <p class="how">Le texte s'écrit <b>au curseur</b>, dans l'app au premier plan. Un appui sur <b>⌥Espace</b> ouvre un petit panneau où le texte s’affiche pendant que vous parlez ; <b>Entrée</b> l’écrit, <b>Échap</b> annule. Raccourci réglable ; « maintenir pour parler » reste au choix.</p>
       <p class="how">Cinq langues : français, anglais, espagnol, allemand, italien. Dans un champ de mot de passe, Tadis n'écrit rien.</p></div>
     <div class="stage"><div class="win" aria-label="Simulation de la dictée (illustration animée)">
       <div class="bar"><i></i><i></i><i></i><span>Notes</span></div>
       <div class="body">
-        <div class="topl"><span class="kbd" id="hk"><b>⇧</b><b>⌘</b></span><span class="ind" id="hi"><i></i>Écoute</span></div>
-        <div class="field" id="hf"><span class="ph">Le curseur est ici. Maintenez ⇧⌘ et parlez.</span><span class="caret"></span></div>
-        <p class="hint" style="margin:10px 0 0">Au relâchement, le texte est déjà là.</p>
+        <div class="topl"><span class="kbd" id="hk"><b>⌥</b><b>Espace</b></span><span class="ind" id="hi"><i></i>Écoute</span></div>
+        <div class="field" id="hf"><span class="ph">Le curseur est ici. Appuyez sur ⌥Espace et parlez.</span><span class="caret"></span></div>
+        <p class="hint" style="margin:10px 0 0">Le texte s’affiche pendant que vous parlez ; Entrée l’écrit.</p>
       </div></div>
       <small class="il">Illustration animée, texte d'exemple.</small></div>
   </div>
@@ -340,7 +340,7 @@ footer{padding:36px 0 56px;color:var(--ink3);font-size:14px;border-top:1px solid
 <p class="vb-t"><a href="../">Toutes les apps →</a></p>
 </div></section>
 <!-- liens:fin -->
-<footer><div class="wrap">Tadis 0.5.0 · préversion de travail, captures réelles de l'app · <a href="../">Toutes les apps</a></div></footer>
+<footer><div class="wrap">Tadis 0.6.0 · préversion de travail, captures réelles de l'app · <a href="../">Toutes les apps</a></div></footer>
 
 <script>
 (function(){
@@ -355,7 +355,7 @@ var phrase="Bonjour, je confirme le rendez-vous de jeudi à dix heures. J'envoie
 async function dictee(){var f=$('hf'),k=$('hk'),i=$('hi');
  if(reduce){f.textContent=phrase;return}
  while(true){await wait('hf');
-  f.innerHTML='<span class="ph">Le curseur est ici. Maintenez ⇧⌘ et parlez.</span><span class="caret"></span>';
+  f.innerHTML='<span class="ph">Le curseur est ici. Appuyez sur ⌥Espace et parlez.</span><span class="caret"></span>';
   k.classList.remove('down');i.classList.remove('on');await sleep(1200);
   k.classList.add('down');i.classList.add('on');await sleep(500);
   f.innerHTML='<span class="t"></span><span class="caret"></span>';var t=f.querySelector('.t'),w=phrase.split(' ');
