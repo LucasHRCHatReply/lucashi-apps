@@ -18,11 +18,11 @@
       "page": "pince/",
       "depot": "LucasHRCHatReply/pince-releases",
       "zip": "Pince.zip",
-      "version": "1.5.0",
+      "version": "1.6.0",
       "source_page": "~/Pince/site-vente",
       "large": true,
       "requis": [
-        "macOS 26 ou plus",
+        "macOS 15 ou plus",
         "Mac à puce Apple (M1 ou plus récent)",
         "Aucun compte, aucun mot de passe administrateur"
       ],
@@ -57,7 +57,7 @@
       "page": "jauge/",
       "depot": "LucasHRCHatReply/jauge-releases",
       "zip": "Jauge.zip",
-      "version": "1.9.2",
+      "version": "1.10.0",
       "source_page": "~/Jauge/site",
       "requis": [
         "MacBook à puce Apple (M1 ou plus récent)",
@@ -101,7 +101,7 @@
       "page": "penombre/",
       "depot": "LucasHRCHatReply/penombre-releases",
       "zip": "Penombre.zip",
-      "version": "1.5.0",
+      "version": "1.6.0",
       "source_page": "~/Penombre/site",
       "requis": [
         "Mac à puce Apple (M1 ou plus récent)",
@@ -139,7 +139,7 @@
       "page": "filoir/",
       "depot": "LucasHRCHatReply/filoir-releases",
       "zip": "Filoir.zip",
-      "version": "1.5.2",
+      "version": "1.6.0",
       "source_page": "~/Tiroir/site",
       "build_page": "python3 build.py",
       "page_construite": "~/Downloads/Filoir.html",
@@ -210,7 +210,7 @@
       ],
       "depot": "LucasHRCHatReply/glisse-releases",
       "zip": "Glisse.zip",
-      "version": "0.9.0",
+      "version": "0.10.0",
       "source_page": "~/Swish/site",
       "build_page": "python3 build.py",
       "page_construite": "~/Downloads/Glisse.html",
@@ -349,7 +349,7 @@
       "page": "paupiere/",
       "depot": "LucasHRCHatReply/paupiere-releases",
       "zip": "Paupiere.zip",
-      "version": "0.5.0",
+      "version": "0.6.0",
       "source_page": "~/Paupiere/site",
       "requis": [
         "Mac à puce Apple (M1 ou plus récent)",
@@ -379,7 +379,7 @@
       "depot": "LucasHRCHatReply/releve-releases",
       "zip": "Releve.zip",
       "dmg": "Releve.dmg",
-      "version": "0.2.0",
+      "version": "0.4.0",
       "source_page": "~/Releve/site",
       "bande": [
         {
@@ -463,7 +463,7 @@
       ],
       "depot": "LucasHRCHatReply/tadis-releases",
       "zip": "Tadis.zip",
-      "version": "0.4.0"
+      "version": "0.5.0"
     },
     {
       "id": "glose",
@@ -484,12 +484,12 @@
       ],
       "requis": [
         "Mac à puce Apple",
-        "macOS 26 ou plus",
+        "macOS 15 ou plus",
         "Aucun compte"
       ],
       "depot": "LucasHRCHatReply/glose-releases",
       "zip": "Glose.zip",
-      "version": "1.3.2"
+      "version": "1.6.0"
     },
     {
       "id": "ocruroeil",
@@ -520,7 +520,7 @@
       "icone": "assets/cliche-icon.png?v=20261028n",
       "captures": [],
       "page": "cliche/",
-      "version": "0.2.0",
+      "version": "0.12.0",
       "preversion": true,
       "depot": "LucasHRCHatReply/cliche-releases",
       "zip": "Cliche.zip",
