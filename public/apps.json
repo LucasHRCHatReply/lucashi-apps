@@ -551,6 +551,38 @@
       "telechargement": "orchestrateur/orchestrateur.zip",
       "description": "Un skill Claude Code qui découpe un chantier, lance de vraies sessions sur le modèle le plus bas qui suffit, confie images et veille à GPT si vous l'avez, et vérifie chaque rendu. Banc de 11 tâches : −57 % de coût estimé face à « tout sur Opus », note 0,96 contre 0,94. Ces estimations ne garantissent aucune économie sur un abonnement.",
       "source_page": null
+    },
+    {
+      "id": "mymeetcomp",
+      "nom": "MyMeetComp",
+      "phrase": "En réunion, parlez avec votre voix ou faites-la traduire en direct.",
+      "famille": "capture",
+      "couleur": "#2F7BFF",
+      "icone": "assets/mymeetcomp-icon.png?v=20261116",
+      "captures": [],
+      "page": "mymeetcomp/",
+      "description": "Un micro virtuel pour Teams, Zoom et Meet : « MyMeetComp Micro » envoie votre voix telle quelle, votre voix traduite en direct, ou rien. Reconnaissance et traduction par Apple, sur le Mac.",
+      "bande": [
+        {
+          "src": "mymeetcomp/traduite-clair.png",
+          "alt": "MyMeetComp : le mode Traduite, avec le texte reconnu, sa traduction et le retard",
+          "sombre": "mymeetcomp/traduite-sombre.png"
+        },
+        {
+          "src": "mymeetcomp/voix-clair.png",
+          "alt": "MyMeetComp : le mode Ma voix",
+          "sombre": "mymeetcomp/voix-sombre.png"
+        }
+      ],
+      "requis": [
+        "Mac à puce Apple",
+        "macOS 26 ou plus",
+        "Mot de passe administrateur une fois, pour le micro virtuel",
+        "Aucun compte"
+      ],
+      "depot": "LucasHRCHatReply/mymeetcomp-releases",
+      "zip": "MyMeetComp.zip",
+      "version": "1.0.0"
     }
   ]
 }

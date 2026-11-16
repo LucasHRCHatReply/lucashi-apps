@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MyMeetComp pour macOS</title>
+<meta name="description" content="MyMeetComp ajoute un micro virtuel à votre Mac : dans Teams, Zoom ou Meet, les autres entendent votre voix, votre voix traduite en direct, ou rien. Pour les Mac à puce Apple.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/mymeetcomp-icon.png?v=20261116">
+<style>
+:root{
+  --bg:#f5f8fe;--bg2:#ffffff;--ink:#101a2e;--ink2:#40506b;--ink3:#58677f;--line:#d9e2f1;
+  --accent:#2F7BFF;--accent-ink:#ffffff;--accent-text:#1d5fd6;
+  --panel:#f1f4f9;--surface:#ffffff;--pline:#d5dce8;--pink:#18202f;--pink2:#4f5b6e;--pink3:#667286;
+  --warn:#b86200;
+  --shadow:0 24px 60px -24px rgba(20,50,110,.35),0 2px 8px rgba(20,50,110,.08);
+  --hero:linear-gradient(180deg,#dbe8ff 0,#f5f8fe 100%);
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#0a1018;--bg2:#101823;--ink:#eef3fb;--ink2:#b5c2d6;--ink3:#97a5bb;--line:#1f2d40;
+  --accent-text:#7fb0ff;--accent-ink:#06142e;
+  --panel:#151e2b;--surface:#1d2838;--pline:#2f3d52;--pink:#e9eff8;--pink2:#aab6c9;--pink3:#8e9bb0;
+  --warn:#f0a040;
+  --shadow:0 30px 70px -26px rgba(0,0,0,.8),0 2px 8px rgba(0,0,0,.4);
+  --hero:linear-gradient(180deg,#10244a 0,#0a1018 100%);
+}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{max-width:100%;display:block}
+a{color:var(--accent-text)}
+.wrap{max-width:1100px;margin:0 auto;padding:0 16px}
+.nav{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;gap:14px;height:56px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;color:var(--ink);text-decoration:none;font-size:18px}
+.logo img{width:30px;height:30px;border-radius:7px}
+.links{margin-left:auto;display:flex;gap:16px;align-items:center;font-size:14px}
+.links a{color:var(--ink2);text-decoration:none}
+.links a:hover{color:var(--ink)}
+.cta{display:inline-block;background:var(--accent);color:var(--accent-ink)!important;font-weight:650;border-radius:999px;padding:7px 14px;font-size:14px;text-decoration:none}
+.btn-o{display:inline-block;border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:10px 20px;text-decoration:none;font-weight:600;font-size:15px}
+@media(max-width:700px){.links a:not(.cta){display:none}}
+.hero{background:var(--hero);padding:56px 0 48px}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:40px;align-items:center}
+@media(max-width:900px){.hero .wrap{grid-template-columns:minmax(0,1fr)}.hero{padding:36px 0 32px}}
+.hero img.hl{width:72px;height:72px;margin:0 0 18px;border-radius:17px;box-shadow:var(--shadow)}
+h1{font-size:clamp(34px,5.6vw,58px);line-height:1.05;margin:0 0 14px;letter-spacing:-.025em;text-wrap:balance}
+.lead{font-size:clamp(18px,2.2vw,21px);color:var(--ink2);max-width:540px;margin:0 0 14px}
+.free{color:var(--ink3);font-size:14.5px;margin:0 0 20px}
+.free b{color:var(--ink)}
+.pre{display:inline-block;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;background:color-mix(in srgb,var(--accent) 18%,transparent);color:var(--accent-text);margin-bottom:14px}
+.zip{margin:12px 0 0;font-size:14.5px;color:var(--ink3)}
+section.s{padding:72px 0;border-top:1px solid var(--line)}
+section.s.alt{background:var(--bg2)}
+@media(max-width:700px){section.s{padding:48px 0}}
+h2{font-size:clamp(28px,4.2vw,40px);line-height:1.1;margin:0 0 12px;letter-spacing:-.02em;text-wrap:balance}
+h3{margin:0 0 6px;font-size:20px}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-text);margin-bottom:10px}
+.how{color:var(--ink2);max-width:540px;margin:0 0 10px}
+.how b{color:var(--ink)}
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:48px;align-items:center}
+.split.rev>:first-child{order:2}
+@media(max-width:860px){.split,.split.rev{grid-template-columns:minmax(0,1fr);gap:26px}.split.rev>:first-child{order:0}}
+.stage{display:flex;justify-content:center;min-width:0;flex-direction:column;align-items:center}
+small.il{display:block;color:var(--ink3);font-size:12.5px;margin-top:10px;text-align:center;max-width:520px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:36px}
+.card{background:var(--bg2);border:1px solid var(--line);border-radius:18px;padding:20px}
+.alt .card{background:var(--bg)}
+.card p{margin:0;color:var(--ink2);font-size:15px}
+.tag{display:inline-block;font:600 11px ui-monospace,Menlo,monospace;color:var(--ink3);border:1px solid var(--line);border-radius:6px;padding:1px 6px;margin-right:4px}
+.shot{border-radius:14px;overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--pline);width:100%;background:var(--panel)}
+.shot img{width:100%;height:auto}
+.win{background:var(--panel);color:var(--pink);border-radius:14px;box-shadow:var(--shadow);border:1px solid var(--pline);overflow:hidden;width:100%;max-width:520px;font-size:14px;line-height:1.45}
+.win .bar{display:flex;gap:7px;padding:10px 12px;background:var(--surface);border-bottom:1px solid var(--pline);align-items:center}
+.win .bar i{width:11px;height:11px;border-radius:50%;background:#ff5f57}.win .bar i:nth-child(2){background:#febc2e}.win .bar i:nth-child(3){background:#28c840}
+.win .bar span{margin-left:8px;color:var(--pink2);font-size:12px}
+.body{padding:16px}
+.kbd{display:inline-flex;gap:4px}
+.kbd b{min-width:34px;height:30px;padding:0 9px;border-radius:8px;background:var(--surface);border:1px solid var(--pline);border-bottom-width:3px;display:grid;place-items:center;font-size:15px;font-weight:600;transition:.15s}
+.kbd.down b{background:var(--accent);color:var(--accent-ink);border-color:transparent;transform:translateY(2px);border-bottom-width:1px}
+.field{text-align:left;margin-top:12px;min-height:92px;background:var(--surface);border:1px solid var(--pline);border-radius:10px;padding:12px 14px;font-size:15px}
+.field .ph{color:var(--pink3)}
+.caret{display:inline-block;width:2px;height:1.05em;background:var(--accent);vertical-align:-2px;margin-left:1px;animation:bl 1s steps(1) infinite}
+@keyframes bl{50%{opacity:0}}
+.ind{display:inline-flex;align-items:center;gap:8px;padding:5px 12px;border-radius:999px;background:var(--pink);color:var(--panel);font-size:12px;font-weight:600;opacity:.25;transition:.2s}
+.ind.on{opacity:1}
+.ind i{width:8px;height:8px;border-radius:50%;background:#ff5f57}
+.ind.on i{animation:pu 1s infinite}
+@keyframes pu{50%{transform:scale(1.6);opacity:.5}}
+.topl{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.hint{font-size:12px;color:var(--pink2)}
+.drop{border:2px dashed var(--pline);border-radius:12px;padding:18px;text-align:center;color:var(--pink2);font-size:13px;transition:.3s;min-height:74px;display:grid;place-items:center}
+.drop.in{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,transparent)}
+.fchip{display:inline-flex;gap:8px;align-items:center;background:var(--surface);border:1px solid var(--pline);border-radius:10px;padding:6px 12px;font-size:13px;font-weight:600}
+.prog{height:8px;border-radius:5px;background:var(--pline);overflow:hidden;margin:12px 0}
+.prog i{display:block;height:100%;width:0;background:var(--accent);border-radius:5px;transition:width 1.4s ease}
+.txt{font-size:14.5px;min-height:96px}
+.txt .w{opacity:0;transition:opacity .25s}
+.txt .w.v{opacity:1}
+.txt mark{background:color-mix(in srgb,var(--warn) 30%,transparent);color:inherit;border-radius:4px;padding:0 2px;border-bottom:2px solid var(--warn)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;opacity:.3;transition:.3s}
+.chips.on{opacity:1}
+.chip{background:var(--surface);border:1px solid var(--pline);border-radius:999px;padding:3px 11px;font-size:12px;font-weight:600}
+.fam{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:12px}
+.fam li{position:relative;padding-left:24px;color:var(--ink2);font-size:16px}
+.fam li::before{content:"";position:absolute;left:0;top:.5em;width:10px;height:10px;border-radius:50%;background:var(--accent)}
+.fam b{color:var(--ink)}
+.yes{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:11px;color:var(--ink2);font-size:16px}
+.yes li{position:relative;padding-left:24px}
+.yes li::before{content:"";position:absolute;left:0;top:.5em;width:10px;height:10px;border-radius:50%;background:var(--accent)}
+.yes b{color:var(--ink)}
+.card .k{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-text);margin-bottom:6px}
+footer{padding:36px 0 56px;color:var(--ink3);font-size:14px;border-top:1px solid var(--line);text-align:center}
+@media(prefers-reduced-motion:reduce){.caret,.ind.on i{animation:none}.prog i{transition:none}}
+
+.modes{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.modes b{padding:7px 16px;border-radius:999px;border:1px solid var(--pline);background:var(--surface);font-size:14px;font-weight:650;transition:.2s}
+.modes b.on{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.sig{margin:14px 0 0;min-height:66px;background:var(--surface);border:1px solid var(--pline);border-radius:10px;padding:12px 14px;font-size:14.5px}
+.sig small{display:block;color:var(--pink3);font-size:12px;margin-bottom:2px}
+</style>
+<style>
+/* ───────── Bloc « Installer » commun (lucashi-kit), recopié tel quel ───────── */
+/* lucashi-kit · site/installation · bloc « Installer » commun aux pages de vente. Se recopie tel quel. */
+.lk-inst{--lk-c:#009EFF;--lk-ink:#1d1d1f;--lk-ink2:#5f5f66;--lk-line:rgba(0,0,0,.12);--lk-bg:#fbfbfd;--lk-alt:#f2f2f5;--lk-code:#1c1c1e;
+  font:16px/1.45 -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;color:var(--lk-ink);max-width:980px;margin:0 auto;padding:0 20px;box-sizing:border-box}
+@media (prefers-color-scheme:dark){.lk-inst{--lk-ink:#f5f5f7;--lk-ink2:#a1a1a6;--lk-line:rgba(255,255,255,.16);--lk-bg:#000;--lk-alt:#111114}}
+:root[data-theme="dark"] .lk-inst{--lk-ink:#f5f5f7;--lk-ink2:#a1a1a6;--lk-line:rgba(255,255,255,.16);--lk-bg:#000;--lk-alt:#111114}
+:root[data-theme="light"] .lk-inst{--lk-ink:#1d1d1f;--lk-ink2:#5f5f66;--lk-line:rgba(0,0,0,.12);--lk-bg:#fbfbfd;--lk-alt:#f2f2f5}
+.lk-inst *{box-sizing:border-box}
+.lk-inst h2{font-size:clamp(28px,4.4vw,44px);letter-spacing:-.03em;line-height:1.1;margin:0 0 10px}
+.lk-inst h3{font-size:22px;margin:34px 0 12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.lk-inst .lk-lead{color:var(--lk-ink2);font-size:18px;max-width:52ch;margin:0 0 6px}
+.lk-inst .lk-num{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--lk-c);color:#fff;font-size:15px}
+.lk-inst .lk-tag{font-size:12px;font-weight:600;padding:3px 10px;border-radius:999px;border:1px solid var(--lk-line);color:var(--lk-ink2)}
+.lk-inst .lk-cmd{display:flex;gap:12px;flex-wrap:wrap;align-items:stretch;margin:14px 0 6px}
+.lk-inst pre{flex:1 1 420px;margin:0;padding:16px 18px;border-radius:14px;background:var(--lk-code);color:#f5f5f7;font:13.5px/1.5 ui-monospace,"SF Mono",Menlo,monospace;white-space:pre-wrap;word-break:normal;overflow-wrap:anywhere}
+.lk-inst .lk-btn{display:inline-flex;align-items:center;justify-content:center;padding:11px 20px;border-radius:999px;border:0;background:var(--lk-c);color:#fff;font:600 15px/1 inherit;font-family:inherit;text-decoration:none;cursor:pointer}
+.lk-inst .lk-btn.lk-ok{background:#23CC99}
+.lk-inst .lk-steps{list-style:none;margin:26px 0 22px;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.lk-inst .lk-steps li{position:relative;outline-offset:6px}
+.lk-inst .lk-vig{aspect-ratio:4/3;border-radius:18px;background:var(--lk-alt);border:1px solid var(--lk-line);display:grid;place-items:center;padding:14px;overflow:hidden}
+.lk-inst .lk-leg{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:17px;font-weight:600}
+.lk-inst .lk-n{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--lk-ink);color:var(--lk-bg);font-size:12px;font-weight:700}
+.lk-inst .lk-det{position:absolute;left:0;right:0;top:calc(100% - 4px);z-index:5;margin:0;padding:10px 14px;border-radius:14px;font-size:14px;line-height:1.4;font-weight:400;background:var(--lk-bg);border:1px solid var(--lk-line);box-shadow:0 14px 36px -14px rgba(0,0,0,.45);opacity:0;pointer-events:none;transform:translateY(-4px);transition:opacity .2s,transform .2s}
+.lk-inst .lk-steps li:hover .lk-det,.lk-inst .lk-steps li:focus .lk-det{opacity:1;transform:none}
+.lk-inst .lk-mac{width:100%;max-width:230px;border-radius:14px;background:#ececf0;color:#1d1d1f;box-shadow:0 10px 28px -10px rgba(0,0,0,.45);font-size:11px;line-height:1.35;text-align:center;padding:14px 12px}
+.lk-inst .lk-mac b{display:block;font-size:12.5px;margin:6px 0 4px}
+.lk-inst .lk-mac p{color:#55555c;margin:0 0 10px}
+.lk-inst .lk-mac img{width:34px;height:34px;border-radius:8px}
+.lk-inst .lk-bt{display:grid;gap:5px}
+.lk-inst .lk-bt span{padding:5px 8px;border-radius:7px;background:#fff;border:1px solid #d6d6db}
+.lk-inst .lk-d{background:#0a7cff !important;color:#fff;border-color:transparent !important}
+.lk-inst .lk-reg{text-align:left;padding:12px}
+.lk-inst .lk-reg small{display:block;color:#6e6e73;margin-bottom:8px;font-weight:600}
+.lk-inst .lk-lg{display:grid;gap:8px;padding:10px;border-radius:10px;background:#fff}
+.lk-inst .lk-lg .lk-d{justify-self:end;padding:5px 9px;border-radius:7px}
+@media (prefers-color-scheme:dark){.lk-inst .lk-mac{background:#2c2c30;color:#f5f5f7}.lk-inst .lk-mac p,.lk-inst .lk-reg small{color:#a1a1a6}.lk-inst .lk-bt span,.lk-inst .lk-lg{background:#3a3a3f;border-color:#4a4a50}}
+:root[data-theme="dark"] .lk-inst .lk-mac{background:#2c2c30;color:#f5f5f7}
+.lk-inst .lk-note{border-left:3px solid var(--lk-c);padding:4px 0 4px 16px;color:var(--lk-ink2);font-size:15px;max-width:62ch;margin:18px 0}
+.lk-inst ul.lk-req{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:10px;color:var(--lk-ink2);font-size:17px}
+.lk-inst ul.lk-req li{position:relative;padding-left:26px}
+.lk-inst ul.lk-req li::before{content:"";position:absolute;left:0;top:.55em;width:10px;height:10px;border-radius:50%;background:var(--lk-c)}
+.lk-inst a{color:inherit}
+@media (max-width:820px){.lk-inst .lk-steps{grid-template-columns:1fr;gap:34px}.lk-inst .lk-vig{aspect-ratio:auto;min-height:150px}.lk-inst .lk-det{position:static;opacity:1;transform:none;border:0;box-shadow:none;padding:6px 0;background:none}}
+@media (prefers-reduced-motion:reduce){.lk-inst .lk-det{transition:none}}
+
+/* avant le montage, le conteneur réserve la place : l'ancre ne saute pas */
+[data-lucashi-installation]:empty{min-height:90vh}
+.lk-inst.lk-compact{padding:0;max-width:none}
+.lk-inst.lk-compact .lk-hint{margin:0 0 8px;color:var(--lk-ink2);font-size:15px}
+.lk-inst.lk-compact .lk-cmd{margin:0}
+.lk-inst.lk-compact pre{font-size:12.5px;padding:13px 15px}
+.lk-inst.lk-compact .lk-hint2{margin:8px 0 0;font-size:13.5px}
+.lk-inst.lk-compact .lk-hint2 a{color:inherit;text-decoration:underline}
+.lk-inst.lk-compact .lk-hint b{color:inherit}
+
+
+
+<style>
+#installer-cmd{max-width:560px}
+#installer-cmd:empty{min-height:150px}
+.inst-sec [data-lucashi-installation]:empty{min-height:420px}
+.inst-sec .lk-inst{padding:0}
+.hero .lk-inst .lk-hint{max-width:540px}
+.hero .lk-inst pre{background:#1c1c1e}
+.lk-inst .lk-cmd{min-width:0;align-items:center}
+.lk-inst .lk-btn{flex:none}
+.lk-inst pre{flex:1 1 260px;min-width:0}
+.hero .wrap>div,.split>div{min-width:0}
+</style>
+<link rel="stylesheet" href="../assets/presentation.css">
+</head>
+<body id="top">
+<nav class="nav"><div class="wrap"><a class="logo" href="#top"><img src="../assets/mymeetcomp-icon.png?v=20261116" alt="" width="30" height="30">MyMeetComp</a>
+<div class="links"><a href="#modes">Trois modes</a><a href="#reunion">En réunion</a><a href="#prive">Vie privée</a><a href="#savoir">À savoir</a><a href="../">Toutes les apps</a><a class="cta" href="#installer">Installer</a></div></div></nav>
+
+<header class="hero"><div class="wrap">
+  <div>
+    <img class="hl" src="../assets/mymeetcomp-icon.png?v=20261116" alt="Icône de MyMeetComp" width="72" height="72">
+    <span class="pre">Version 1.0.0</span>
+    <h1>Votre micro de réunion. Votre voix, ou traduite.</h1>
+    <p class="lead">Dans Teams, Zoom ou Meet, choisissez « MyMeetComp Micro » comme micro. Ensuite, un clic décide ce que les autres entendent.</p>
+    <p class="free"><b>Gratuit</b>, sans compte · Mac à puce Apple · macOS 26 ou plus</p>
+    <div id="installer-cmd" data-lucashi-installation data-compact data-nom="MyMeetComp" data-depot="LucasHRCHatReply/mymeetcomp-releases" data-couleur="#2F7BFF"></div>
+    <noscript><pre>curl -fsSL https://raw.githubusercontent.com/LucasHRCHatReply/mymeetcomp-releases/main/installer.sh | zsh</pre></noscript>
+    <p class="zip">Ou <a href="https://github.com/LucasHRCHatReply/mymeetcomp-releases/releases/latest/download/MyMeetComp.zip">télécharger MyMeetComp.zip</a> · <a href="#modes">Voir les trois modes</a></p>
+  </div>
+  <div class="stage">
+    <div class="shot"><picture><source media="(prefers-color-scheme:dark)" srcset="traduite-sombre.png"><img src="traduite-clair.png" alt="La fenêtre Réunion de MyMeetComp en mode Traduite : le texte reconnu, sa traduction et le retard de chaque phrase" width="1640" height="1400"></picture></div>
+    <small class="il">Capture de la fenêtre de MyMeetComp 1.0.0, texte d'exemple.</small>
+  </div>
+</div></header>
+
+<main>
+<section class="s alt" id="modes"><div class="wrap">
+  <div class="split">
+    <div><div class="eyebrow">Trois modes</div><h2>Ma voix, Traduite, Muet.</h2>
+      <ul class="fam">
+        <li><b>Ma voix</b> : votre voix telle quelle. Environ 25 ms ajoutées, mesurées sur des sons de test.</li>
+        <li><b>Traduite</b> : votre voix est reconnue, traduite et dite dans la langue choisie. Votre vraie voix ne part pas. La fenêtre montre la phrase, sa traduction et le retard.</li>
+        <li><b>Muet</b> : rien ne part. Le micro du Mac est fermé.</li>
+      </ul>
+      <p class="how" style="margin-top:16px"><b>⌃⌥M</b> passe d'un mode au suivant, avec un fondu de 20 ms, sans couper le micro de la réunion.</p></div>
+    <div class="stage"><div class="win" aria-label="Simulation du changement de mode (illustration animée)">
+      <div class="bar"><i></i><i></i><i></i><span>MyMeetComp · Réunion</span></div>
+      <div class="body">
+        <div class="topl"><span class="modes" id="mm"><b>Ma voix</b><b>Traduite</b><b>Muet</b></span><span class="kbd" id="mk"><b>⌃</b><b>⌥</b><b>M</b></span></div>
+        <div class="sig" id="ms"></div>
+      </div></div>
+      <small class="il">Illustration animée, texte d'exemple.</small></div>
+  </div>
+</div></section>
+
+<section class="s" id="reunion"><div class="wrap">
+  <div class="split rev">
+    <div><div class="eyebrow">En réunion</div><h2>Un seul micro à choisir.</h2>
+      <p class="how">Le micro virtuel est embarqué dans l'app. Un bouton, <b>« Installer le micro »</b>, l'installe ; macOS demande le mot de passe administrateur, une seule fois.</p>
+      <p class="how">Vous choisissez votre vrai micro, ou « Micro du Mac », qui suit le micro par défaut. <b>Casque branché ou débranché</b> : la reprise est automatique, et la fenêtre le dit.</p>
+      <p class="how">Le vrai micro ne s'ouvre qu'en Ma voix et en Traduite. Il se coupe en Muet, à la fermeture de la fenêtre, à la mise en veille et à l'arrêt.</p></div>
+    <div class="stage"><div class="shot"><picture><source media="(prefers-color-scheme:dark)" srcset="voix-sombre.png"><img src="voix-clair.png" alt="La fenêtre Réunion de MyMeetComp en mode Ma voix" width="1640" height="1400" loading="lazy"></picture></div>
+      <small class="il">Capture de la fenêtre de MyMeetComp 1.0.0, texte d'exemple.</small></div>
+  </div>
+  <div class="split" style="margin-top:64px">
+    <div><div class="eyebrow">Muet</div><h2>Rien ne part.</h2>
+      <p class="how">En Muet, les autres n'entendent rien et le micro du Mac est fermé. C'est aussi le mode au démarrage de l'app.</p></div>
+    <div class="stage"><div class="shot"><picture><source media="(prefers-color-scheme:dark)" srcset="muet-sombre.png"><img src="muet-clair.png" alt="La fenêtre Réunion de MyMeetComp en mode Muet" width="1640" height="1400" loading="lazy"></picture></div>
+      <small class="il">Capture de la fenêtre de MyMeetComp 1.0.0, texte d'exemple.</small></div>
+  </div>
+</div></section>
+
+<section class="s alt" id="prive"><div class="wrap">
+  <div class="eyebrow">Vie privée</div><h2>La reconnaissance et la traduction restent sur le Mac.</h2>
+  <ul class="yes">
+    <li><b>Apple</b> reconnaît et traduit la voix, sur le Mac.</li>
+    <li><b>Pas de compte</b> à créer.</li>
+  </ul>
+</div></section>
+
+<section class="s" id="savoir"><div class="wrap">
+  <div class="eyebrow">À savoir</div><h2>Ce qu'il faut savoir avant d'installer.</h2>
+  <div class="cards">
+    <div class="card"><div class="k">Démarrage</div><p>L'app démarre en Muet. Fermer sa fenêtre la repasse en Muet.</p></div>
+    <div class="card"><div class="k">Signature</div><p>Signée avec un certificat de développement, non notarisée. L'installeur lève la quarantaine sur l'app seulement.</p></div>
+    <div class="card"><div class="k">Compatibilité</div><p>Mac à puce Apple et macOS 26 ou plus.</p></div>
+  </div>
+</div></section>
+
+<section class="s alt inst-sec" id="installer-bloc"><div class="wrap">
+  <div id="installer" data-lucashi-installation
+     data-nom="MyMeetComp" data-depot="LucasHRCHatReply/mymeetcomp-releases" data-couleur="#2F7BFF"
+     data-requis='["Mac à puce Apple","macOS 26 ou plus","Mot de passe administrateur une fois, pour le micro virtuel","Aucun compte"]'></div>
+  <noscript><pre>curl -fsSL https://raw.githubusercontent.com/LucasHRCHatReply/mymeetcomp-releases/main/installer.sh | zsh</pre></noscript>
+  <p class="zip" style="padding:0 20px;max-width:980px;margin:6px auto 0">Autre voie : <a href="https://github.com/LucasHRCHatReply/mymeetcomp-releases/releases/latest/download/MyMeetComp.zip">MyMeetComp.zip</a>, à décompresser, puis suivre le fichier LISEZ-MOI.txt. Version 1.0.0.</p>
+</div></section>
+</main>
+<footer><div class="wrap">MyMeetComp 1.0.0 · <a href="../">Toutes les apps</a></div></footer>
+
+<script>
+(function(){
+var reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+function $(i){return document.getElementById(i)}
+function sleep(ms){return new Promise(function(r){setTimeout(r,reduce?0:ms)})}
+var modes=[['Ma voix','Ce que les autres entendent','Bonjour à tous, je commence par le budget.'],['Traduite','Ce que les autres entendent','Hello everyone, I will start with the budget.'],['Muet','Ce que les autres entendent','Rien.']];
+function set(n){var b=$('mm').children;for(var i=0;i<b.length;i++)b[i].classList.toggle('on',i===n);
+ $('ms').innerHTML='<small>'+modes[n][1]+'</small>'+modes[n][2]}
+async function boucle(){var k=$('mk'),n=0;set(0);if(reduce)return;
+ while(true){await sleep(2600);k.classList.add('down');await sleep(300);n=(n+1)%3;set(n);k.classList.remove('down')}}
+boucle();
+})();
+</script>
+<script>
+/* lucashi-kit · site/installation · bloc « Installer » commun. Sans dépendance. Se recopie tel quel.
+   <div data-lucashi-installation data-nom="Pince" data-depot="LucasHRCHatReply/pince-releases"
+        data-couleur="#009EFF" data-icone="icone.png" data-dmg="Pince.dmg"
+        data-requis='["macOS 15 ou plus","Mac à puce Apple"]'></div>
+   data-dmg : à renseigner seulement si la Release contient vraiment le .dmg. Sans lui, pas de bloc .dmg. */
+(function () {
+  var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); };
+  function monter(el) {
+    var d = el.dataset, nom = esc(d.nom), depot = d.depot, dmg = d.dmg || "";
+    var requis = []; try { requis = JSON.parse(d.requis || "[]"); } catch (e) {}
+    var cmd = "curl -fsSL https://raw.githubusercontent.com/" + depot + "/main/installer.sh | zsh";
+    var cmdhtml = esc(cmd).replace(/\//g, "/<wbr>").replace(" | ", "<wbr> | ");
+    var ico = d.icone ? '<img src="' + esc(d.icone) + '" alt="" width="34" height="34">' : "";
+    var etapes = [
+      ["Blocage", "Au premier lancement, macOS refuse d'ouvrir l'app. C'est normal. Choisir « Terminé ».",
+        '<div class="lk-mac">' + ico + '<b>« ' + nom + ' » n\'a pas été ouverte</b><p>Apple n\'a pas pu vérifier que « ' + nom + ' » ne contient pas de logiciel malveillant.</p><div class="lk-bt"><span>Placer dans la corbeille</span><span class="lk-d">Terminé</span></div></div>'],
+      ["Réglages Système", "Ouvrir Réglages Système › Confidentialité et sécurité, descendre jusqu'à « Sécurité » : l'app y est listée avec un bouton.",
+        '<div class="lk-mac lk-reg"><small>Confidentialité et sécurité</small><div class="lk-lg"><span>« ' + nom + ' » a été bloquée pour protéger votre Mac.</span><span class="lk-d">Ouvrir quand même</span></div></div>'],
+      ["Confirmation", "macOS demande une dernière fois. Choisir « Ouvrir quand même » et entrer le mot de passe du Mac. L'app s'ouvre, et ne redemandera plus.",
+        '<div class="lk-mac">' + ico + '<b>Ouvrir « ' + nom + ' » ?</b><p>Votre Mac ne peut pas vérifier cette app.</p><div class="lk-bt"><span>Annuler</span><span class="lk-d">Ouvrir quand même</span></div></div>']
+    ];
+    el.classList.add("lk-inst"); if (d.couleur) el.style.setProperty("--lk-c", d.couleur);
+    // data-compact : la commande seule et son bouton Copier (premier écran de la page), sans titre ni .dmg ni notes.
+    if (d.compact !== undefined) el.classList.add("lk-compact");
+    el.innerHTML = d.compact !== undefined ?
+      '<p class="lk-hint">Pour ouvrir Terminal : touches <b>⌘ Espace</b>, tapez « Terminal », Entrée. Collez la commande, Entrée : ' + nom + ' s\'installe seule.</p><div class="lk-cmd"><pre>' + cmdhtml + '</pre><button class="lk-btn" type="button">Copier</button></div><p class="lk-hint lk-hint2">Elle télécharge ' + nom + ' et lève le blocage de macOS sur ' + nom + '.app seulement. Le script se lit en entier : <a href="https://github.com/' + esc(depot) + '/blob/main/installer.sh" rel="noopener">installer.sh</a>.</p>' :
+      '<h2>Installer.</h2><p class="lk-lead">Une commande, dans Terminal. Elle installe, et met à jour les fois suivantes.</p>' +
+      (dmg ? '<h3><span class="lk-num">1</span> La commande <span class="lk-tag">Recommandée</span></h3>' : "") +
+      '<div class="lk-cmd"><pre>' + cmdhtml + '</pre><button class="lk-btn" type="button">Copier</button></div>' +
+      (dmg ? '<h3><span class="lk-num">2</span> Le .dmg</h3><p class="lk-lead" style="margin-bottom:16px">Ouvrir le .dmg, glisser ' + nom + ' dans Applications. macOS demande une confirmation au premier lancement (trois étapes ci-dessous). La commande évite cette étape.</p>' +
+        '<a class="lk-btn" href="https://github.com/' + esc(depot) + '/releases/latest/download/' + esc(dmg) + '">Télécharger le .dmg</a>' +
+        '<ol class="lk-steps">' + etapes.map(function (e, i) { return '<li tabindex="0"><div class="lk-vig" aria-hidden="true">' + e[2] + '</div><div class="lk-leg"><span class="lk-n">' + (i + 1) + '</span>' + e[0] + '</div><p class="lk-det">' + esc(e[1]) + '</p></li>'; }).join("") + '</ol>' +
+        '<p class="lk-note">Rien à désactiver : la protection de macOS reste en place pour tout le reste du Mac. Ces vignettes sont dessinées d\'après macOS, ce ne sont pas des captures.</p>' : "") +
+      (requis.length ? '<h3>Configuration requise</h3><ul class="lk-req">' + requis.map(function (r) { return "<li>" + esc(r) + "</li>"; }).join("") + "</ul>" : "") +
+      '<p class="lk-note"><b>' + nom + ' est signée, mais pas vérifiée par Apple</b> (la vérification, appelée notarisation, demande un compte développeur payant) : macOS demande donc une confirmation la première fois. Le script la remplace, sur ' + nom + '.app seulement. Il se lit en entier : <a href="https://github.com/' + esc(depot) + '/blob/main/installer.sh" rel="noopener">installer.sh</a>. Toutes les versions : <a href="https://github.com/' + esc(depot) + '/releases" rel="noopener">releases</a>.</p>';
+    var b = el.querySelector("button"), tmr = 0;
+    // Retour visuel : le libellé change pendant 2 s puis revient à « Copier » (un second clic relance le délai sans fausser le libellé de départ).
+    function dire(txt, ok) { clearTimeout(tmr); b.textContent = txt; b.classList.toggle("lk-ok", !!ok); tmr = setTimeout(function () { b.textContent = "Copier"; b.classList.remove("lk-ok"); }, 2000); }
+    function selectionner() { var r = document.createRange(); r.selectNodeContents(el.querySelector("pre")); var s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+    // Repli sans API presse-papiers : textarea caché, sélection, execCommand("copy"). Renvoie vrai si le navigateur a copié.
+    function repli() {
+      var t = document.createElement("textarea"), fait = false;
+      t.value = cmd; t.setAttribute("readonly", ""); t.setAttribute("aria-hidden", "true");
+      t.style.cssText = "position:fixed;left:-9999px;top:0;opacity:0";
+      document.body.appendChild(t); t.focus(); t.select(); t.setSelectionRange(0, cmd.length);
+      try { fait = document.execCommand("copy"); } catch (e) { fait = false; }
+      document.body.removeChild(t); return fait;
+    }
+    function secours() { if (repli()) dire("Copié ✓", true); else { selectionner(); dire("Sélectionnée : ⌘C", false); } }
+    b.addEventListener("click", function () {
+      var api = navigator.clipboard && navigator.clipboard.writeText;
+      if (api) { try { navigator.clipboard.writeText(cmd).then(function () { dire("Copié ✓", true); }, secours); } catch (e) { secours(); } }
+      else secours();
+    });
+  }
+  // Arrivée par l'ancre (…/#installer) : le navigateur a calculé sa position avant que le bloc existe, et les images
+  // de la page décalent la mise en page ensuite. On recale la vue sur le bloc après le montage, puis une fois la page chargée.
+  function recaler(el) {
+    var h = decodeURIComponent((location.hash || "").slice(1));
+    if (!h) return;
+    var cible = document.getElementById(h);
+    if (!cible || !(cible === el || cible.contains(el) || el.contains(cible))) return;
+    var aller = function () { cible.scrollIntoView({ block: "start", behavior: "instant" }); };
+    aller(); requestAnimationFrame(aller); addEventListener("load", aller, { once: true });
+  }
+  function tout() { document.querySelectorAll("[data-lucashi-installation]").forEach(function (el) { monter(el); recaler(el); }); }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", tout); else tout();
+  window.LucashiInstallation = { monter: monter };
+})();
+
+</script>
+
+</body></html>

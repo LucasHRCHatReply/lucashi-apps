@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="fond" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3B8CFF"/>
+      <stop offset="1" stop-color="#1F5BD8"/>
+    </linearGradient>
+    <linearGradient id="reflet" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity=".22"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect x="100" y="100" width="824" height="824" rx="185" fill="url(#fond)"/>
+  <rect x="100" y="100" width="824" height="412" rx="185" fill="url(#reflet)"/>
+  <g fill="#fff">
+    <rect x="388" y="214" width="190" height="344" rx="95"/>
+    <path d="M318 468a170 170 0 0 0 340 0" fill="none" stroke="#fff" stroke-width="40" stroke-linecap="round"/>
+    <rect x="468" y="640" width="40" height="86" rx="6"/>
+    <rect x="394" y="712" width="188" height="40" rx="20"/>
+  </g>
+  <g>
+    <path d="M640 250h190a46 46 0 0 1 46 46v96a46 46 0 0 1-46 46h-92l-52 46v-46h-46a46 46 0 0 1-46-46v-96a46 46 0 0 1 46-46z" fill="#fff" stroke="#1F5BD8" stroke-width="14" stroke-linejoin="round"/>
+    <text x="735" y="383" font-family="Helvetica Neue,Arial,sans-serif" font-weight="800" font-size="104" text-anchor="middle" fill="#1F5BD8">A</text>
+  </g>
+</svg>
