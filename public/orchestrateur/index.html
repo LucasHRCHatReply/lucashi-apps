@@ -310,7 +310,7 @@ footer a{color:var(--ink)}
 
 <header class="hero"><div class="wrap">
   <div>
-    <span class="pill"><b>Skill Claude Code</b> · <span>v<span id="ver-badge">3.0.0</span></span> · gratuit</span>
+    <span class="pill"><b>Skill Claude Code</b> · <span>v<span id="ver-badge">3.1.0</span></span> · gratuit</span>
     <h1>Une session Claude. <em style="white-space:nowrap">Toute une équipe.</em></h1>
     <p class="lead">Vous décrivez le chantier. L’<abbr title="La session principale : elle découpe le chantier, lance les autres sessions et vérifie chaque rendu.">orchestratrice</abbr> découpe, lance de vraies sessions sur le bon modèle, vérifie chaque rendu — et confie même les images et la veille au meilleur outil.</p>
     <div class="btns">
@@ -585,7 +585,7 @@ footer a{color:var(--ink)}
     <div class="bloc ligne"><code>/plugin install orchestrateur@orchestration</code><button class="btn petit" type="button" data-copier="plug2">Copier</button></div>
   </div>
   <div class="panneau" id="p-zip" role="tabpanel" aria-labelledby="t-zip" hidden>
-    <ol><li><b>Téléchargez</b> le zip si vous voulez le lire avant, ou lancez la commande : elle télécharge, vérifie l’empreinte, décompresse et installe.</li><li><b>Version</b> <span class="vers">3.0.0</span>. L’empreinte SHA-256 est vérifiée avant toute installation.</li></ol>
+    <ol><li><b>Téléchargez</b> le zip si vous voulez le lire avant, ou lancez la commande : elle télécharge, vérifie l’empreinte, décompresse et installe.</li><li><b>Version</b> <span class="vers">3.1.0</span>. L’empreinte SHA-256 est vérifiée avant toute installation.</li></ol>
     <p class="sha">SHA-256 : <span id="sha-aff">lue dans orchestrateur.zip.sha256, à côté du zip</span></p>
     <div class="bloc" id="b-zip"></div>
     <div class="btns"><a class="btn p" href="orchestrateur.zip" download>⬇︎ Télécharger orchestrateur.zip</a><button class="btn" type="button" data-copier="zip">Copier la commande</button></div>
@@ -641,7 +641,7 @@ footer a{color:var(--ink)}
   const ORIGINE = location.origin.startsWith('http') ? location.origin : 'https://apps.srv875929.hstgr.cloud';
   const ZIP = ORIGINE + '/orchestrateur/orchestrateur.zip';
   // Version et empreinte écrites à côté du zip : lues au chargement ; en cas d'échec, le texte écrit en dur reste.
-  let SHA = '(empreinte indisponible : arrête-toi)', VERSION = '3.0.0';
+  let SHA = '(empreinte indisponible : arrête-toi)', VERSION = '3.1.0';
   const TEXTES = {};
   const remplir = () => Object.assign(TEXTES, {
     plug1: '/plugin marketplace add LucasHRCHatReply/orchestrateur-releases',

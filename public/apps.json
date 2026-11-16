@@ -547,7 +547,7 @@
       "couleur": "#F59E0B",
       "icone": "assets/orchestrateur-icon.svg",
       "page": "orchestrateur/",
-      "version": "3.0.0",
+      "version": "3.1.0",
       "telechargement": "orchestrateur/orchestrateur.zip",
       "description": "Un skill Claude Code qui découpe un chantier, lance de vraies sessions sur le modèle le plus bas qui suffit, confie images et veille à GPT si vous l'avez, et vérifie chaque rendu. Banc de 11 tâches : −57 % de coût estimé face à « tout sur Opus », note 0,96 contre 0,94. Ces estimations ne garantissent aucune économie sur un abonnement.",
       "source_page": null
