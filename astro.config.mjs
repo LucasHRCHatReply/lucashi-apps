@@ -1,7 +1,7 @@
 import { defineConfig } from 'astro/config';
 
 // SITE_URL : adresse publique (défaut : l'adresse de dev). INDEXABLE=true : la production.
-const site = (process.env.SITE_URL ?? 'https://apps.srv875929.hstgr.cloud').replace(/\/$/, '');
+const site = (process.env.SITE_URL ?? 'https://app.lucashirschauer.fr').replace(/\/$/, '');
 
 export default defineConfig({
   site,

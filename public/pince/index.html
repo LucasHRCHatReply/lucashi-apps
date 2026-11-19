@@ -173,7 +173,7 @@ abbr[title]{text-decoration:underline dotted;text-underline-offset:3px;cursor:he
 <link rel="stylesheet" href="../assets/presentation.css">
 </head>
 <body>
-<nav class="nav"><a class="logo" href="#top"><img src="captures/icone.png" alt="" width="28" height="28">Pince</a><div class="r"><a class="h" href="#installer">Installer</a><a class="h" href="https://apps.srv875929.hstgr.cloud/">Toutes les apps</a><a class="btn s" href="#installer">Installer</a></div></nav>
+<nav class="nav"><a class="logo" href="#top"><img src="captures/icone.png" alt="" width="28" height="28">Pince</a><div class="r"><a class="h" href="#installer">Installer</a><a class="h" href="https://app.lucashirschauer.fr/">Toutes les apps</a><a class="btn s" href="#installer">Installer</a></div></nav>
 
 <!-- 1 · promesse + la nouvelle fenêtre -->
 <header class="hero" id="top"><div class="wrap">
@@ -289,14 +289,14 @@ abbr[title]{text-decoration:underline dotted;text-underline-offset:3px;cursor:he
 <p class="vb-t"><a href="../">Toutes les apps →</a></p>
 </div></section>
 <!-- liens:fin -->
-<footer class="foot">Pince 1.6.0 · <a href="https://apps.srv875929.hstgr.cloud/">Toutes les apps</a> · <a href="https://github.com/LucasHRCHatReply/pince-releases/releases/latest">Notes de version</a></footer>
+<footer class="foot">Pince 1.6.0 · <a href="https://app.lucashirschauer.fr/">Toutes les apps</a> · <a href="https://github.com/LucasHRCHatReply/pince-releases/releases/latest">Notes de version</a></footer>
 <script>
 (function(){
 var els=document.querySelectorAll('.rv');if(!('IntersectionObserver'in window)){els.forEach(function(e){e.classList.add('in')});return}
 var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.15});
 els.forEach(function(e,i){e.style.transitionDelay=(i%4)*90+'ms';io.observe(e)})})();
 (function(){
-var U="https://apps.srv875929.hstgr.cloud/pince/";
+var U="https://app.lucashirschauer.fr/pince/";
 document.querySelectorAll('[data-envoyer]').forEach(function(b){b.addEventListener('click',function(){
   if(navigator.share){navigator.share({title:'Pince pour Mac',text:'Pince, le presse-papiers de mon Mac',url:U}).catch(function(){})}
   else{location.href='mailto:?subject='+encodeURIComponent('Pince pour Mac')+'&body='+encodeURIComponent(U)}

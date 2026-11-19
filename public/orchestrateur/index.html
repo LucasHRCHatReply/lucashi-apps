@@ -717,7 +717,7 @@ footer a{color:var(--ink)}
 (() => {
   const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const calme = matchMedia('(prefers-reduced-motion: reduce)').matches, capture = document.documentElement.classList.contains('capture');
-  const ORIGINE = location.origin.startsWith('http') ? location.origin : 'https://apps.srv875929.hstgr.cloud';
+  const ORIGINE = location.origin.startsWith('http') ? location.origin : 'https://app.lucashirschauer.fr';
   const ZIP = ORIGINE + '/orchestrateur/orchestrateur.zip';
   // Version et empreinte écrites à côté du zip : lues au chargement ; en cas d'échec, le texte écrit en dur reste.
   let SHA = '(empreinte indisponible : arrête-toi)', VERSION = '3.2.0';

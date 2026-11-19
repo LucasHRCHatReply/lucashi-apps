@@ -14,7 +14,7 @@ const DATA = process.env.DATA || path.join(ICI, 'data')
 const TOKEN = process.env.WORKER_TOKEN || ''
 const CAP_JOUR = Number(process.env.CAP_JOUR || 80)      // générations par jour, tous visiteurs confondus
 const IP_MAX = Number(process.env.IP_MAX || 6)           // générations par IP et par 10 minutes
-const UA = 'Declic/1.0 (jeu de culture generale; https://apps.srv875929.hstgr.cloud)'
+const UA = 'Declic/1.0 (jeu de culture generale; https://app.lucashirschauer.fr)'
 const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.svg': 'image/svg+xml', '.mjs': 'text/javascript; charset=utf-8', '.sh': 'text/plain; charset=utf-8' }
 
 const jobs = new Map()          // id -> job

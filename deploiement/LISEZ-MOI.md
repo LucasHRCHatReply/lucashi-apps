@@ -29,11 +29,11 @@ refuse et rien n'est touché.
 ## 3. Installer Caddy et le site
 
 L'hôte provisoire est `<IP-avec-tirets>.sslip.io` (par exemple l'IP 1.2.3.4 donne `1-2-3-4.sslip.io`) ; il est résolu sans
-DNS. `app.lucashi.fr` s'ajoute dans la même commande : son certificat s'émettra dès que le DNS pointera sur le VPS.
+DNS. `app.lucashirschauer.fr` s'ajoute dans la même commande : son certificat s'émettra dès que le DNS pointera sur le VPS.
 
 ```
 curl -fsSL https://raw.githubusercontent.com/LucasHRCHatReply/lucashi-apps/main/deploiement/vps.sh -o vps.sh
-bash vps.sh installer <IP-avec-tirets>.sslip.io app.lucashi.fr
+bash vps.sh installer <IP-avec-tirets>.sslip.io app.lucashirschauer.fr
 ```
 
 Il installe Caddy (dépôt officiel), clone ce dépôt dans `/srv/lucashi-apps`, écrit `/etc/caddy/sites/lucashi-apps.caddy`
@@ -73,7 +73,7 @@ Retour arrière : recopier `lucashi-apps.avant-astro` sur la conf et recharger n
 La mise à jour (timer, toutes les 2 minutes) fait `git pull` ; si HEAD a changé (ou si `dist/` manque), `nice -n 15 npm ci`
 puis `npm run build` dans `dist.new/`, échangé d'un coup avec `dist/`.
 
-Passage en production (quand `app.lucashi.fr` pointe sur le VPS) : dans `/etc/lucashi-apps.env`, `SITE_URL=https://app.lucashi.fr`
+Passage en production (quand `app.lucashirschauer.fr` pointe sur le VPS) : dans `/etc/lucashi-apps.env`, `SITE_URL=https://app.lucashirschauer.fr`
 et `INDEXABLE=true`, puis `/usr/local/bin/lucashi-apps-maj` après avoir supprimé `dist/` (ou pousser un commit).
 
 ## 3 bis. Outils automatiques : fichiers lourds, serveur arnaque, multi-fil (21/10/2026)
@@ -118,9 +118,9 @@ lieux : un autre service qui écoute sur un autre port serait coupé de l'extér
 
 ## 5. DNS
 
-Quand `app.lucashi.fr` doit pointer sur le VPS : IONOS › DNS › enregistrement **A**, hôte `app`, valeur l'IP du VPS (à la
-place du CNAME vers GitHub Pages, qui se supprime). Contrôle : `dig +short app.lucashi.fr`, puis
-`curl -sI https://app.lucashi.fr | head -1`.
+Quand `app.lucashirschauer.fr` doit pointer sur le VPS : OVH : le joker `*` de lucashirschauer.fr pointe déjà sur le VPS (19/11/2026) ; plus rien à créer (ancienne note : à la
+place du CNAME vers GitHub Pages, qui se supprime). Contrôle : `dig +short app.lucashirschauer.fr`, puis
+`curl -sI https://app.lucashirschauer.fr | head -1`.
 
 ## Vérifier et défaire
 

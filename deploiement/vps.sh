@@ -7,8 +7,8 @@
 #                                       (dist/, proxy /api/compte, mise à jour qui construit) sans toucher au reste
 #   vps.sh pare-feu                     ufw : 22 (ou le port ssh réel), 80 et 443 seulement
 # Le site est construit sur le VPS : Node 22 ou plus requis. Adresse et indexation : /etc/lucashi-apps.env
-# (SITE_URL, INDEXABLE) ; production = SITE_URL=https://app.lucashi.fr et INDEXABLE=true.
-# Exemple : vps.sh installer <IP-avec-tirets>.sslip.io app.lucashi.fr
+# (SITE_URL, INDEXABLE) ; production = SITE_URL=https://app.lucashirschauer.fr et INDEXABLE=true.
+# Exemple : vps.sh installer <IP-avec-tirets>.sslip.io app.lucashirschauer.fr
 set -euo pipefail
 DEPOT="https://github.com/LucasHRCHatReply/lucashi-apps.git"
 DOSSIER="/srv/lucashi-apps"

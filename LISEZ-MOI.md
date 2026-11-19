@@ -1,8 +1,8 @@
-# app.lucashi.fr — les apps de Lucas (le « Lucas App Store »)
+# app.lucashirschauer.fr — les apps de Lucas (le « Lucas App Store »)
 
 Site statique construit par **Astro 5** (TypeScript, Node 22) : l'accueil, les pages d'apps, et des **outils gratuits** pour le référencement
-(`src/outils/`, voir `src/outils/LISEZ-MOI.md`). Le VPS construit et sert `dist/` ; adresse de dev : https://apps.srv875929.hstgr.cloud,
-adresse définitive : https://app.lucashi.fr. Les pages d'apps, `assets/` et `apps.json` vivent dans `public/` et sont servis tels quels.
+(`src/outils/`, voir `src/outils/LISEZ-MOI.md`). Le VPS construit et sert `dist/` ; adresse : https://app.lucashirschauer.fr (depuis le 19/11/2026 ;
+l'ancienne https://apps.srv875929.hstgr.cloud répond toujours). Les pages d'apps, `assets/` et `apps.json` vivent dans `public/` et sont servis tels quels.
 
 ```
 npm ci            # une fois
@@ -11,7 +11,7 @@ npm run verifier  # astro check + tests + build + contrôle du dépôt public su
 ```
 
 Variables de construction : `SITE_URL` (défaut : adresse de dev) et `INDEXABLE` (défaut `false` : `noindex` partout, `robots.txt` interdit tout).
-Production : `SITE_URL=https://app.lucashi.fr INDEXABLE=true npm run build`.
+Production : `SITE_URL=https://app.lucashirschauer.fr INDEXABLE=true npm run build`.
 
 ## Mettre à jour la page d'une app (une commande)
 
@@ -60,8 +60,8 @@ Le déploiement sur le VPS (construction, nginx ou Caddy, HTTPS, mise à jour to
 ## DNS chez IONOS (à faire par Lucas, au passage en production)
 
 Dans IONOS › Domaines › lucashi.fr › DNS : enregistrement **A**, hôte `app`, valeur l'IP du VPS (voir `deploiement/LISEZ-MOI.md`) ;
-supprimer l'ancien CNAME vers GitHub Pages. Vérifier : `dig +short app.lucashi.fr`, puis `curl -sI https://app.lucashi.fr | head -1`.
-Ensuite, dans `/etc/lucashi-apps.env` du VPS : `SITE_URL=https://app.lucashi.fr` et `INDEXABLE=true`.
+supprimer l'ancien CNAME vers GitHub Pages. Vérifier : `dig +short app.lucashirschauer.fr`, puis `curl -sI https://app.lucashirschauer.fr | head -1`.
+Ensuite, dans `/etc/lucashi-apps.env` du VPS : `SITE_URL=https://app.lucashirschauer.fr` et `INDEXABLE=true`.
 
 ## Contenu du dépôt
 
